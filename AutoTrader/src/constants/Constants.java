@@ -1,6 +1,5 @@
 package constants;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import exceptions.InitializationException;
@@ -22,10 +21,17 @@ public class Constants {
 	private static String autoTraderTimeUnitFile = autoTraderFolder + "timeUnit.txt";
 	
 	
+	public static final SchedulerConstants SCHEDULER;
+	
+	private static String schedulerFolder = "Scheduler/";
+	private static String schedulerThreadPoolSizeFile = schedulerFolder + "threadPoolSize.txt";
+	
+	
 	
 	static{
 		POLONIEX = initializePoloniexConstants();
 		AUTO_TRADER = initializeAutoTraderConstants();
+		SCHEDULER = initializeSchedulerConstants();
 	}
 	
 	
@@ -54,5 +60,32 @@ public class Constants {
 		} catch (Exception exception) {
 			throw new InitializationException(exception);
 		}
+	}
+	
+	private static SchedulerConstants initializeSchedulerConstants(){
+		try {
+			String threadPoolSizeString = Utils.readFile(schedulerThreadPoolSizeFile);
+			
+			int threadPoolSize = Integer.parseInt(threadPoolSizeString);
+			
+			return new SchedulerConstants(threadPoolSize);
+		} catch (Exception exception) {
+			throw new InitializationException(exception);
+		}
+	}
+	
+	
+	
+	public static String getSummary(){
+		String output = "POLONIEX:\n";
+		output += POLONIEX;
+		output += "\n\n";
+		output += "AUTO_TRADER:\n";
+		output += AUTO_TRADER;
+		output += "\n\n";
+		output += "SCHEDULER:\n";
+		output += SCHEDULER;
+		
+		return output;
 	}
 }
