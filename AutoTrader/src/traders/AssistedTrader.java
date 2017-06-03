@@ -1,5 +1,8 @@
 package traders;
 
-public class AssistedTrader extends Trader{
+public class AssistedTrader {
 
+	public void trade() {
+		// TODO update balances
+	}
 }

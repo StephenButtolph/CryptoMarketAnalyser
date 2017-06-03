@@ -3,11 +3,18 @@ package tasks;
 import java.util.concurrent.TimeUnit;
 
 import constants.Constants;
+import traders.AssistedTrader;
 
 public class AutoTrader extends RepeatTask {
+	private AssistedTrader trader;
+	
+	public AutoTrader(AssistedTrader trader){
+		this.trader = trader;
+	}
+	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		trader.trade();
 	}
 
 	@Override
