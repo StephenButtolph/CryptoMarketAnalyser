@@ -52,3 +52,4 @@ local.properties
 .worksheet
 AutoTrader/Poloniex/key.txt
 AutoTrader/Poloniex/secret.txt
+*.DS_STORE
