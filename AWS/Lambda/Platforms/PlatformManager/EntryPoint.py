@@ -4,10 +4,11 @@ Created on Aug 13, 2017
 @author: Stephen
 '''
 
-import Constants
-import LogManager
+
 from datetime import datetime
 import json
+from Logs import LogManager
+from Constants import Constants
 
 '''
 Lambda entry point function
@@ -20,6 +21,8 @@ def entry(event, context):
     
     eventText = json.dumps(event)
     logger.debug('Received Event: {}'.format(eventText))
+    
+    
 
 if __name__ == '__main__':
     entry(None, None)

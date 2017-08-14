@@ -1,4 +1,4 @@
-import Constants
+from Constants import Constants
 import logging
 
 logger = None

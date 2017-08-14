@@ -1,4 +1,0 @@
-DEFAULT_LOGGING_LEVEL = 'INFO'
-LOGGING_LEVEL_KEY = 'LoggingLevel'
-
-LOG_TIME_FORMAT = '%m/%d/%Y %H:%M:%S'
