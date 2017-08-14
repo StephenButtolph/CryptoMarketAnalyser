@@ -50,6 +50,6 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
-AutoTrader/Poloniex/key.txt
-AutoTrader/Poloniex/secret.txt
+
+# Mac OS specific
 *.DS_STORE
