@@ -5,6 +5,7 @@ Created on Aug 13, 2017
 '''
 
 import Constants
+import LogManager
 from datetime import datetime
 import json
 
@@ -12,11 +13,13 @@ import json
 Lambda entry point function
 '''
 def entry(event, context):
+    logger = LogManager.getLogger(event)
+    
     currentTime = datetime.now().strftime(Constants.LOG_TIME_FORMAT)
-    print('Lambda Executed at: {}'.format(currentTime))
+    logger.info('Lambda Executed at: {}'.format(currentTime))
     
     eventText = json.dumps(event)
-    print('Received Event: {}'.format(eventText))
+    logger.debug('Received Event: {}'.format(eventText))
 
 if __name__ == '__main__':
     entry(None, None)
