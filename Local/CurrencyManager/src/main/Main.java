@@ -1,15 +1,30 @@
 package main;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import utils.IteratorUtils;
 
 public class Main {
 	public static void main(String[] args) {
-		BigDecimal dnum1 = new BigDecimal("0.25");
-		BigDecimal dnum2 = new BigDecimal("0.3");
-		BigDecimal dnum3 = dnum1.subtract(dnum2);
+		ArrayList<LinkedList<Integer>> stuff = new ArrayList<>();
+		LinkedList<Integer> stack1 = new LinkedList<>();
+		LinkedList<Integer> stack2 = new LinkedList<>();
 
-		System.out.println(dnum1);
-		System.out.println(dnum2);
-		System.out.println(dnum3);
+		stuff.add(stack1);
+		stuff.add(stack2);
+		
+		stack1.push(2);
+		stack1.push(1);
+		stack1.push(0);
+		
+		stack1.pop();
+
+		stack2.push(4);
+		stack2.push(3);
+		
+		for(Integer i : IteratorUtils.flatten(stuff)) {
+			System.out.println(i);
+		}
 	}
 }
