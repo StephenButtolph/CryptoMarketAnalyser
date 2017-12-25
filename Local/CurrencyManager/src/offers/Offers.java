@@ -10,7 +10,7 @@ import utils.IterableUtils;
 public class Offers implements Iterable<OfferPoint> {
 	private SortedMap<BigDecimal, OfferPoint> offers;
 
-	public Offers(Offers ... offers) {
+	public Offers(Offers... offers) {
 		this();
 		add(offers);
 	}

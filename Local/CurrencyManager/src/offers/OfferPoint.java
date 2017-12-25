@@ -11,50 +11,64 @@ import utils.IterableUtils;
 
 public class OfferPoint implements Iterable<Offer> {
 	private Collection<BigDecimal> coll;
-	private BigDecimal price;
+	private final BigDecimal price;
+	
+	private final Function<BigDecimal, Offer> wrapAmount = amount -> {
+		return new Offer(getPrice(), amount);
+	};
+	private final Function<Offer, BigDecimal> unwrapAmount = offer -> {
+		AssertUtils.assertEquals(this.getPrice(), offer.getPrice());
+		return offer.getAmount();
+	};
+
+	public OfferPoint(Offer offer, Offer... offers) {
+		this(offer.getPrice());
+
+		add(offer);
+		add(offers);
+	}
 
 	public OfferPoint(BigDecimal price, BigDecimal... amounts) {
 		this.coll = new ArrayList<>();
 		this.price = price;
-		
+
 		add(amounts);
 	}
 
-	public OfferPoint(Offer firstOffer, Offer... offers) {
-		this.coll = new ArrayList<>();
-		this.price = firstOffer.getPrice();
-		this.coll.add(firstOffer.getAmount());
-		
-		for (Offer offer : offers) {
-			AssertUtils.assertEquals(price, offer.getPrice());
-			coll.add(offer.getAmount());
-		}
-	}
-	
 	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void add(Offer... offers) {
-		for (Offer offer : offers) {
-			AssertUtils.assertEquals(price, offer.getPrice());
-			coll.add(offer.getAmount());
+	public BigDecimal getAmount() {
+		BigDecimal total = BigDecimal.ZERO;
+		for (BigDecimal amount : this.amountIterable()) {
+			total = total.add(amount);
 		}
+		return total;
+	}
+
+	public void add(Offer... offers) {
+		Iterable<Offer> iter = IterableUtils.toIterable(offers);
+		Iterable<BigDecimal> amounts = IterableUtils.map(iter, unwrapAmount);
+		add(amounts);
 	}
 
 	public void add(BigDecimal... amounts) {
+		add(IterableUtils.toIterable(amounts));
+	}
+
+	private void add(Iterable<BigDecimal> amounts) {
 		for (BigDecimal amount : amounts) {
 			coll.add(amount);
 		}
 	}
-	
-	public Iterator<BigDecimal> amountIterator(){
-		return coll.iterator();
+
+	public Iterable<BigDecimal> amountIterable() {
+		return coll;
 	}
 
 	@Override
 	public Iterator<Offer> iterator() {
-		Function<BigDecimal, Offer> mapper = amount -> new Offer(getPrice(), amount);
-		return IterableUtils.map(coll, mapper).iterator();
+		return IterableUtils.map(coll, wrapAmount).iterator();
 	}
 }

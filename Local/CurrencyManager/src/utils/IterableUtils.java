@@ -4,12 +4,21 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 public class IterableUtils {
-	public static <T> Iterable<T> flatten(Iterable<? extends Iterable<T>> iter){
-		return new FlattenedIterable<T>(iter);
+	public static <T> Iterable<T> flatten(Iterable<? extends Iterable<T>> iter) {
+		return new FlattenedIterable<>(iter);
 	}
-	
-	private static class FlattenedIterable<T> implements Iterable<T>{
+
+	public static <T> Iterable<T> toIterable(T[] arr) {
+		return new ArrayIterable<>(arr);
+	}
+
+	public static <A, B> Iterable<B> map(Iterable<A> init, Function<A, B> map) {
+		return new MappedIterable<>(init, map);
+	}
+
+	private static class FlattenedIterable<T> implements Iterable<T> {
 		private Iterable<? extends Iterable<T>> iter;
+
 		private FlattenedIterable(Iterable<? extends Iterable<T>> iter) {
 			this.iter = iter;
 		}
@@ -18,14 +27,15 @@ public class IterableUtils {
 		public Iterator<T> iterator() {
 			return new FlattenedIterator<T>(iter);
 		}
-		
-		private static class FlattenedIterator<S> implements Iterator<S>{
+
+		private static class FlattenedIterator<S> implements Iterator<S> {
 			Iterator<? extends S> currentIter;
 			private Iterator<? extends Iterable<S>> iters;
+
 			private FlattenedIterator(Iterable<? extends Iterable<S>> iters) {
 				this.iters = iters.iterator();
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				while ((currentIter == null || !currentIter.hasNext()) && iters.hasNext()) {
@@ -36,23 +46,17 @@ public class IterableUtils {
 				}
 				return currentIter != null && currentIter.hasNext();
 			}
-			
+
 			@Override
 			public S next() {
 				return currentIter.next();
-			}	
+			}
 		}
 	}
-	
-	
-	
-	public static <T> Iterable<T> toIterable(T[] arr){
-		return new ArrayIterable<T>(arr);
-	}
-	
-	private static class ArrayIterable<T> implements Iterable<T>{
+
+	private static class ArrayIterable<T> implements Iterable<T> {
 		private T[] arr;
-		
+
 		private ArrayIterable(T[] arr) {
 			this.arr = arr;
 		}
@@ -61,38 +65,32 @@ public class IterableUtils {
 		public Iterator<T> iterator() {
 			return new ArrayIterator<T>(arr);
 		}
-		
-		private static class ArrayIterator<S> implements Iterator<S>{
+
+		private static class ArrayIterator<S> implements Iterator<S> {
 			private S[] arr;
 			private int index;
-			
+
 			private ArrayIterator(S[] arr) {
 				this.arr = arr;
 				this.index = 0;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				return index < arr.length;
 			}
-			
+
 			@Override
 			public S next() {
 				return arr[index++];
-			}	
+			}
 		}
 	}
-	
 
-	
-	public static <A, B> Iterable<B> map(Iterable<A> init, Function<A, B> map){
-		return new MappedIterable<>(init, map);
-	}
-	
-	private static class MappedIterable<A, B> implements Iterable<B>{
+	private static class MappedIterable<A, B> implements Iterable<B> {
 		private Iterable<A> init;
 		private Function<A, B> map;
-		
+
 		private MappedIterable(Iterable<A> init, Function<A, B> map) {
 			this.init = init;
 			this.map = map;
@@ -102,25 +100,25 @@ public class IterableUtils {
 		public Iterator<B> iterator() {
 			return new MappedIterator<>(init, map);
 		}
-		
-		private static class MappedIterator<X, Y> implements Iterator<Y>{
+
+		private static class MappedIterator<X, Y> implements Iterator<Y> {
 			private Iterator<X> init;
 			private Function<X, Y> map;
-			
+
 			private MappedIterator(Iterable<X> init, Function<X, Y> map) {
 				this.init = init.iterator();
 				this.map = map;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				return init.hasNext();
 			}
-			
+
 			@Override
 			public Y next() {
 				return map.apply(init.next());
-			}	
+			}
 		}
 	}
 }
