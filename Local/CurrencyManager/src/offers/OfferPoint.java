@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import utils.AssertUtils;
@@ -20,9 +19,6 @@ public class OfferPoint implements Iterable<Offer> {
 	private final Function<Offer, BigDecimal> unwrapAmount = offer -> {
 		AssertUtils.assertEquals(this.getPrice(), offer.getPrice());
 		return offer.getAmount();
-	};
-	private final BiFunction<BigDecimal, BigDecimal, BigDecimal> plus = (x, y) -> {
-		return x.add(y);
 	};
 
 	public OfferPoint(Offer offer, Offer... offers) {
@@ -44,7 +40,7 @@ public class OfferPoint implements Iterable<Offer> {
 	}
 
 	public BigDecimal getAmount() {
-		return IterableUtils.fold(this.amountIterable(), plus, BigDecimal.ZERO);
+		return IterableUtils.fold(this.amountIterable(), BigDecimal::add, BigDecimal.ZERO);
 	}
 
 	public void add(Offer... offers) {
