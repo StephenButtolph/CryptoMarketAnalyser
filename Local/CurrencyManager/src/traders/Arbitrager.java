@@ -1,5 +1,5 @@
 package traders;
 
-public class Arbitrager {
+public class Arbitrager implements Trader{
 
 }

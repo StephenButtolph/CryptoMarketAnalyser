@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.Iterator;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class IterableUtils {
@@ -12,10 +13,21 @@ public class IterableUtils {
 		return new ArrayIterable<>(arr);
 	}
 
-	public static <A, B> Iterable<B> map(Iterable<A> init, Function<A, B> map) {
-		return new MappedIterable<>(init, map);
+	public static <A, B> Iterable<B> map(Iterable<A> init, Function<A, B> f) {
+		return new MappedIterable<>(init, f);
 	}
 
+	public static <A, B> B fold(Iterable<A> iter, BiFunction<B, A, B> f, B acc) {
+		for (A val : iter) {
+			acc = f.apply(acc, val);
+		}
+		return acc;
+	}
+
+	
+	
+	
+	
 	private static class FlattenedIterable<T> implements Iterable<T> {
 		private Iterable<? extends Iterable<T>> iter;
 
@@ -89,25 +101,25 @@ public class IterableUtils {
 
 	private static class MappedIterable<A, B> implements Iterable<B> {
 		private Iterable<A> init;
-		private Function<A, B> map;
+		private Function<A, B> f;
 
-		private MappedIterable(Iterable<A> init, Function<A, B> map) {
+		private MappedIterable(Iterable<A> init, Function<A, B> f) {
 			this.init = init;
-			this.map = map;
+			this.f = f;
 		}
 
 		@Override
 		public Iterator<B> iterator() {
-			return new MappedIterator<>(init, map);
+			return new MappedIterator<>(init, f);
 		}
 
 		private static class MappedIterator<X, Y> implements Iterator<Y> {
 			private Iterator<X> init;
-			private Function<X, Y> map;
+			private Function<X, Y> f;
 
-			private MappedIterator(Iterable<X> init, Function<X, Y> map) {
+			private MappedIterator(Iterable<X> init, Function<X, Y> f) {
 				this.init = init.iterator();
-				this.map = map;
+				this.f = f;
 			}
 
 			@Override
@@ -117,7 +129,7 @@ public class IterableUtils {
 
 			@Override
 			public Y next() {
-				return map.apply(init.next());
+				return f.apply(init.next());
 			}
 		}
 	}

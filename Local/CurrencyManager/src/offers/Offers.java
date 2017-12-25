@@ -20,9 +20,7 @@ public class Offers implements Iterable<OfferPoint> {
 	}
 
 	public void add(Offers... offerGroups) {
-		for (OfferPoint offerPoint : IterableUtils.flatten(IterableUtils.toIterable(offerGroups))) {
-			add(offerPoint);
-		}
+		IterableUtils.flatten(IterableUtils.toIterable(offerGroups)).forEach(this::add);
 	}
 
 	public void add(Offer... otherOffers) {
@@ -43,9 +41,7 @@ public class Offers implements Iterable<OfferPoint> {
 			if (offerPoint == null) {
 				offers.put(newOfferPoint.getPrice(), newOfferPoint);
 			} else {
-				for (Offer offer : newOfferPoint) {
-					offerPoint.add(offer);
-				}
+				newOfferPoint.forEach(offerPoint::add);
 			}
 		}
 	}
