@@ -1,30 +1,23 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.math.BigDecimal;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import utils.IteratorUtils;
+import accounts.Transaction;
 
 public class Main {
 	public static void main(String[] args) {
-		ArrayList<LinkedList<Integer>> stuff = new ArrayList<>();
-		LinkedList<Integer> stack1 = new LinkedList<>();
-		LinkedList<Integer> stack2 = new LinkedList<>();
+		SortedMap<BigDecimal, Transaction> transactions = new TreeMap<>();
 
-		stuff.add(stack1);
-		stuff.add(stack2);
-		
-		stack1.push(2);
-		stack1.push(1);
-		stack1.push(0);
-		
-		stack1.pop();
+		Transaction t1 = new Transaction(null, null, new BigDecimal("5"));
+		Transaction t2 = new Transaction(null, null, new BigDecimal("6"));
 
-		stack2.push(4);
-		stack2.push(3);
+		transactions.put(t1.getPrice(), t1);
+		transactions.put(t2.getPrice(), t2);
 		
-		for(Integer i : IteratorUtils.flatten(stuff)) {
-			System.out.println(i);
+		for(Transaction t : transactions.values()) {
+			System.out.println(t.getPrice());
 		}
 	}
 }
