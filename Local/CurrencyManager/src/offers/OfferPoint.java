@@ -12,6 +12,7 @@ import utils.IterableUtils;
 public class OfferPoint implements Iterable<Offer> {
 	private Collection<BigDecimal> coll;
 	private final BigDecimal price;
+	private BigDecimal amount;
 	
 	private final Function<BigDecimal, Offer> wrapAmount = amount -> {
 		return new Offer(getPrice(), amount);
@@ -31,6 +32,7 @@ public class OfferPoint implements Iterable<Offer> {
 	public OfferPoint(BigDecimal price, BigDecimal... amounts) {
 		this.coll = new ArrayList<>();
 		this.price = price;
+		this.amount = new BigDecimal(0);
 
 		add(amounts);
 	}
@@ -40,21 +42,26 @@ public class OfferPoint implements Iterable<Offer> {
 	}
 
 	public BigDecimal getAmount() {
-		return IterableUtils.fold(this.amountIterable(), BigDecimal::add, BigDecimal.ZERO);
+		return IterableUtils.fold(amountIterable(), BigDecimal::add, BigDecimal.ZERO);
 	}
 
 	public void add(Offer... offers) {
 		Iterable<Offer> iter = IterableUtils.toIterable(offers);
 		Iterable<BigDecimal> amounts = IterableUtils.map(iter, unwrapAmount);
-		add(amounts);
+		internalAdd(amounts);
 	}
 
 	public void add(BigDecimal... amounts) {
-		add(IterableUtils.toIterable(amounts));
+		internalAdd(IterableUtils.toIterable(amounts));
 	}
 
-	private void add(Iterable<BigDecimal> amounts) {
-		amounts.forEach(coll::add);
+	private void internalAdd(Iterable<BigDecimal> amounts) {
+		amounts.forEach(this::internalAdd);
+	}
+	
+	private void internalAdd(BigDecimal amount) {
+		coll.add(amount);
+		this.amount = this.amount.add(amount);
 	}
 
 	public Iterable<BigDecimal> amountIterable() {
