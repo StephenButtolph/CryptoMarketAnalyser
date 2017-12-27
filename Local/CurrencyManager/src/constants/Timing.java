@@ -7,6 +7,6 @@ public class Timing {
 	public static final TemporalAmount TransactionHoldDuration;
 	
 	static {
-		TransactionHoldDuration = Duration.ofSeconds(5); // should be made parsed 
+		TransactionHoldDuration = Duration.ofSeconds(5); // should be made parsed
 	}
 }
