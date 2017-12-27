@@ -1,9 +1,12 @@
 package constants;
 
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
+
 public class Timing {
-	public static final long TransactionHoldTimeMillis;
+	public static final TemporalAmount TransactionHoldDuration;
 	
 	static {
-		TransactionHoldTimeMillis = 5000; // 5 seconds, should be made parsed 
+		TransactionHoldDuration = Duration.ofSeconds(5); // should be made parsed 
 	}
 }
