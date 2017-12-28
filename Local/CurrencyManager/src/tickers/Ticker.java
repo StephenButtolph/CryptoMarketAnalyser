@@ -1,10 +1,10 @@
 package tickers;
 
-import java.math.BigDecimal;
+import org.apfloat.Apfloat;
 
 import currencies.Currency;
 
 public interface Ticker {
-	BigDecimal getPrice(Currency currency, Currency comodity);
-	BigDecimal get24HVolume(Currency currency);
+	Apfloat getPrice(Currency currency, Currency comodity);
+	Apfloat get24HVolume(Currency currency);
 }

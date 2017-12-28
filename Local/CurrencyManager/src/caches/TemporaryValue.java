@@ -29,6 +29,6 @@ public class TemporaryValue<V> {
 	}
 	
 	private boolean shouldRefresh() {
-		return prevRefresh == null || prevRefresh.plus(refreshPeriod).isAfter(Instant.now());
+		return prevRefresh == null || prevRefresh.plus(refreshPeriod).isBefore(Instant.now());
 	}
 }

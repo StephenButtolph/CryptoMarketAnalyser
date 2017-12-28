@@ -1,29 +1,30 @@
 package currencies;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import caches.TemporaryValue;
+import constants.Timing;
 import constants.Web;
 import javafx.util.Pair;
 
 public class CurrencyFactory {
-	private static Map<String, String> nameToSymbolConverter;
-
-	private static Map<String, Currency> symbolToCurrencyConverter;
+	private static final TemporaryValue<BiMap<String, String>> NAME_TO_SYMBOL;
 
 	static {
-		nameToSymbolConverter = new HashMap<>();
-		refreshMappings();
+		NAME_TO_SYMBOL = new TemporaryValue<>(CurrencyFactory::refreshMappings, Timing.CurrencyNameMappingHoldDuration);
 	}
 
-	private static Map<String, String> refreshMappings() {
-		Map<String, String> nameToSymbol = new HashMap<>();
+	private static BiMap<String, String> refreshMappings() {
+		BiMap<String, String> nameToSymbol = HashBiMap.create();
 
 		Document doc;
 		try {
@@ -39,7 +40,14 @@ public class CurrencyFactory {
 			Element elem = rows.get(i);
 			try {
 				Pair<String, String> entry = parseRow(elem);
-				nameToSymbol.put(entry.getKey(), entry.getValue());
+
+				// put if absent because some symbols are used multiple times.
+
+				// TODO will this cause possible errors when attempting to send
+				// money to incorrect wallets?
+				if (!nameToSymbol.containsValue(entry.getValue())) {
+					nameToSymbol.putIfAbsent(entry.getKey(), entry.getValue());
+				}
 			} catch (IOException e) {
 			}
 		}
@@ -58,7 +66,7 @@ public class CurrencyFactory {
 			name = searchName(url);
 		}
 
-		return new Pair<>(name, symbol);
+		return new Pair<>(WordUtils.capitalizeFully(name), symbol.toUpperCase());
 	}
 
 	private static String searchName(String url) throws IOException {
@@ -69,10 +77,20 @@ public class CurrencyFactory {
 	}
 
 	public static Currency parseName(String name) {
-		return null; // TODO
+		name = WordUtils.capitalizeFully(name);
+		String symbol = NAME_TO_SYMBOL.getValue().getOrDefault(name, null);
+		if (symbol == null) {
+			return null;
+		}
+		return new Currency(name, symbol);
 	}
 
-	public static Currency parseSymbol(String string) {
-		return null; // TODO
+	public static Currency parseSymbol(String symbol) {
+		symbol = symbol.toUpperCase();
+		String name = NAME_TO_SYMBOL.getValue().inverse().getOrDefault(symbol, null);
+		if (name == null) {
+			return null;
+		}
+		return new Currency(name, symbol);
 	}
 }

@@ -1,14 +1,14 @@
 package accounts;
 
-import java.math.BigDecimal;
+import org.apfloat.Apfloat;
 
 import currencies.Currency;
 
 public class Holding {
 	private Currency currency;
-	private BigDecimal amount;
+	private Apfloat amount;
 	
-	public Holding(Currency currency, BigDecimal amount) {
+	public Holding(Currency currency, Apfloat amount) {
 		this.currency = currency;
 		this.amount = amount;
 	}
@@ -17,7 +17,7 @@ public class Holding {
 		return this.currency;
 	}
 	
-	public BigDecimal getAmount() {
+	public Apfloat getAmount() {
 		return this.amount;
 	}
 }

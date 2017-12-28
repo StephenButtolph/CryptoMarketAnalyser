@@ -1,6 +1,6 @@
 package accounts;
 
-import java.math.BigDecimal;
+import org.apfloat.Apfloat;
 
 import currencies.Currency;
 
@@ -9,9 +9,9 @@ public class Transaction {
 	
 	private Currency commodity;
 	// amount of currency that it would take to get 1 unit of the commodity
-	private BigDecimal price;
+	private Apfloat price;
 	
-	public Transaction(Holding offer, Currency commodity, BigDecimal price) {
+	public Transaction(Holding offer, Currency commodity, Apfloat price) {
 		this.offer = offer;
 		this.commodity = commodity;
 		this.price = price;
@@ -25,7 +25,7 @@ public class Transaction {
 		return this.commodity;
 	}
 	
-	public BigDecimal getPrice() {
+	public Apfloat getPrice() {
 		return this.price;
 	}
 }

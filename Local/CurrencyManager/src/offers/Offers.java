@@ -1,14 +1,15 @@
 package offers;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apfloat.Apfloat;
+
 import utils.IterableUtils;
 
 public class Offers implements Iterable<OfferPoint> {
-	private SortedMap<BigDecimal, OfferPoint> offers;
+	private SortedMap<Apfloat, OfferPoint> offers;
 
 	public Offers(Offers... offers) {
 		this();

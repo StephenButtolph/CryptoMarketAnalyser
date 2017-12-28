@@ -1,21 +1,21 @@
 package offers;
 
-import java.math.BigDecimal;
+import org.apfloat.Apfloat;
 
 public class Offer {
-	private final BigDecimal price;
-	private final BigDecimal amount;
+	private final Apfloat price;
+	private final Apfloat amount;
 
-	public Offer(BigDecimal price, BigDecimal amount) {
+	public Offer(Apfloat price, Apfloat amount) {
 		this.price = price;
 		this.amount = amount;
 	}
 
-	public BigDecimal getPrice() {
+	public Apfloat getPrice() {
 		return price;
 	}
 
-	public BigDecimal getAmount() {
+	public Apfloat getAmount() {
 		return amount;
 	}
 

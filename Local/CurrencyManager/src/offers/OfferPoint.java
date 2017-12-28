@@ -1,23 +1,25 @@
 package offers;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
 
+import org.apfloat.Apfloat;
+
+import constants.Numeric;
 import utils.AssertUtils;
 import utils.IterableUtils;
 
 public class OfferPoint implements Iterable<Offer> {
-	private Collection<BigDecimal> coll;
-	private final BigDecimal price;
-	private BigDecimal amount;
+	private Collection<Apfloat> coll;
+	private final Apfloat price;
+	private Apfloat amount;
 	
-	private final Function<BigDecimal, Offer> wrapAmount = amount -> {
+	private final Function<Apfloat, Offer> wrapAmount = amount -> {
 		return new Offer(getPrice(), amount);
 	};
-	private final Function<Offer, BigDecimal> unwrapAmount = offer -> {
+	private final Function<Offer, Apfloat> unwrapAmount = offer -> {
 		AssertUtils.assertEquals(this.getPrice(), offer.getPrice());
 		return offer.getAmount();
 	};
@@ -29,42 +31,42 @@ public class OfferPoint implements Iterable<Offer> {
 		add(offers);
 	}
 
-	public OfferPoint(BigDecimal price, BigDecimal... amounts) {
+	public OfferPoint(Apfloat price, Apfloat... amounts) {
 		this.coll = new ArrayList<>();
 		this.price = price;
-		this.amount = new BigDecimal(0);
+		this.amount = new Apfloat(0, Numeric.APFLOAT_PRECISION);
 
 		add(amounts);
 	}
 
-	public BigDecimal getPrice() {
+	public Apfloat getPrice() {
 		return price;
 	}
 
-	public BigDecimal getAmount() {
-		return IterableUtils.fold(amountIterable(), BigDecimal::add, BigDecimal.ZERO);
+	public Apfloat getAmount() {
+		return IterableUtils.fold(amountIterable(), Apfloat::add, new Apfloat(0, Numeric.APFLOAT_PRECISION));
 	}
 
 	public void add(Offer... offers) {
 		Iterable<Offer> iter = IterableUtils.toIterable(offers);
-		Iterable<BigDecimal> amounts = IterableUtils.map(iter, unwrapAmount);
+		Iterable<Apfloat> amounts = IterableUtils.map(iter, unwrapAmount);
 		internalAdd(amounts);
 	}
 
-	public void add(BigDecimal... amounts) {
+	public void add(Apfloat... amounts) {
 		internalAdd(IterableUtils.toIterable(amounts));
 	}
 
-	private void internalAdd(Iterable<BigDecimal> amounts) {
+	private void internalAdd(Iterable<Apfloat> amounts) {
 		amounts.forEach(this::internalAdd);
 	}
 	
-	private void internalAdd(BigDecimal amount) {
+	private void internalAdd(Apfloat amount) {
 		coll.add(amount);
 		this.amount = this.amount.add(amount);
 	}
 
-	public Iterable<BigDecimal> amountIterable() {
+	public Iterable<Apfloat> amountIterable() {
 		return coll;
 	}
 
