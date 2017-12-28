@@ -11,14 +11,23 @@ public class Ref<T> {
 	}
 
 	public Ref(T value) {
-		this.setValue(value);
+		this.assign(value);
 	}
 
-	public T getValue() {
+	public T dereference() {
 		return value;
 	}
 
-	public void setValue(T value) {
+	public Ref<Ref<T>> reference() {
+		return new Ref<>(this);
+	}
+
+	public void assign(T value) {
 		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+		return "*" + value.toString();
 	}
 }

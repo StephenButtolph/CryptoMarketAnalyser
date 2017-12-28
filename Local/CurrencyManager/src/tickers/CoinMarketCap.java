@@ -8,11 +8,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 
 public class CoinMarketCap implements Ticker {
-	private static final String URL = "https://coinmarketcap.com/all/views/all/";
 	private static final String CLEAR_REGEX = "[$,%* ]";
 	private static final String EMPTY = "";
 	private static final String LOW_VOLUME_REGEX = "LowVol";
@@ -20,7 +20,7 @@ public class CoinMarketCap implements Ticker {
 	private static final int NUM_ARGS = 9;
 
 	private void getRows() throws IOException {
-		Document doc = Jsoup.connect(URL).maxBodySize(0).get();
+		Document doc = Jsoup.connect(Web.COIN_MARKET_CAP_ALL_COINS_URL).maxBodySize(0).get();
 
 		Element table = doc.select("table").first(); // select the table
 		Elements rows = table.select("tr"); // select the rows
