@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import currencies.Currency;
+import currencies.CurrencyFactory;
 
 public class CoinMarketCap implements Ticker {
 	private static final String URL = "https://coinmarketcap.com/all/views/all/";
@@ -16,7 +17,7 @@ public class CoinMarketCap implements Ticker {
 	private static final String EMPTY = "";
 	private static final String LOW_VOLUME_REGEX = "LowVol";
 	private static final String ZERO = "0";
-	private static final int NUM_ARGS = 10;
+	private static final int NUM_ARGS = 9;
 
 	private void getRows() throws IOException {
 		Document doc = Jsoup.connect(URL).maxBodySize(0).get();
@@ -42,12 +43,8 @@ public class CoinMarketCap implements Ticker {
 
 			args[Row.RANK] = cols.get(0).text();
 
-			String[] symbolAndName = cols.get(1).text().split(" ", 2);
-			args[Row.NAME] = symbolAndName[1];
-			args[Row.SYMBOL] = symbolAndName[0];
-
-			for (int arg = Row.MARKET_CAP; arg < NUM_ARGS; arg++) {
-				String text = cols.get(arg).text();
+			for (int arg = Row.SYMBOL; arg < NUM_ARGS; arg++) {
+				String text = cols.get(arg + 1).text();
 				String cleaned = text.replaceAll(CLEAR_REGEX, EMPTY);
 				String fixed = cleaned.replaceAll(LOW_VOLUME_REGEX, ZERO);
 				args[arg] = fixed.trim();
@@ -72,18 +69,17 @@ public class CoinMarketCap implements Ticker {
 
 	private static class Row {
 		public static final int RANK = 0;
-		public static final int NAME = 1;
-		public static final int SYMBOL = 2;
-		public static final int MARKET_CAP = 3;
-		public static final int USD_PRICE = 4;
-		public static final int CIRCULATING_SUPPLY = 5;
-		public static final int DAY_VOLUME = 6;
-		public static final int HOUR_PERCENT_CHANGE = 7;
-		public static final int DAY_PERCENT_CHANGE = 8;
-		public static final int WEEK_PERCENT_CHANGE = 9;
+		public static final int SYMBOL = 1;
+		public static final int MARKET_CAP = 2;
+		public static final int USD_PRICE = 3;
+		public static final int CIRCULATING_SUPPLY = 4;
+		public static final int DAY_VOLUME = 5;
+		public static final int HOUR_PERCENT_CHANGE = 6;
+		public static final int DAY_PERCENT_CHANGE = 7;
+		public static final int WEEK_PERCENT_CHANGE = 8;
 
 		private final int rank;
-		private final String name, symbol;
+		private final Currency currency;
 		private final BigDecimal marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange, dayPercentChange,
 				weekPercentChange;
 
@@ -93,9 +89,8 @@ public class CoinMarketCap implements Ticker {
 			}
 
 			rank = Integer.parseInt(args[RANK]);
-
-			name = args[NAME];
-			symbol = args[SYMBOL];
+			
+			currency = CurrencyFactory.parseSymbol(args[SYMBOL]);
 
 			marketCap = new BigDecimal(args[MARKET_CAP]);
 			usdPrice = new BigDecimal(args[USD_PRICE]);
@@ -110,12 +105,8 @@ public class CoinMarketCap implements Ticker {
 			return rank;
 		}
 
-		public String getName() {
-			return name;
-		}
-
-		public String getSymbol() {
-			return symbol;
+		public Currency getCurrency() {
+			return currency;
 		}
 
 		public BigDecimal getMarketCap() {
@@ -148,8 +139,8 @@ public class CoinMarketCap implements Ticker {
 
 		@Override
 		public String toString() {
-			String format = "#%s: %s(%s); Cap = $%s, Price = $%s, Supply = %s, 24hVolume = %s, Hour Change = %s%%, Day Change = %s%%, Week Change = %s%%";
-			return String.format(format, getRank(), getName(), getSymbol(), getMarketCap(), getUsdPrice(),
+			String format = "#%s: %s; Cap = $%s, Price = $%s, Supply = %s, 24hVolume = %s, Hour Change = %s%%, Day Change = %s%%, Week Change = %s%%";
+			return String.format(format, getRank(), getCurrency(), getMarketCap(), getUsdPrice(),
 					getCirculatingSupply(), getDayVolume(), getHourPercentChange(), getDayPercentChange(),
 					getWeekPercentChange());
 		}
