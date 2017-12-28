@@ -42,7 +42,7 @@ public class CoinMarketCap implements Ticker {
 
 			args[Row.RANK] = cols.get(0).text();
 
-			String[] symbolAndName = cols.get(1).text().split(" ");
+			String[] symbolAndName = cols.get(1).text().split(" ", 2);
 			args[Row.NAME] = symbolAndName[1];
 			args[Row.SYMBOL] = symbolAndName[0];
 
