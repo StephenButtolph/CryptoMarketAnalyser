@@ -23,8 +23,6 @@ public class IterableUtils {
 		}
 		return acc;
 	}
-	
-	
 
 	private static class FlattenedIterable<T> implements Iterable<T> {
 		private Iterable<? extends Iterable<? extends T>> iter;

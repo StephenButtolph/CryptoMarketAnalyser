@@ -92,51 +92,51 @@ public class CoinMarketCap implements Ticker {
 		return comodityPrice.divide(currencyPrice);
 	}
 
-	private <T> T getValue(Function<CurrencyData, T> f, Currency currency, T def) {
+	@Override
+	public Pfloat get24HVolume(Currency currency) {
+		return getValue(CurrencyData::getDayVolume, currency);
+	}
+
+	public Pfloat getRank(Currency currency) {
+		return getValue(CurrencyData::getRank, currency);
+	}
+
+	public Pfloat getMarketCap(Currency currency) {
+		return getValue(CurrencyData::getMarketCap, currency);
+	}
+
+	public Pfloat getUsdPrice(Currency currency) {
+		return getValue(CurrencyData::getUsdPrice, currency);
+	}
+
+	public Pfloat getCirculatingSupply(Currency currency) {
+		return getValue(CurrencyData::getCirculatingSupply, currency);
+	}
+
+	public Pfloat getDayVolume(Currency currency) {
+		return getValue(CurrencyData::getDayVolume, currency);
+	}
+
+	public Pfloat getHourPercentChange(Currency currency) {
+		return getValue(CurrencyData::getHourPercentChange, currency);
+	}
+
+	public Pfloat getDayPercentChange(Currency currency) {
+		return getValue(CurrencyData::getDayPercentChange, currency);
+	}
+
+	public Pfloat getWeekPercentChange(Currency currency) {
+		return getValue(CurrencyData::getWeekPercentChange, currency);
+	}
+
+	private Pfloat getValue(Function<CurrencyData, Pfloat> f, Currency currency) {
 		Map<Currency, CurrencyData> dataMapping = cachedData.getValue();
 		CurrencyData data = dataMapping.get(currency);
 
 		if (data == null) {
-			return def;
+			return Pfloat.UNDEFINED;
 		}
 		return f.apply(data);
-	}
-
-	@Override
-	public Pfloat get24HVolume(Currency currency) {
-		return getValue(CurrencyData::getDayVolume, currency, null);
-	}
-
-	public int getRank(Currency currency) {
-		return getValue(CurrencyData::getRank, currency, -1);
-	}
-
-	public Pfloat getMarketCap(Currency currency) {
-		return getValue(CurrencyData::getMarketCap, currency, null);
-	}
-
-	public Pfloat getUsdPrice(Currency currency) {
-		return getValue(CurrencyData::getUsdPrice, currency, null);
-	}
-
-	public Pfloat getCirculatingSupply(Currency currency) {
-		return getValue(CurrencyData::getCirculatingSupply, currency, null);
-	}
-
-	public Pfloat getDayVolume(Currency currency) {
-		return getValue(CurrencyData::getDayVolume, currency, null);
-	}
-
-	public Pfloat getHourPercentChange(Currency currency) {
-		return getValue(CurrencyData::getHourPercentChange, currency, null);
-	}
-
-	public Pfloat getDayPercentChange(Currency currency) {
-		return getValue(CurrencyData::getDayPercentChange, currency, null);
-	}
-
-	public Pfloat getWeekPercentChange(Currency currency) {
-		return getValue(CurrencyData::getWeekPercentChange, currency, null);
 	}
 
 	private static class CurrencyData {
@@ -150,17 +150,16 @@ public class CoinMarketCap implements Ticker {
 		public static final int DAY_PERCENT_CHANGE = 7;
 		public static final int WEEK_PERCENT_CHANGE = 8;
 
-		private final int rank;
 		private final Currency currency;
-		private final Pfloat marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange, dayPercentChange,
-				weekPercentChange;
+		private final Pfloat rank, marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange,
+				dayPercentChange, weekPercentChange;
 
 		public CurrencyData(String[] args) {
 			if (args.length != NUM_ARGS) {
 				throw new IllegalArgumentException("Incorrect number of arguments.");
 			}
 
-			rank = Integer.parseInt(args[RANK]);
+			rank = new Pfloat(args[RANK]);
 
 			currency = CurrencyFactory.parseSymbol(args[SYMBOL]);
 
@@ -173,12 +172,12 @@ public class CoinMarketCap implements Ticker {
 			weekPercentChange = new Pfloat(args[WEEK_PERCENT_CHANGE]);
 		}
 
-		public int getRank() {
-			return rank;
-		}
-
 		public Currency getCurrency() {
 			return currency;
+		}
+
+		public Pfloat getRank() {
+			return rank;
 		}
 
 		public Pfloat getMarketCap() {

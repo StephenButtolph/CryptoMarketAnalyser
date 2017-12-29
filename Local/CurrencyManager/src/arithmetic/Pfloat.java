@@ -1,11 +1,24 @@
 package arithmetic;
 
+import java.util.function.Function;
+
 import org.apfloat.Apfloat;
 
 import constants.Numeric;
 
 public class Pfloat {
+	public static final Pfloat ZERO;
+	public static final Pfloat ONE;
+	public static final Pfloat UNDEFINED;
+
+	static {
+		ZERO = new Pfloat(0);
+		ONE = new Pfloat(1);
+		UNDEFINED = new Pfloat(Type.UNDEFINED);
+	}
+
 	private final Apfloat value;
+	private final Type type;
 
 	public Pfloat(long val) {
 		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
@@ -15,24 +28,46 @@ public class Pfloat {
 		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
 	}
 
-	public Pfloat(Apfloat val) {
+	private Pfloat(Apfloat val) {
 		value = val;
+		type = Type.NUMBER;
 	}
 
-	public Pfloat add(Pfloat toAdd) {
-		return new Pfloat(value.add(toAdd.value));
+	private Pfloat(Type type) {
+		value = null;
+		this.type = type;
 	}
 
-	public Pfloat subtract(Pfloat toAdd) {
-		return new Pfloat(value.subtract(toAdd.value));
+	public boolean isDefined() {
+		return type != Type.UNDEFINED;
 	}
 
-	public Pfloat multiply(Pfloat toAdd) {
-		return new Pfloat(value.multiply(toAdd.value));
+	public Pfloat add(Pfloat snd) {
+		return operation(value::add, snd);
 	}
 
-	public Pfloat divide(Pfloat toAdd) {
-		return new Pfloat(value.divide(toAdd.value));
+	public Pfloat subtract(Pfloat snd) {
+		return operation(value::subtract, snd);
+	}
+
+	public Pfloat multiply(Pfloat snd) {
+		Pfloat result = operation(value::multiply, snd);
+
+		if (!result.isDefined() && (equals(ZERO) || snd.equals(ZERO))) {
+			return ZERO;
+		}
+		return result;
+	}
+
+	public Pfloat divide(Pfloat snd) {
+		return operation(value::divide, snd);
+	}
+
+	private Pfloat operation(Function<Apfloat, Apfloat> f, Pfloat snd) {
+		if (!isDefined() || !snd.isDefined()) {
+			return UNDEFINED;
+		}
+		return new Pfloat(f.apply(snd.value));
 	}
 
 	@Override
@@ -47,11 +82,15 @@ public class Pfloat {
 		}
 
 		Pfloat other = (Pfloat) o;
-		return value.equals(other.value);
+		return type == other.type && (type == Type.UNDEFINED || value.equals(other.value));
 	}
 
 	@Override
 	public String toString() {
 		return value.toString(true);
+	}
+
+	private enum Type {
+		NUMBER, UNDEFINED
 	}
 }

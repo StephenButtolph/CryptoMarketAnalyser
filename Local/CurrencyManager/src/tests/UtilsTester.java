@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import utils.IterableUtils;
 
 class UtilsTester {
-
 	private Integer[] makeArray(int length) {
 		Integer[] arr = new Integer[length];
 
@@ -46,17 +45,17 @@ class UtilsTester {
 		ArrayList<Integer> l1 = new ArrayList<>();
 		ArrayList<Integer> l2 = new ArrayList<>();
 		ArrayList<Integer> l3 = new ArrayList<>();
-		
+
 		assertFalse(IterableUtils.flatten(list).iterator().hasNext());
-		
+
 		list.add(l1);
 
 		assertFalse(IterableUtils.flatten(list).iterator().hasNext());
-		
+
 		l1.add(0);
 		l1.add(1);
 		l1.add(2);
-		
+
 		l3.add(3);
 
 		list.add(l2);
@@ -66,8 +65,8 @@ class UtilsTester {
 		for (Integer val : IterableUtils.flatten(list)) {
 			assertEquals(val, expected++);
 		}
-		
-		assertEquals(4, (int)expected);
+
+		assertEquals(4, (int) expected);
 	}
 
 	@Test
@@ -83,7 +82,7 @@ class UtilsTester {
 					fail("Iterator ended too early");
 				}
 
-				assertEquals(2.5 * cur, (double)iterMapped.next());
+				assertEquals(2.5 * cur, (double) iterMapped.next());
 			}
 			assertFalse(iterMapped.hasNext());
 		}
@@ -97,14 +96,13 @@ class UtilsTester {
 			Integer[] arr = makeArray(length);
 			Iterable<Integer> iter = IterableUtils.toIterable(arr);
 			int sum = IterableUtils.fold(iter, (x, y) -> x + y, 0);
-			
+
 			int checkSum = 0;
 			for (Integer cur : arr) {
 				checkSum += cur;
 			}
-			
+
 			assertEquals(sum, checkSum);
 		}
 	}
-
 }
