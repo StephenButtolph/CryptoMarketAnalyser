@@ -4,18 +4,18 @@ import java.io.IOException;
 import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-import org.apfloat.Apfloat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import caches.TemporaryValue;
-import constants.Numeric;
+import arithmetic.Pfloat;
 import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
+import wrappers.TemporaryValue;
 
 public class CoinMarketCap implements Ticker {
 	private static final String CLEAR_REGEX = "[$,%* ]";
@@ -23,9 +23,9 @@ public class CoinMarketCap implements Ticker {
 	private static final String LOW_VOLUME_REGEX = "LowVol";
 	private static final String ZERO = "0";
 	private static final int NUM_ARGS = 9;
-	
+
 	private TemporaryValue<Map<Currency, CurrencyData>> cachedData;
-	
+
 	public CoinMarketCap(TemporalAmount refreshRate) {
 		cachedData = new TemporaryValue<>(this::getData, refreshRate);
 	}
@@ -45,12 +45,12 @@ public class CoinMarketCap implements Ticker {
 		for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it
 			Element elem = rows.get(i);
 			CurrencyData row = parseRow(elem);
-			
+
 			if (row != null) {
 				mapping.putIfAbsent(row.getCurrency(), row);
 			}
 		}
-		
+
 		return mapping;
 	}
 
@@ -76,32 +76,67 @@ public class CoinMarketCap implements Ticker {
 	}
 
 	@Override
-	public Apfloat getPrice(Currency currency, Currency comodity) {
+	public Pfloat getPrice(Currency currency, Currency comodity) {
 		Map<Currency, CurrencyData> dataMapping = cachedData.getValue();
 
 		CurrencyData currencyData = dataMapping.get(currency);
 		CurrencyData comodityData = dataMapping.get(comodity);
-		
+
 		if (currencyData == null || comodityData == null) {
 			return null;
 		}
 
-		Apfloat currencyPrice = currencyData.getUsdPrice();
-		Apfloat comodityPrice = comodityData.getUsdPrice();
-		
-		
+		Pfloat currencyPrice = currencyData.getUsdPrice();
+		Pfloat comodityPrice = comodityData.getUsdPrice();
+
 		return comodityPrice.divide(currencyPrice);
 	}
 
-	@Override
-	public Apfloat get24HVolume(Currency currency) {
+	private <T> T getValue(Function<CurrencyData, T> f, Currency currency, T def) {
 		Map<Currency, CurrencyData> dataMapping = cachedData.getValue();
 		CurrencyData data = dataMapping.get(currency);
-		
+
 		if (data == null) {
-			return null;
+			return def;
 		}
-		return data.getDayVolume();
+		return f.apply(data);
+	}
+
+	@Override
+	public Pfloat get24HVolume(Currency currency) {
+		return getValue(CurrencyData::getDayVolume, currency, null);
+	}
+
+	public int getRank(Currency currency) {
+		return getValue(CurrencyData::getRank, currency, -1);
+	}
+
+	public Pfloat getMarketCap(Currency currency) {
+		return getValue(CurrencyData::getMarketCap, currency, null);
+	}
+
+	public Pfloat getUsdPrice(Currency currency) {
+		return getValue(CurrencyData::getUsdPrice, currency, null);
+	}
+
+	public Pfloat getCirculatingSupply(Currency currency) {
+		return getValue(CurrencyData::getCirculatingSupply, currency, null);
+	}
+
+	public Pfloat getDayVolume(Currency currency) {
+		return getValue(CurrencyData::getDayVolume, currency, null);
+	}
+
+	public Pfloat getHourPercentChange(Currency currency) {
+		return getValue(CurrencyData::getHourPercentChange, currency, null);
+	}
+
+	public Pfloat getDayPercentChange(Currency currency) {
+		return getValue(CurrencyData::getDayPercentChange, currency, null);
+	}
+
+	public Pfloat getWeekPercentChange(Currency currency) {
+		return getValue(CurrencyData::getWeekPercentChange, currency, null);
 	}
 
 	private static class CurrencyData {
@@ -117,7 +152,7 @@ public class CoinMarketCap implements Ticker {
 
 		private final int rank;
 		private final Currency currency;
-		private final Apfloat marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange, dayPercentChange,
+		private final Pfloat marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange, dayPercentChange,
 				weekPercentChange;
 
 		public CurrencyData(String[] args) {
@@ -126,16 +161,16 @@ public class CoinMarketCap implements Ticker {
 			}
 
 			rank = Integer.parseInt(args[RANK]);
-			
+
 			currency = CurrencyFactory.parseSymbol(args[SYMBOL]);
 
-			marketCap = new Apfloat(args[MARKET_CAP], Numeric.APFLOAT_PRECISION);
-			usdPrice = new Apfloat(args[USD_PRICE], Numeric.APFLOAT_PRECISION);
-			circulatingSupply = new Apfloat(args[CIRCULATING_SUPPLY], Numeric.APFLOAT_PRECISION);
-			dayVolume = new Apfloat(args[DAY_VOLUME], Numeric.APFLOAT_PRECISION);
-			hourPercentChange = new Apfloat(args[HOUR_PERCENT_CHANGE], Numeric.APFLOAT_PRECISION);
-			dayPercentChange = new Apfloat(args[DAY_PERCENT_CHANGE], Numeric.APFLOAT_PRECISION);
-			weekPercentChange = new Apfloat(args[WEEK_PERCENT_CHANGE], Numeric.APFLOAT_PRECISION);
+			marketCap = new Pfloat(args[MARKET_CAP]);
+			usdPrice = new Pfloat(args[USD_PRICE]);
+			circulatingSupply = new Pfloat(args[CIRCULATING_SUPPLY]);
+			dayVolume = new Pfloat(args[DAY_VOLUME]);
+			hourPercentChange = new Pfloat(args[HOUR_PERCENT_CHANGE]);
+			dayPercentChange = new Pfloat(args[DAY_PERCENT_CHANGE]);
+			weekPercentChange = new Pfloat(args[WEEK_PERCENT_CHANGE]);
 		}
 
 		public int getRank() {
@@ -146,31 +181,31 @@ public class CoinMarketCap implements Ticker {
 			return currency;
 		}
 
-		public Apfloat getMarketCap() {
+		public Pfloat getMarketCap() {
 			return marketCap;
 		}
 
-		public Apfloat getUsdPrice() {
+		public Pfloat getUsdPrice() {
 			return usdPrice;
 		}
 
-		public Apfloat getCirculatingSupply() {
+		public Pfloat getCirculatingSupply() {
 			return circulatingSupply;
 		}
 
-		public Apfloat getDayVolume() {
+		public Pfloat getDayVolume() {
 			return dayVolume;
 		}
 
-		public Apfloat getHourPercentChange() {
+		public Pfloat getHourPercentChange() {
 			return hourPercentChange;
 		}
 
-		public Apfloat getDayPercentChange() {
+		public Pfloat getDayPercentChange() {
 			return dayPercentChange;
 		}
 
-		public Apfloat getWeekPercentChange() {
+		public Pfloat getWeekPercentChange() {
 			return weekPercentChange;
 		}
 

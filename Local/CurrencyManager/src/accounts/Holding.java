@@ -1,14 +1,13 @@
 package accounts;
 
-import org.apfloat.Apfloat;
-
+import arithmetic.Pfloat;
 import currencies.Currency;
 
 public class Holding {
 	private Currency currency;
-	private Apfloat amount;
+	private Pfloat amount;
 	
-	public Holding(Currency currency, Apfloat amount) {
+	public Holding(Currency currency, Pfloat amount) {
 		this.currency = currency;
 		this.amount = amount;
 	}
@@ -17,7 +16,7 @@ public class Holding {
 		return this.currency;
 	}
 	
-	public Apfloat getAmount() {
+	public Pfloat getAmount() {
 		return this.amount;
 	}
 }

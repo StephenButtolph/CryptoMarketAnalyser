@@ -1,21 +1,21 @@
 package offers;
 
-import org.apfloat.Apfloat;
+import arithmetic.Pfloat;
 
 public class Offer {
-	private final Apfloat price;
-	private final Apfloat amount;
+	private final Pfloat price;
+	private final Pfloat amount;
 
-	public Offer(Apfloat price, Apfloat amount) {
+	public Offer(Pfloat price, Pfloat amount) {
 		this.price = price;
 		this.amount = amount;
 	}
 
-	public Apfloat getPrice() {
+	public Pfloat getPrice() {
 		return price;
 	}
 
-	public Apfloat getAmount() {
+	public Pfloat getAmount() {
 		return amount;
 	}
 

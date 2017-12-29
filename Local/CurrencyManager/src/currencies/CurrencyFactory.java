@@ -11,10 +11,10 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import caches.TemporaryValue;
 import constants.Timing;
 import constants.Web;
 import javafx.util.Pair;
+import wrappers.TemporaryValue;
 
 public class CurrencyFactory {
 	private static final TemporaryValue<BiMap<String, String>> NAME_TO_SYMBOL;

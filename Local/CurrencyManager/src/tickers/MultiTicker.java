@@ -1,17 +1,16 @@
 package tickers;
 
-import org.apfloat.Apfloat;
-
+import arithmetic.Pfloat;
 import currencies.Currency;
 
 public class MultiTicker implements Ticker {
 	@Override
-	public Apfloat getPrice(Currency currency, Currency comodity) {
+	public Pfloat getPrice(Currency currency, Currency comodity) {
 		throw new RuntimeException("Unimplemented.");
 	}
 
 	@Override
-	public Apfloat get24HVolume(Currency currency) {
+	public Pfloat get24HVolume(Currency currency) {
 		throw new RuntimeException("Unimplemented.");
 	}
 }

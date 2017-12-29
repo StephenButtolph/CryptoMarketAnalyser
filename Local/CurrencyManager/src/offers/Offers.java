@@ -4,12 +4,11 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apfloat.Apfloat;
-
+import arithmetic.Pfloat;
 import utils.IterableUtils;
 
 public class Offers implements Iterable<OfferPoint> {
-	private SortedMap<Apfloat, OfferPoint> offers;
+	private SortedMap<Pfloat, OfferPoint> offers;
 
 	public Offers(Offers... offers) {
 		this();

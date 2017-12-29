@@ -1,7 +1,6 @@
 package accounts;
 
-import org.apfloat.Apfloat;
-
+import arithmetic.Pfloat;
 import currencies.Currency;
 
 public class Transaction {
@@ -9,9 +8,9 @@ public class Transaction {
 	
 	private Currency commodity;
 	// amount of currency that it would take to get 1 unit of the commodity
-	private Apfloat price;
+	private Pfloat price;
 	
-	public Transaction(Holding offer, Currency commodity, Apfloat price) {
+	public Transaction(Holding offer, Currency commodity, Pfloat price) {
 		this.offer = offer;
 		this.commodity = commodity;
 		this.price = price;
@@ -25,7 +24,7 @@ public class Transaction {
 		return this.commodity;
 	}
 	
-	public Apfloat getPrice() {
+	public Pfloat getPrice() {
 		return this.price;
 	}
 }

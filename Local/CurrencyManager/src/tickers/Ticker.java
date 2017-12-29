@@ -1,10 +1,9 @@
 package tickers;
 
-import org.apfloat.Apfloat;
-
+import arithmetic.Pfloat;
 import currencies.Currency;
 
 public interface Ticker {
-	Apfloat getPrice(Currency currency, Currency comodity);
-	Apfloat get24HVolume(Currency currency);
+	Pfloat getPrice(Currency currency, Currency comodity);
+	Pfloat get24HVolume(Currency currency);
 }
