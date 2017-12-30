@@ -25,7 +25,7 @@ public class Ref<T> {
 	public void assign(T value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "*" + value.toString();

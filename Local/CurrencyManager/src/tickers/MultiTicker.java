@@ -34,10 +34,10 @@ public class MultiTicker implements Ticker {
 	}
 
 	@Override
-	public Pfloat getPrice(Currency currency, Currency comodity) {
+	public Pfloat getPrice(Currency currency, Currency commodity) {
 		BiFunction<Pfloat, Ticker, Pfloat> f = (acc, ticker) -> {
-			Pfloat sndPrice = ticker.getPrice(currency, comodity);
-			Pfloat sndVolume = ticker.get24HVolume(comodity);
+			Pfloat sndPrice = ticker.getPrice(currency, commodity);
+			Pfloat sndVolume = ticker.get24HVolume(commodity);
 
 			// when one is defined, the other should be as well.
 			if (!sndPrice.isDefined() || !sndVolume.isDefined()) {

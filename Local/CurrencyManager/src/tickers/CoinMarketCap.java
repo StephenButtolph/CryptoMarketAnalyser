@@ -76,11 +76,11 @@ public class CoinMarketCap implements Ticker {
 	}
 
 	@Override
-	public Pfloat getPrice(Currency currency, Currency comodity) {
+	public Pfloat getPrice(Currency currency, Currency commodity) {
 		Map<Currency, CurrencyData> dataMapping = cachedData.getValue();
 
 		CurrencyData currencyData = dataMapping.get(currency);
-		CurrencyData comodityData = dataMapping.get(comodity);
+		CurrencyData comodityData = dataMapping.get(commodity);
 
 		if (currencyData == null || comodityData == null) {
 			return null;

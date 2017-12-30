@@ -20,14 +20,14 @@ class CurrencyTester {
 
 		assertEquals("Tether", tether.getName());
 		assertEquals("USDT", tether.getSymbol());
-		
+
 		assertEquals("Bitcoin", bitcoin.getName());
 		assertEquals("BTC", bitcoin.getSymbol());
-		
+
 		assertEquals("Ethereum", ethereum.getName());
 		assertEquals("ETH", ethereum.getSymbol());
 	}
-	
+
 	@Test
 	void testParseName() {
 		String usdt = "Tether";
@@ -40,10 +40,10 @@ class CurrencyTester {
 
 		assertEquals("Tether", tether.getName());
 		assertEquals("USDT", tether.getSymbol());
-		
+
 		assertEquals("Bitcoin", bitcoin.getName());
 		assertEquals("BTC", bitcoin.getSymbol());
-		
+
 		assertEquals("Ethereum", ethereum.getName());
 		assertEquals("ETH", ethereum.getSymbol());
 	}
