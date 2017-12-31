@@ -27,14 +27,6 @@ public interface Exchange extends Ticker {
 	 * Pfloat get24HVolume(Currency currency);
 	 */
 
-	/*
-	 * Variations on price, as price is dependent on amount.
-	 */
-
-	/*
-	 * Pfloat getPrice(Currency currency, Currency commodity);
-	 */
-
 	/**
 	 * Get the cost of purchasing [amount] units of [commodity] currency in
 	 * [currency] currency units.

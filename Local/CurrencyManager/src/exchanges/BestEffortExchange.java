@@ -4,7 +4,7 @@ import accounts.Holding;
 import arithmetic.Pfloat;
 import currencies.Currency;
 
-public abstract class TryExchange extends StandardExchange {
+public abstract class BestEffortExchange extends StandardExchange {
 	@Override
 	public void buy(Holding toSpend, Currency commodity) {
 		// TODO Auto-generated method stub

@@ -5,15 +5,21 @@ import arithmetic.Pfloat;
 import currencies.Currency;
 import offers.Offers;
 
-public class MultiExchange extends TryExchange {
+public class MultiExchange extends BestEffortExchange {
 	@Override
 	public Pfloat get24HVolume(Currency currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	public Offers getOffers(Currency currency, Currency commodity) {
+	protected Offers getRawOffers(Currency currency, Currency commodity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Offers adjustOffers(Offers rawOffers) {
 		// TODO Auto-generated method stub
 		return null;
 	}
