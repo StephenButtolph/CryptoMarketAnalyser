@@ -3,7 +3,6 @@ package exchanges;
 import accounts.Holding;
 import arithmetic.Pfloat;
 import currencies.Currency;
-import offers.Offer;
 import offers.Offers;
 
 public class Poloniex extends BestEffortExchange {
