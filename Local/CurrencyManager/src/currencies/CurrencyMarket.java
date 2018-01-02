@@ -40,6 +40,10 @@ public class CurrencyMarket {
 		return (Objects.equals(currency, other.currency) && Objects.equals(commodity, other.commodity))
 				|| (Objects.equals(currency, other.commodity) && Objects.equals(commodity, other.currency));
 	}
+	
+	public boolean contains(Currency currency) {
+		return Objects.equals(this.currency, currency) || Objects.equals(commodity, currency);
+	}
 
 	@Override
 	public String toString() {
