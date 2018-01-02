@@ -15,6 +15,7 @@ import arithmetic.Pfloat;
 import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
+import currencies.CurrencyMarket;
 import wrappers.TemporaryValue;
 
 public class CoinMarketCap implements Ticker {
@@ -76,11 +77,11 @@ public class CoinMarketCap implements Ticker {
 	}
 
 	@Override
-	public Pfloat getPrice(Currency currency, Currency commodity) {
+	public Pfloat getPrice(CurrencyMarket market) {
 		Map<Currency, CurrencyData> dataMapping = cachedData.getValue();
 
-		CurrencyData currencyData = dataMapping.get(currency);
-		CurrencyData comodityData = dataMapping.get(commodity);
+		CurrencyData currencyData = dataMapping.get(market.getCurrency());
+		CurrencyData comodityData = dataMapping.get(market.getCommodity());
 
 		if (currencyData == null || comodityData == null) {
 			return null;

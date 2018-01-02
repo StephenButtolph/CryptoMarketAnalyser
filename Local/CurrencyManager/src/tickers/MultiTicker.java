@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 
 import arithmetic.Pfloat;
 import currencies.Currency;
+import currencies.CurrencyMarket;
 import utils.IterableUtils;
 
 public class MultiTicker implements Ticker {
@@ -34,10 +35,10 @@ public class MultiTicker implements Ticker {
 	}
 
 	@Override
-	public Pfloat getPrice(Currency currency, Currency commodity) {
+	public Pfloat getPrice(CurrencyMarket market) {
 		BiFunction<Pfloat, Ticker, Pfloat> f = (acc, ticker) -> {
-			Pfloat sndPrice = ticker.getPrice(currency, commodity);
-			Pfloat sndVolume = ticker.get24HVolume(commodity);
+			Pfloat sndPrice = ticker.getPrice(market);
+			Pfloat sndVolume = ticker.get24HVolume(market.getCommodity());
 
 			// when one is defined, the other should be as well.
 			if (!sndPrice.isDefined() || !sndVolume.isDefined()) {
@@ -52,7 +53,7 @@ public class MultiTicker implements Ticker {
 			return acc.add(snd);
 		};
 		Pfloat num = IterableUtils.fold(tickers, f, Pfloat.UNDEFINED);
-		Pfloat den = get24HVolume(currency);
+		Pfloat den = get24HVolume(market.getCurrency());
 		return num.divide(den);
 	}
 

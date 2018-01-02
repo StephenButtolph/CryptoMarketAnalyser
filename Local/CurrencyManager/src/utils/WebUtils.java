@@ -12,6 +12,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -21,6 +22,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import constants.Web;
 import exceptions.AssertionException;
@@ -81,6 +83,14 @@ public class WebUtils {
 
 	public static String formatUrlQuery(List<? extends NameValuePair> parameters) {
 		return URLEncodedUtils.format(parameters, "UTF-8");
+	}
+	
+	public static String getJson(HttpResponse response) {
+		try {
+			return EntityUtils.toString(response.getEntity());
+		} catch (ParseException | IOException e) {
+			throw new ConnectionException();
+		}
 	}
 
 	private static void addHeaders(HttpMessage message, Map<?, ?> headers) {

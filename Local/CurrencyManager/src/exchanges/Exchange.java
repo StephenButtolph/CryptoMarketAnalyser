@@ -1,19 +1,22 @@
 package exchanges;
 
+import java.util.Collection;
+
 import accounts.Holding;
 import arithmetic.Pfloat;
 import currencies.Currency;
+import currencies.CurrencyMarket;
 import offers.Offers;
 import tickers.Ticker;
 
 public interface Exchange extends Ticker {
-	Offers getOffers(Currency currency, Currency commodity);
+	Offers getOffers(CurrencyMarket exchangePair);
 
 	void getOpenTransactions();
 
-	void getOpenTransactions(Currency currency, Currency commodity);
+	void getOpenTransactions(CurrencyMarket market);
 
-	void getTradeHistory(Currency currency, Currency commodity);
+	void getTradeHistory(CurrencyMarket market);
 
 	void getBalance(Currency currency);
 
@@ -21,7 +24,7 @@ public interface Exchange extends Ticker {
 
 	void getWalletAddress(Currency currency);
 
-	void getTradableCurrencies();
+	Collection<CurrencyMarket> getCurrencyMarkets();
 
 	/*
 	 * Pfloat get24HVolume(Currency currency);
@@ -40,7 +43,7 @@ public interface Exchange extends Ticker {
 	 * @return The cost of purchasing [amount] units of [commodity] currency in
 	 *         [currency] currency units.
 	 */
-	Pfloat getPrice(Currency currency, Currency commodity, Pfloat amount);
+	Pfloat getPrice(CurrencyMarket market, Pfloat amount);
 
 	/**
 	 * Get the largest quantity of [commodity] currency that could be bought with
@@ -52,7 +55,7 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @return The amount of [commodity] currency that could be bought.
 	 */
-	Pfloat getReturn(Holding toSpend, Currency commodity);
+	Pfloat getReturn(CurrencyMarket market, Pfloat amount);
 
 	/*
 	 * No need for sell methods as selling is the same as buying with the currencies
@@ -69,7 +72,7 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @return TODO
 	 */
-	void buy(Holding toSpend, Currency commodity);
+	void buy(Pfloat toSpend, CurrencyMarket market);
 
 	/**
 	 * Buy [amount] units of [commodity] currency with the [currency] currency.
@@ -82,7 +85,7 @@ public interface Exchange extends Ticker {
 	 *            The amount of the currency to buy.
 	 * @return TODO
 	 */
-	void buy(Currency currency, Currency commodity, Pfloat amount);
+	void buy(CurrencyMarket market, Pfloat toBuy);
 
 	/**
 	 * Place an order for the [commodity] currency at a rate of [price] with the
@@ -97,5 +100,5 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @return TODO
 	 */
-	void buy(Holding toSpend, Pfloat price, Currency commodity);
+	void buy(Pfloat toSpend, CurrencyMarket market, Pfloat price);
 }

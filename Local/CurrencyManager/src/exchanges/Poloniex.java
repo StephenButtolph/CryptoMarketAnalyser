@@ -1,20 +1,28 @@
 package exchanges;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import accounts.Holding;
 import arithmetic.Pfloat;
 import constants.Web;
 import currencies.Currency;
+import currencies.CurrencyFactory;
+import currencies.CurrencyMarket;
+import exceptions.ConnectionException;
 import offers.Offers;
 import utils.SecurityUtils;
 import utils.WebUtils;
@@ -22,6 +30,12 @@ import utils.WebUtils;
 public class Poloniex extends BestEffortExchange {
 	private String APIKey;
 	private String APISecret;
+
+	private static final Gson gson;
+
+	static {
+		gson = new Gson();
+	}
 
 	public Poloniex(String APIKey, String APISecret) {
 		this.APIKey = APIKey;
@@ -35,7 +49,7 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	protected Offers getRawOffers(Currency currency, Currency commodity) {
+	protected Offers getRawOffers(CurrencyMarket market) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -53,7 +67,7 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void getTradeHistory(Currency currency, Currency commodity) {
+	public void getTradeHistory(CurrencyMarket market) {
 		// TODO Auto-generated method stub
 
 	}
@@ -77,20 +91,19 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void getTradableCurrencies() {
+	public Collection<CurrencyMarket> getCurrencyMarkets() {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public void buy(Holding toSpend, Pfloat price, Currency commodity) {
+	public void buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
 		// TODO Auto-generated method stub
 
 	}
 
 	private Map<?, ?> makeRequestHeaders(Map<?, ?> parameters) {
-		List<? extends NameValuePair> params = WebUtils.convertToPairs(parameters);
-		String queryArgs = WebUtils.formatUrlQuery(params);
+		String queryArgs = WebUtils.formatUrlQuery(parameters);
 		String sign = SecurityUtils.hash(queryArgs, APISecret, SecurityUtils.HMAC_SHA512);
 
 		Map<String, String> headers = new HashMap<>();
@@ -128,9 +141,40 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	public static void main(String[] args) {
-		Poloniex p = new Poloniex("key", "secret");
+		// Poloniex p = new Poloniex("key", "secret");
+		//
+		// p.postExample();
+		// p.getExample();
 
-		p.postExample();
-		p.getExample();
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("command", "returnTicker");
+
+		HttpResponse response = WebUtils.getRequest(Web.POLONIEX_PUBLIC_URL, parameters);
+		String json = WebUtils.getJson(response);
+
+		Type type = new TypeToken<Map<String, ?>>() {
+		}.getType();
+		Map<String, ?> map = gson.fromJson(json, type);
+
+		Collection<CurrencyMarket> markets = new HashSet<>();
+		for (String exchange : map.keySet()) {
+			String[] curs = exchange.split("_");
+
+			Currency currency = CurrencyFactory.parseSymbol(curs[0]);
+			if (currency == null) {
+				continue;
+			}
+			Currency commodity = CurrencyFactory.parseSymbol(curs[1]);
+			if (commodity == null) {
+				continue;
+			}
+
+			CurrencyMarket market = new CurrencyMarket(currency, commodity);
+			markets.add(market);
+			markets.add(market.invert());
+
+		}
+		System.out.println(markets);
+		System.out.println(markets.size());
 	}
 }
