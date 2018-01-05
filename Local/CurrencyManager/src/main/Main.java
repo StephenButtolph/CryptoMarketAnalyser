@@ -1,15 +1,28 @@
 package main;
 
+import arithmetic.Pfloat;
+import constants.Auths;
 import constants.Timing;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
+import exchanges.Poloniex;
 import tickers.CoinMarketCap;
 import tickers.Ticker;
 
 public class Main {
 	public static void main(String[] args) {
-		coinCapTest();
+		poloniexTest();
+	}
+	
+	public static void poloniexTest() {
+		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
+
+		Currency eth = CurrencyFactory.parseSymbol("eth");
+
+		Pfloat vol = p.get24HVolume(eth);
+
+		System.out.println(vol);
 	}
 
 	public static void coinCapTest() {

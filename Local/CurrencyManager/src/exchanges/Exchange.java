@@ -10,7 +10,18 @@ import offers.Offers;
 import tickers.Ticker;
 
 public interface Exchange extends Ticker {
-	Offers getOffers(CurrencyMarket exchangePair);
+	/**
+	 * Get the current order book of the [market] exchange. Will take into account
+	 * all applicable taxes. These orders will only include offers that apply to the
+	 * internal currency exchange and will be different than the inverted markets
+	 * values in normal use cases.
+	 * 
+	 * @param exchangePair
+	 *            The exchange pair to process.
+	 * @return the current order book of the [market] exchange. Will take into
+	 *         account all applicable taxes.
+	 */
+	Offers getOffers(CurrencyMarket market);
 
 	void getOpenTransactions();
 

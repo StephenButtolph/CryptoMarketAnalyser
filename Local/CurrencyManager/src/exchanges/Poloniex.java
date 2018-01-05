@@ -23,6 +23,7 @@ import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
+import exchangeAuths.PoloniexAuth;
 import offers.Offers;
 import utils.IterableUtils;
 import utils.SecurityUtils;
@@ -43,12 +44,10 @@ public class Poloniex extends BestEffortExchange {
 		GSON = new Gson();
 	}
 
-	private String APIKey;
-	private String APISecret;
+	private PoloniexAuth auth;
 
-	public Poloniex(String APIKey, String APISecret) {
-		this.APIKey = APIKey;
-		this.APISecret = APISecret;
+	public Poloniex(PoloniexAuth auth) {
+		this.auth = auth;
 	}
 
 	@Override
@@ -86,7 +85,9 @@ public class Poloniex extends BestEffortExchange {
 
 	@Override
 	protected Offers adjustOffers(Offers rawOffers) {
-		// TODO Auto-generated method stub
+		// TODO
+		// command = returnCurrencies
+		//    ^ has txFee
 		return null;
 	}
 
@@ -147,10 +148,10 @@ public class Poloniex extends BestEffortExchange {
 
 	private Map<?, ?> makeRequestHeaders(Map<?, ?> parameters) {
 		String queryArgs = WebUtils.formatUrlQuery(parameters);
-		String sign = SecurityUtils.hash(queryArgs, APISecret, SecurityUtils.HMAC_SHA512);
+		String sign = SecurityUtils.hash(queryArgs, auth.getApiSecret(), SecurityUtils.HMAC_SHA512);
 
 		Map<String, String> headers = new HashMap<>();
-		headers.put("Key", APIKey);
+		headers.put("Key", auth.getApiKey());
 		headers.put("Sign", sign);
 
 		return headers;
@@ -196,15 +197,5 @@ public class Poloniex extends BestEffortExchange {
 			return null;
 		}
 		return new CurrencyMarket(currency, commodity);
-	}
-
-	public static void main(String[] args) {
-		Poloniex p = new Poloniex("key", "secret");
-
-		Currency eth = CurrencyFactory.parseSymbol("eth");
-
-		Pfloat vol = p.get24HVolume(eth);
-
-		System.out.println(vol);
 	}
 }

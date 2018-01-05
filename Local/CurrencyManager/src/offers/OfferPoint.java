@@ -3,9 +3,9 @@ package offers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 import arithmetic.Pfloat;
-import utils.AssertUtils;
 import utils.IterableUtils;
 
 public class OfferPoint implements Iterable<Offer> {
@@ -69,7 +69,9 @@ public class OfferPoint implements Iterable<Offer> {
 	}
 
 	private Pfloat unwrapAmount(Offer offer) {
-		AssertUtils.assertEquals(this.getPrice(), offer.getPrice());
+		if (!Objects.equals(this.getPrice(), offer.getPrice())) {
+			throw new IllegalArgumentException("Offers must have the same price as the OfferPoint");
+		}
 		return offer.getAmount();
 	}
 }

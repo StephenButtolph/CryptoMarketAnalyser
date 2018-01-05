@@ -2,12 +2,16 @@ package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
+import exchangeAuths.PoloniexAuth;
+import utils.FileUtils;
 import utils.IterableUtils;
+import utils.SecurityUtils;
 
 class UtilsTester {
 	private Integer[] makeArray(int length) {
@@ -104,5 +108,22 @@ class UtilsTester {
 
 			assertEquals(sum, checkSum);
 		}
+	}
+
+	@Test
+	void testSaveAndLoad() {
+		String filePath = "someFile";
+		String key = SecurityUtils.getNonce();
+		String secret = SecurityUtils.getNonce();
+		
+		PoloniexAuth auth = new PoloniexAuth(key, secret);
+		FileUtils.save(filePath, auth);
+		auth = FileUtils.load(filePath, PoloniexAuth.class);
+
+		assertEquals(key, auth.getApiKey());
+		assertEquals(secret, auth.getApiSecret());
+		
+		File file = new File(filePath);
+		assertTrue(file.delete());
 	}
 }

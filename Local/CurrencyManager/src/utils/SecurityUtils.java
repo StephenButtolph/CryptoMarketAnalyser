@@ -12,9 +12,11 @@ import exceptions.AssertionException;
 
 public class SecurityUtils {
 	public static final Algorithm HMAC_SHA512;
+	private static long lastNonce;
 
 	static {
 		HMAC_SHA512 = Algorithm.SHA512;
+		lastNonce = -1;
 	}
 
 	public static String hash(String data, String key, Algorithm type) {
@@ -22,9 +24,15 @@ public class SecurityUtils {
 		byte[] results = mac.doFinal(data.getBytes());
 		return Hex.encodeHexString(results);
 	}
-	
+
 	public static String getNonce() {
-		return String.valueOf(System.currentTimeMillis());
+		long nonce = System.currentTimeMillis();
+		if (nonce <= lastNonce) {
+			nonce = lastNonce + 1;
+		}
+		lastNonce = nonce;
+
+		return String.valueOf(nonce);
 	}
 
 	private static Mac getMac(String key, Algorithm type) {
