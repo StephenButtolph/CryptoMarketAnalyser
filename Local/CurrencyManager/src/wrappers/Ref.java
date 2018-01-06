@@ -14,16 +14,16 @@ public class Ref<T> implements Wrapper<T> {
 		this.assign(value);
 	}
 
-	public T dereference() {
+	public T deref() {
 		return value;
 	}
 
 	@Override
 	public T getValue() {
-		return dereference();
+		return deref();
 	}
 
-	public Ref<Ref<T>> reference() {
+	public Ref<Ref<T>> ref() {
 		return new Ref<>(this);
 	}
 
@@ -34,5 +34,9 @@ public class Ref<T> implements Wrapper<T> {
 	@Override
 	public String toString() {
 		return "*" + value.toString();
+	}
+
+	public static <T> Ref<T> ref(T value) {
+		return new Ref<>(value);
 	}
 }
