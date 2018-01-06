@@ -1,5 +1,6 @@
 package constants;
 
+import exceptions.StaticLoadException;
 import exchangeAuths.PoloniexAuth;
 import utils.FileUtils;
 
@@ -8,5 +9,8 @@ public class Auths {
 
 	static {
 		POLONIEX_AUTH = FileUtils.load(Resources.POLONIEX_AUTH, PoloniexAuth.class);
+		if (POLONIEX_AUTH == null) {
+			throw new StaticLoadException("Poloniex authorization failed to load.");
+		}
 	}
 }

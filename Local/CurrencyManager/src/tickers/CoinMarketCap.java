@@ -16,7 +16,8 @@ import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
-import wrappers.TemporaryValue;
+import wrappers.RefreshingValue;
+import wrappers.Wrapper;
 
 public class CoinMarketCap implements Ticker {
 	private static final String CLEAR_REGEX = "[$,%* ]";
@@ -25,10 +26,10 @@ public class CoinMarketCap implements Ticker {
 	private static final String ZERO = "0";
 	private static final int NUM_ARGS = 9;
 
-	private TemporaryValue<Map<Currency, CurrencyData>> cachedData;
+	private Wrapper<Map<Currency, CurrencyData>> cachedData;
 
 	public CoinMarketCap(TemporalAmount refreshRate) {
-		cachedData = new TemporaryValue<>(this::getData, refreshRate);
+		cachedData = new RefreshingValue<>(this::getData, refreshRate);
 	}
 
 	private Map<Currency, CurrencyData> getData() {

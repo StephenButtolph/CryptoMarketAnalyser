@@ -14,13 +14,14 @@ import com.google.common.collect.HashBiMap;
 import constants.Timing;
 import constants.Web;
 import javafx.util.Pair;
-import wrappers.TemporaryValue;
+import wrappers.RefreshingValue;
+import wrappers.Wrapper;
 
 public class CurrencyFactory {
-	private static final TemporaryValue<BiMap<String, String>> NAME_TO_SYMBOL;
+	private static final Wrapper<BiMap<String, String>> NAME_TO_SYMBOL;
 
 	static {
-		NAME_TO_SYMBOL = new TemporaryValue<>(CurrencyFactory::refreshMappings, Timing.CurrencyNameMappingHoldDuration);
+		NAME_TO_SYMBOL = new RefreshingValue<>(CurrencyFactory::refreshMappings, Timing.CurrencyNameMappingHoldDuration);
 	}
 
 	private static BiMap<String, String> refreshMappings() {

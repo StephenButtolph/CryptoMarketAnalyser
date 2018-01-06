@@ -16,8 +16,8 @@ public class Resources {
 		URL resource = Resources.class.getResource(POLONIEX_AUTH_LOCAL);
 		try {
 			POLONIEX_AUTH = Paths.get(resource.toURI()).toFile().getAbsolutePath();
-		} catch (URISyntaxException e) {
-			throw new StaticLoadException();
+		} catch (NullPointerException | URISyntaxException e) {
+			throw new StaticLoadException("Poloniex authorization file was not found.");
 		}
 	}
 }

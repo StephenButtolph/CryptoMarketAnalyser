@@ -4,14 +4,14 @@ import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.function.Supplier;
 
-public class TemporaryValue<V> {
+public class RefreshingValue<V> implements Wrapper<V>{
 	private Instant prevRefresh;
 	private TemporalAmount refreshPeriod;
 
 	private Supplier<V> supplier;
 	private V value;
 
-	public TemporaryValue(Supplier<V> supplier, TemporalAmount refreshPeriod) {
+	public RefreshingValue(Supplier<V> supplier, TemporalAmount refreshPeriod) {
 		this.supplier = supplier;
 		setRefreshPeriod(refreshPeriod);
 	}

@@ -16,6 +16,8 @@ public class Main {
 	}
 	
 	public static void poloniexTest() {
+		System.out.println(Auths.POLONIEX_AUTH);
+		
 		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
 
 		Currency eth = CurrencyFactory.parseSymbol("eth");

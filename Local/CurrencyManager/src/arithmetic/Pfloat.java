@@ -87,10 +87,13 @@ public class Pfloat {
 
 	@Override
 	public String toString() {
+		if (type == Type.UNDEFINED) {
+			return type.name();
+		}
 		return value.toString(true);
 	}
 
 	private enum Type {
-		NUMBER, UNDEFINED
+		NUMBER, UNDEFINED;
 	}
 }
