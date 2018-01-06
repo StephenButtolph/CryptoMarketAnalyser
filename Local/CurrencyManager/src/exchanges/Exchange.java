@@ -37,10 +37,6 @@ public interface Exchange extends Ticker {
 
 	Collection<CurrencyMarket> getCurrencyMarkets();
 
-	/*
-	 * Pfloat get24HVolume(Currency currency);
-	 */
-
 	/**
 	 * Get the cost of purchasing [amount] units of [commodity] currency in
 	 * [currency] currency units.

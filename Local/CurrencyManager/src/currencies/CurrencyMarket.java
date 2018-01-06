@@ -24,10 +24,7 @@ public class CurrencyMarket {
 
 	@Override
 	public int hashCode() {
-		int currencyCode = currency == null ? 0 : currency.hashCode();
-		int commodityCode = commodity == null ? 0 : commodity.hashCode();
-
-		return currencyCode + commodityCode;
+		return Objects.hashCode(currency) + Objects.hashCode(commodity);
 	}
 
 	@Override

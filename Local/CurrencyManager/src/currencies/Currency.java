@@ -20,10 +20,7 @@ public class Currency {
 
 	@Override
 	public int hashCode() {
-		int nameCode = name == null ? 0 : name.hashCode();
-		int symbolCode = symbol == null ? 0 : symbol.hashCode();
-
-		return nameCode + symbolCode;
+		return Objects.hashCode(name) + Objects.hashCode(symbol);
 	}
 
 	@Override

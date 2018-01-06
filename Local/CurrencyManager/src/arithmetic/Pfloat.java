@@ -72,7 +72,10 @@ public class Pfloat {
 
 	@Override
 	public int hashCode() {
-		return value.hashCode();
+		if (isDefined()) {
+			return value.hashCode();
+		}
+		return Type.UNDEFINED.hashCode();
 	}
 
 	@Override
@@ -82,15 +85,15 @@ public class Pfloat {
 		}
 
 		Pfloat other = (Pfloat) o;
-		return type == other.type && (type == Type.UNDEFINED || value.equals(other.value));
+		return type == other.type && (!isDefined() || value.equals(other.value));
 	}
 
 	@Override
 	public String toString() {
-		if (type == Type.UNDEFINED) {
-			return type.name();
+		if (isDefined()) {
+			return value.toString(true);
 		}
-		return value.toString(true);
+		return type.name();
 	}
 
 	private enum Type {

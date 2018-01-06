@@ -29,6 +29,12 @@ import exceptions.AssertionException;
 import exceptions.ConnectionException;
 
 public class WebUtils {
+	private static final String CHAR_SET;
+	
+	static {
+		CHAR_SET = "UTF-8";
+	}
+	
 	public static HttpResponse postRequest(String baseUrl, Map<?, ?> parameters) {
 		return postRequest(baseUrl, new HashMap<>(), parameters);
 	}
@@ -82,7 +88,7 @@ public class WebUtils {
 	}
 
 	public static String formatUrlQuery(List<? extends NameValuePair> parameters) {
-		return URLEncodedUtils.format(parameters, "UTF-8");
+		return URLEncodedUtils.format(parameters, CHAR_SET);
 	}
 	
 	public static String getJson(HttpResponse response) {
