@@ -1,8 +1,6 @@
 package exchanges;
 
-import accounts.Holding;
 import arithmetic.Pfloat;
-import currencies.Currency;
 import currencies.CurrencyMarket;
 import offers.Offers;
 
