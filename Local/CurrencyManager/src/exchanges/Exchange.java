@@ -29,7 +29,7 @@ public interface Exchange extends Ticker {
 
 	void getTradeHistory(CurrencyMarket market);
 
-	void getBalance(Currency currency);
+	Pfloat getBalance(Currency currency);
 
 	void sendFundsTo(Exchange exchange, Holding holding);
 

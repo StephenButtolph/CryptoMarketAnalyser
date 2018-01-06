@@ -1,6 +1,5 @@
 package exchanges;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,10 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,7 +48,7 @@ public class Poloniex extends BestEffortExchange {
 
 	@Override
 	public Pfloat get24HVolume(Currency currency) {
-		Map<String, String> parameters = new HashMap<>();
+		Map<String, String> parameters = getDefaultGetParameters();
 		parameters.put(COMMAND, RETURN_24H_VOLUME);
 
 		HttpResponse response = WebUtils.getRequest(Web.POLONIEX_PUBLIC_URL, parameters);
@@ -104,9 +100,25 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void getBalance(Currency currency) {
+	public Pfloat getBalance(Currency currency) {
 		// TODO Auto-generated method stub
+		Map<String, String> parameters = getDefaultPostParameters();
+		parameters.put("command", "returnBalances");
+		
 
+		Map<?, ?> headers = makeRequestHeaders(parameters);
+		HttpResponse response = WebUtils.postRequest(Web.POLONIEX_TRADING_URL, headers, parameters);
+		String json = WebUtils.getJson(response);
+		System.out.println(json);
+		
+		Type type = new TypeToken<Map<String, String>>() {}.getType();
+		Map<String, String> map = GSON.fromJson(json, type);
+
+		String amount = map.get(currency.getSymbol());
+		if (amount == null) {
+			return null;
+		}
+		return new Pfloat(amount);
 	}
 
 	@Override
@@ -123,7 +135,7 @@ public class Poloniex extends BestEffortExchange {
 
 	@Override
 	public Collection<CurrencyMarket> getCurrencyMarkets() {
-		Map<String, String> parameters = new HashMap<>();
+		Map<String, String> parameters = getDefaultGetParameters();
 		parameters.put(COMMAND, RETURN_TICKER);
 
 		HttpResponse response = WebUtils.getRequest(Web.POLONIEX_PUBLIC_URL, parameters);
@@ -145,6 +157,17 @@ public class Poloniex extends BestEffortExchange {
 		// TODO Auto-generated method stub
 
 	}
+	
+	private Map<String, String> getDefaultGetParameters(){
+		return new HashMap<>();
+	}
+	
+	private Map<String, String> getDefaultPostParameters(){
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("nonce", SecurityUtils.getNonce());
+		
+		return parameters;
+	}
 
 	private Map<?, ?> makeRequestHeaders(Map<?, ?> parameters) {
 		String queryArgs = WebUtils.formatUrlQuery(parameters);
@@ -155,33 +178,6 @@ public class Poloniex extends BestEffortExchange {
 		headers.put("Sign", sign);
 
 		return headers;
-	}
-
-	private void postExample() {
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("command", "returnFeeInfo");
-
-		Map<?, ?> headers = makeRequestHeaders(parameters);
-		HttpResponse response = WebUtils.postRequest(Web.POLONIEX_TRADING_URL, headers, parameters);
-		printResponse(response);
-	}
-
-	private void getExample() {
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("command", "returnTicker");
-
-		HttpResponse response = WebUtils.getRequest(Web.POLONIEX_PUBLIC_URL, parameters);
-		printResponse(response);
-	}
-
-	private static void printResponse(HttpResponse response) {
-		HttpEntity responseEntity = response.getEntity();
-		System.out.println(response.getStatusLine());
-		try {
-			System.out.println(EntityUtils.toString(responseEntity));
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private static CurrencyMarket parseMarket(String market) {

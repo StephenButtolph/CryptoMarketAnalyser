@@ -17,14 +17,13 @@ public class Main {
 	
 	public static void poloniexTest() {
 		System.out.println(Auths.POLONIEX_AUTH);
-		
 		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
 
-		Currency eth = CurrencyFactory.parseSymbol("eth");
+		Currency etc = CurrencyFactory.parseSymbol("etc");
+		System.out.println(etc);
 
-		Pfloat vol = p.get24HVolume(eth);
-
-		System.out.println(vol);
+		Pfloat amount = p.getBalance(etc);
+		System.out.println(amount);
 	}
 
 	public static void coinCapTest() {
@@ -43,5 +42,7 @@ public class Main {
 
 		System.out.println("Bitcoin price = " + ticker.getPrice(tetherToBitcoin) + " usdt");
 		System.out.println("Bitcoin price = " + ticker.getPrice(ethereumToBitcoin) + " eth");
+		
+		System.out.println("Ethereum 24h Volume = $" + ticker.get24HVolume(ethereum));
 	}
 }

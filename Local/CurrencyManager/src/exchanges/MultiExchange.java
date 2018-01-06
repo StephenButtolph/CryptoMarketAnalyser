@@ -40,9 +40,9 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public void getBalance(Currency currency) {
+	public Pfloat getBalance(Currency currency) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
