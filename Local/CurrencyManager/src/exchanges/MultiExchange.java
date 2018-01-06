@@ -52,9 +52,9 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public void getWalletAddress(Currency currency) {
+	public String getWalletAddress(Currency currency) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

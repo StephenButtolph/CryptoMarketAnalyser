@@ -27,15 +27,29 @@ import utils.WebUtils;
 
 public class Poloniex extends BestEffortExchange {
 	private static final String COMMAND;
+	private static final String CURRENCY;
+	
 	private static final String RETURN_TICKER;
 	private static final String RETURN_24H_VOLUME;
+	private static final String RETURN_BALANCES;
+	private static final String RETURN_DEPOSIT_ADDRESSES;
+	private static final String GENERATE_NEW_ADDRESS;
+
+	private static final String RESPONSE;
 
 	private static final Gson GSON;
 
 	static {
 		COMMAND = "command";
+		CURRENCY = "currency";
+		
 		RETURN_TICKER = "returnTicker";
 		RETURN_24H_VOLUME = "return24hVolume";
+		RETURN_BALANCES = "returnBalances";
+		RETURN_DEPOSIT_ADDRESSES = "returnDepositAddresses";
+		GENERATE_NEW_ADDRESS = "generateNewAddress";
+
+		RESPONSE = "response";
 
 		GSON = new Gson();
 	}
@@ -101,15 +115,12 @@ public class Poloniex extends BestEffortExchange {
 
 	@Override
 	public Pfloat getBalance(Currency currency) {
-		// TODO Auto-generated method stub
 		Map<String, String> parameters = getDefaultPostParameters();
-		parameters.put("command", "returnBalances");
+		parameters.put(COMMAND, RETURN_BALANCES);
 		
-
 		Map<?, ?> headers = makeRequestHeaders(parameters);
 		HttpResponse response = WebUtils.postRequest(Web.POLONIEX_TRADING_URL, headers, parameters);
 		String json = WebUtils.getJson(response);
-		System.out.println(json);
 		
 		Type type = new TypeToken<Map<String, String>>() {}.getType();
 		Map<String, String> map = GSON.fromJson(json, type);
@@ -128,9 +139,33 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void getWalletAddress(Currency currency) {
-		// TODO Auto-generated method stub
+	public String getWalletAddress(Currency currency) {
+		Map<String, String> returnParameters = getDefaultPostParameters();
+		returnParameters.put(COMMAND, RETURN_DEPOSIT_ADDRESSES);
+		
+		Map<?, ?> returnHeaders = makeRequestHeaders(returnParameters);
+		HttpResponse returnResponse = WebUtils.postRequest(Web.POLONIEX_TRADING_URL, returnHeaders, returnParameters);
+		String returnJson = WebUtils.getJson(returnResponse);
+		
+		Type returnType = new TypeToken<Map<String, String>>() {}.getType();
+		Map<String, String> returnMap = GSON.fromJson(returnJson, returnType);
 
+		String address = returnMap.get(currency.getSymbol());
+		if (address == null) {
+			Map<String, String> generateParameters = getDefaultPostParameters();
+			generateParameters.put(COMMAND, GENERATE_NEW_ADDRESS);
+			generateParameters.put(CURRENCY, currency.getSymbol());
+			
+			Map<?, ?> generateHeaders = makeRequestHeaders(generateParameters);
+			HttpResponse generateResponse = WebUtils.postRequest(Web.POLONIEX_TRADING_URL, generateHeaders, generateParameters);
+			String generateJson = WebUtils.getJson(generateResponse);
+			
+			Type generateType = new TypeToken<Map<String, String>>() {}.getType();
+			Map<String, String> generateMap = GSON.fromJson(generateJson, generateType);
+			
+			address = generateMap.get(RESPONSE);
+		}
+		return address;
 	}
 
 	@Override

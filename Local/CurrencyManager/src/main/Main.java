@@ -19,11 +19,11 @@ public class Main {
 		System.out.println(Auths.POLONIEX_AUTH);
 		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
 
-		Currency etc = CurrencyFactory.parseSymbol("etc");
+		Currency etc = CurrencyFactory.parseSymbol("USDT");
 		System.out.println(etc);
 
-		Pfloat amount = p.getBalance(etc);
-		System.out.println(amount);
+		Object ret = p.getWalletAddress(etc);
+		System.out.println(ret);
 	}
 
 	public static void coinCapTest() {

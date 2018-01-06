@@ -33,7 +33,7 @@ public interface Exchange extends Ticker {
 
 	void sendFundsTo(Exchange exchange, Holding holding);
 
-	void getWalletAddress(Currency currency);
+	String getWalletAddress(Currency currency);
 
 	Collection<CurrencyMarket> getCurrencyMarkets();
 

@@ -20,7 +20,7 @@ public class FileUtils {
 		return GSON.fromJson(file, classOfT);
 	}
 
-	public static <T extends TypeProducer> boolean save(String filePath, T toSave) {
+	public static boolean save(String filePath, TypeProducer toSave) {
 		String file = GSON.toJson(toSave, toSave.getType());
 		return write(filePath, file);
 	}
