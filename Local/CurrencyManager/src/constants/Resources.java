@@ -12,9 +12,12 @@ import exceptions.StaticLoadException;
  *         This is a resource manager for gaining access to resource files.
  */
 public class Resources {
-	public static final String POLONIEX_AUTH_PATH;
-	
 	private static final String POLONIEX_AUTH_LOCAL_PATH;
+
+	/**
+	 * The path to the poloniex API token within the project.
+	 */
+	public static final String POLONIEX_AUTH_PATH;
 
 	static {
 		POLONIEX_AUTH_LOCAL_PATH = "/Poloniex/Auth.auth";

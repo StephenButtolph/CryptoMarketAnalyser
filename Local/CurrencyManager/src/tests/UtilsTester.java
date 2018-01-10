@@ -118,10 +118,11 @@ class UtilsTester {
 
 		PoloniexAuth auth = new PoloniexAuth(key, secret);
 		FileUtils.save(filePath, auth);
-		auth = FileUtils.load(filePath, PoloniexAuth.class);
 
-		assertEquals(key, auth.getApiKey());
-		assertEquals(secret, auth.getApiSecret());
+		PoloniexAuth loadedAuth = FileUtils.load(filePath, PoloniexAuth.class);
+
+		assertEquals(auth.getApiKey(), loadedAuth.getApiKey());
+		assertEquals(auth.getApiSecret(), loadedAuth.getApiSecret());
 
 		File file = new File(filePath);
 		assertTrue(file.delete());
