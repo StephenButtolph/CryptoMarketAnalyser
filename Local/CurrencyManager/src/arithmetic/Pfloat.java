@@ -4,8 +4,6 @@ import java.util.function.Function;
 
 import org.apfloat.Apfloat;
 
-import constants.Numeric;
-
 /**
  * @author Stephen Buttolph
  *
@@ -44,7 +42,7 @@ public class Pfloat {
 	 *            The number this precise float will represent.
 	 */
 	public Pfloat(long val) {
-		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
+		this(new Apfloat(val, Constants.DEFAULT_PRECISION));
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class Pfloat {
 	 *             number.
 	 */
 	public Pfloat(String val) throws NumberFormatException {
-		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
+		this(new Apfloat(val, Constants.DEFAULT_PRECISION));
 	}
 
 	private Pfloat(Apfloat val) {
