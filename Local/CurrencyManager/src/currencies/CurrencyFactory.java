@@ -9,10 +9,10 @@ import tickers.coinMarketCap.CoinMarketCap;
 import wrappers.Wrapper;
 
 /**
- * @author Stephen Buttolph
+ * This is the proper way to obtain new Currency objects. By giving a
+ * sudo-unique identifier, a currency will be created.
  * 
- *         This is the proper way to obtain new Currency objects. By giving a
- *         sudo-unique identifier, a currency will be created.
+ * @author Stephen Buttolph
  */
 public class CurrencyFactory {
 	private static final Wrapper<BiMap<String, String>> NAME_TO_SYMBOL;

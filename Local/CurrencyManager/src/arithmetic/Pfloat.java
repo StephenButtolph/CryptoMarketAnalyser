@@ -5,10 +5,10 @@ import java.util.function.Function;
 import org.apfloat.Apfloat;
 
 /**
+ * A Pfloat represents a precise float. This is intended to be used for avoiding
+ * floating point approximation errors.
+ * 
  * @author Stephen Buttolph
- *
- *         A Pfloat represents a precise float. This is intended to be used for
- *         avoiding floating point approximation errors.
  */
 public class Pfloat {
 	/**

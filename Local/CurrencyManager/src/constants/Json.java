@@ -3,9 +3,9 @@ package constants;
 import com.google.gson.Gson;
 
 /**
+ * This is used to store default Json serializers and deserializers.
+ * 
  * @author Stephen Buttolph
- *
- *         This is used to store default Json serializers and deserializers.
  */
 public class Json {
 	/**

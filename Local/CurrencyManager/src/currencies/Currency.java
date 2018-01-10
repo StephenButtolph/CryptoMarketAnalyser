@@ -1,9 +1,9 @@
 package currencies;
 
 /**
+ * This is an internal representation of a currency that can be traded.
+ * 
  * @author Stephen Buttolph
- *
- *         This is an internal representation of a currency that can be traded.
  */
 public interface Currency {
 	/**

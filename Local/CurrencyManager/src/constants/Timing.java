@@ -4,10 +4,10 @@ import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 
 /**
+ * This is a time manager to control constant time periods, such as seconds or
+ * hours, and to control default time periods.
+ * 
  * @author Stephen Buttolph
- *
- *         This is a time manager to control constant time periods, such as
- *         seconds or hours, and to control default time periods.
  */
 public class Timing {
 	/**

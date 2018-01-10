@@ -5,9 +5,9 @@ import exchangeAuths.PoloniexAuth;
 import utils.FileUtils;
 
 /**
+ * Location for default authorization tokens.
+ * 
  * @author Stephen Buttolph
- *
- *         Location for default authorization tokens.
  */
 public class Auths {
 	/**

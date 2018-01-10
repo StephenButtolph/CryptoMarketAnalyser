@@ -3,10 +3,9 @@ package currencies;
 import java.util.Objects;
 
 /**
+ * This is a standard representation of an internal currency that can be traded.
+ * 
  * @author Stephen Buttolph
- *
- *         This is a standard representation of an internal currency that can be
- *         traded.
  */
 class StandardCurrency implements Currency {
 	private final String name;

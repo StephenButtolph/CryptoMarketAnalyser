@@ -1,9 +1,9 @@
 package arithmetic;
 
 /**
+ * Used to store constants required for arithmetic operations.
+ * 
  * @author Stephen Buttolph
- *
- *         Used to store constants required for arithmetic operations.
  */
 class Constants {
 	/**
