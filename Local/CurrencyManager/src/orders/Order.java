@@ -1,7 +1,7 @@
 package orders;
 
 import arithmetic.Pfloat;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 
 public interface Order {
 	boolean isOpen();

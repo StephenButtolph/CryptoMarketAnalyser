@@ -1,7 +1,7 @@
 package exchanges;
 
 import arithmetic.Pfloat;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import orders.Order;
 
 public abstract class BestEffortExchange extends StandardExchange {

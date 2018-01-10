@@ -1,7 +1,7 @@
 package exchanges.multiExchange;
 
 import arithmetic.Pfloat;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import orders.Order;
 
 public class MultiExchangeOrder implements Order {

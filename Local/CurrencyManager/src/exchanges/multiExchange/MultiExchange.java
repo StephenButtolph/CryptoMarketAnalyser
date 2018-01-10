@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import arithmetic.Pfloat;
 import currencies.Currency;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import exchanges.BestEffortExchange;
 import exchanges.Exchange;
 import holdings.Holding;

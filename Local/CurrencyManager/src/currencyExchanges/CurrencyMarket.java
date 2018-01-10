@@ -1,6 +1,8 @@
-package currencies;
+package currencyExchanges;
 
 import java.util.Objects;
+
+import currencies.Currency;
 
 public class CurrencyMarket {
 	private final Currency currency, commodity;
@@ -22,6 +24,10 @@ public class CurrencyMarket {
 		return new CurrencyMarket(getCommodity(), getCurrency());
 	}
 
+	public boolean contains(Currency currency) {
+		return Objects.equals(this.currency, currency) || Objects.equals(commodity, currency);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(currency) + Objects.hashCode(commodity);
@@ -36,10 +42,6 @@ public class CurrencyMarket {
 		CurrencyMarket other = (CurrencyMarket) o;
 		return (Objects.equals(currency, other.currency) && Objects.equals(commodity, other.commodity))
 				|| (Objects.equals(currency, other.commodity) && Objects.equals(commodity, other.currency));
-	}
-
-	public boolean contains(Currency currency) {
-		return Objects.equals(this.currency, currency) || Objects.equals(commodity, currency);
 	}
 
 	@Override

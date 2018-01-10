@@ -2,7 +2,7 @@ package tickers;
 
 import arithmetic.Pfloat;
 import currencies.Currency;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 
 public interface Ticker {
 	Pfloat getPrice(CurrencyMarket market);

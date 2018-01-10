@@ -17,7 +17,7 @@ import com.google.common.collect.HashBiMap;
 
 import arithmetic.Pfloat;
 import currencies.Currency;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import javafx.util.Pair;
 import tickers.Ticker;
 import wrappers.RefreshingValue;

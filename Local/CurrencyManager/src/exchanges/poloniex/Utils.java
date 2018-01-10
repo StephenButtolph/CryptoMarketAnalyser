@@ -5,7 +5,7 @@ import java.util.Map;
 
 import currencies.Currency;
 import currencies.CurrencyFactory;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import exchangeAuths.PoloniexAuth;
 import utils.SecurityUtils;
 import utils.WebUtils;

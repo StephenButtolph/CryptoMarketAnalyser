@@ -1,7 +1,7 @@
 package exchanges;
 
 import arithmetic.Pfloat;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import offerGroups.Offers;
 
 public abstract class StandardExchange implements Exchange {

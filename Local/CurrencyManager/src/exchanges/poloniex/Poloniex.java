@@ -15,7 +15,7 @@ import com.google.gson.reflect.TypeToken;
 import arithmetic.Pfloat;
 import constants.Json;
 import currencies.Currency;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import exchangeAuths.PoloniexAuth;
 import exchanges.BestEffortExchange;
 import exchanges.Exchange;

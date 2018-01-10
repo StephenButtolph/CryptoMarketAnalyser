@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 
 import arithmetic.Pfloat;
 import currencies.Currency;
-import currencies.CurrencyMarket;
+import currencyExchanges.CurrencyMarket;
 import tickers.Ticker;
 import utils.IterableUtils;
 
