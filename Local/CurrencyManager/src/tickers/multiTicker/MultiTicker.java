@@ -1,4 +1,4 @@
-package tickers;
+package tickers.multiTicker;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import arithmetic.Pfloat;
 import currencies.Currency;
 import currencies.CurrencyMarket;
+import tickers.Ticker;
 import utils.IterableUtils;
 
 public class MultiTicker implements Ticker {

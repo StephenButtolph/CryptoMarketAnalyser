@@ -1,4 +1,4 @@
-package tickers;
+package tickers.coinMarketCap;
 
 import java.io.IOException;
 import java.time.temporal.TemporalAmount;
@@ -6,26 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import arithmetic.Pfloat;
-import constants.Web;
 import currencies.Currency;
-import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
+import javafx.util.Pair;
+import tickers.Ticker;
 import wrappers.RefreshingValue;
 import wrappers.Wrapper;
 
 public class CoinMarketCap implements Ticker {
-	private static final String CLEAR_REGEX = "[$,%* ]";
-	private static final String EMPTY = "";
-	private static final String LOW_VOLUME_REGEX = "LowVol";
-	private static final String ZERO = "0";
-	private static final int NUM_ARGS = 9;
-
 	private Wrapper<Map<Currency, CurrencyData>> cachedData;
 
 	public CoinMarketCap(TemporalAmount refreshRate) {
@@ -36,7 +34,7 @@ public class CoinMarketCap implements Ticker {
 		Map<Currency, CurrencyData> mapping = new HashMap<>();
 		Document doc;
 		try {
-			doc = Jsoup.connect(Web.COIN_MARKET_CAP_ALL_COINS_URL).maxBodySize(0).get();
+			doc = Jsoup.connect(Constants.ALL_COINS_URL).maxBodySize(0).get();
 		} catch (IOException e) {
 			return mapping;
 		}
@@ -60,14 +58,14 @@ public class CoinMarketCap implements Ticker {
 		try {
 			Elements cols = row.children();
 
-			String[] args = new String[NUM_ARGS];
+			String[] args = new String[Constants.NUM_ARGS];
 
-			args[CurrencyData.RANK] = cols.get(0).text();
+			args[Constants.RANK] = cols.get(0).text();
 
-			for (int arg = CurrencyData.SYMBOL; arg < NUM_ARGS; arg++) {
+			for (int arg = Constants.SYMBOL; arg < Constants.NUM_ARGS; arg++) {
 				String text = cols.get(arg + 1).text();
-				String cleaned = text.replaceAll(CLEAR_REGEX, EMPTY);
-				String fixed = cleaned.replaceAll(LOW_VOLUME_REGEX, ZERO);
+				String cleaned = text.replaceAll(Constants.CLEAR_REGEX, Constants.EMPTY);
+				String fixed = cleaned.replaceAll(Constants.LOW_VOLUME_REGEX, Constants.ZERO);
 				args[arg] = fixed.trim();
 			}
 
@@ -141,81 +139,61 @@ public class CoinMarketCap implements Ticker {
 		return f.apply(data);
 	}
 
-	private static class CurrencyData {
-		public static final int RANK = 0;
-		public static final int SYMBOL = 1;
-		public static final int MARKET_CAP = 2;
-		public static final int USD_PRICE = 3;
-		public static final int CIRCULATING_SUPPLY = 4;
-		public static final int DAY_VOLUME = 5;
-		public static final int HOUR_PERCENT_CHANGE = 6;
-		public static final int DAY_PERCENT_CHANGE = 7;
-		public static final int WEEK_PERCENT_CHANGE = 8;
+	public static RefreshingValue<BiMap<String, String>> getNameToSymbolMappings(TemporalAmount refreshRate) {
+		return new RefreshingValue<>(CoinMarketCap::refreshMappings, refreshRate);
 
-		private final Currency currency;
-		private final Pfloat rank, marketCap, usdPrice, circulatingSupply, dayVolume, hourPercentChange,
-				dayPercentChange, weekPercentChange;
+	}
 
-		public CurrencyData(String[] args) {
-			if (args.length != NUM_ARGS) {
-				throw new IllegalArgumentException("Incorrect number of arguments.");
+	private static BiMap<String, String> refreshMappings() {
+		BiMap<String, String> nameToSymbol = HashBiMap.create();
+
+		Document doc;
+		try {
+			doc = Jsoup.connect(Constants.ALL_COINS_URL).maxBodySize(0).get();
+		} catch (IOException e) {
+			return nameToSymbol;
+		}
+
+		Element table = doc.select("table").first(); // select the table
+		Elements rows = table.select("tr"); // select the rows
+
+		for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it
+			Element elem = rows.get(i);
+			try {
+				Pair<String, String> entry = parseRowToMapping(elem);
+
+				// put if absent because some symbols are used multiple times.
+
+				// TODO will this cause possible errors when attempting to send
+				// money to incorrect wallets?
+				if (!nameToSymbol.containsValue(entry.getValue())) {
+					nameToSymbol.putIfAbsent(entry.getKey(), entry.getValue());
+				}
+			} catch (IOException e) {
 			}
+		}
+		return nameToSymbol;
+	}
 
-			rank = new Pfloat(args[RANK]);
+	private static Pair<String, String> parseRowToMapping(Element row) throws IOException {
+		Elements cols = row.children();
 
-			currency = CurrencyFactory.parseSymbol(args[SYMBOL]);
+		String[] args = cols.get(1).text().split(" ", 2);
+		String symbol = args[0];
+		String name = args[1];
 
-			marketCap = new Pfloat(args[MARKET_CAP]);
-			usdPrice = new Pfloat(args[USD_PRICE]);
-			circulatingSupply = new Pfloat(args[CIRCULATING_SUPPLY]);
-			dayVolume = new Pfloat(args[DAY_VOLUME]);
-			hourPercentChange = new Pfloat(args[HOUR_PERCENT_CHANGE]);
-			dayPercentChange = new Pfloat(args[DAY_PERCENT_CHANGE]);
-			weekPercentChange = new Pfloat(args[WEEK_PERCENT_CHANGE]);
+		if (name.endsWith("...")) {
+			String url = Constants.BASE_URL + cols.get(1).select("a").attr("href");
+			name = searchName(url);
 		}
 
-		public Currency getCurrency() {
-			return currency;
-		}
+		return new Pair<>(WordUtils.capitalizeFully(name), symbol.toUpperCase());
+	}
 
-		public Pfloat getRank() {
-			return rank;
-		}
+	private static String searchName(String url) throws IOException {
+		Document doc = Jsoup.connect(url).get();
+		Elements elems = doc.select(".text-large").first().children();
 
-		public Pfloat getMarketCap() {
-			return marketCap;
-		}
-
-		public Pfloat getUsdPrice() {
-			return usdPrice;
-		}
-
-		public Pfloat getCirculatingSupply() {
-			return circulatingSupply;
-		}
-
-		public Pfloat getDayVolume() {
-			return dayVolume;
-		}
-
-		public Pfloat getHourPercentChange() {
-			return hourPercentChange;
-		}
-
-		public Pfloat getDayPercentChange() {
-			return dayPercentChange;
-		}
-
-		public Pfloat getWeekPercentChange() {
-			return weekPercentChange;
-		}
-
-		@Override
-		public String toString() {
-			String format = "#%s: %s; Cap = $%s, Price = $%s, Supply = %s, 24hVolume = %s, Hour Change = %s%%, Day Change = %s%%, Week Change = %s%%";
-			return String.format(format, getRank(), getCurrency(), getMarketCap(), getUsdPrice(),
-					getCirculatingSupply(), getDayVolume(), getHourPercentChange(), getDayPercentChange(),
-					getWeekPercentChange());
-		}
+		return elems.attr("alt");
 	}
 }

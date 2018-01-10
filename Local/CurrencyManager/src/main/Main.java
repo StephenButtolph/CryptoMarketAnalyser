@@ -7,8 +7,8 @@ import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
 import exchanges.poloniex.Poloniex;
-import tickers.CoinMarketCap;
 import tickers.Ticker;
+import tickers.coinMarketCap.CoinMarketCap;
 
 public class Main {
 	public static void main(String[] args) {

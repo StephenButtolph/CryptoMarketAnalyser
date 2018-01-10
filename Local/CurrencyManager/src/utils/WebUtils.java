@@ -24,7 +24,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import constants.Web;
 import exceptions.AssertionException;
 import exceptions.ConnectionException;
 
@@ -61,7 +60,7 @@ public class WebUtils {
 
 	public static HttpResponse getRequest(String baseUrl, Map<?, ?> headers, Map<?, ?> parameters) {
 		String queryArgs = WebUtils.formatUrlQuery(parameters);
-		String url = Web.POLONIEX_PUBLIC_URL + "?" + queryArgs;
+		String url = baseUrl + "?" + queryArgs;
 
 		HttpGet get = new HttpGet(url);
 		addHeaders(get, headers);
