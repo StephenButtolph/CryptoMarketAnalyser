@@ -6,9 +6,26 @@ import org.apfloat.Apfloat;
 
 import constants.Numeric;
 
+/**
+ * @author Stephen Buttolph
+ *
+ *         A Pfloat represents a precise float. This is intended to be used for
+ *         avoiding floating point approximation errors.
+ */
 public class Pfloat {
+	/**
+	 * A precise float representing the value 0.
+	 */
 	public static final Pfloat ZERO;
+
+	/**
+	 * A precise float representing the value 1.
+	 */
 	public static final Pfloat ONE;
+
+	/**
+	 * A precise float representing an indeterminate value.
+	 */
 	public static final Pfloat UNDEFINED;
 
 	static {
@@ -20,11 +37,28 @@ public class Pfloat {
 	private final Apfloat value;
 	private final Type type;
 
+	/**
+	 * Create a new precise float with the value = [val].
+	 * 
+	 * @param val
+	 *            The number this precise float will represent.
+	 */
 	public Pfloat(long val) {
 		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
 	}
 
-	public Pfloat(String val) {
+	/**
+	 * Create a new precise float with the value equal to the float representation
+	 * of [val].
+	 * 
+	 * @param val
+	 *            The string representing the number this precise float will
+	 *            represent.
+	 * @throws NumberFormatException
+	 *             Thrown when the input sting does not correctly represent a
+	 *             number.
+	 */
+	public Pfloat(String val) throws NumberFormatException {
 		this(new Apfloat(val, Numeric.APFLOAT_PRECISION));
 	}
 
@@ -38,18 +72,48 @@ public class Pfloat {
 		this.type = type;
 	}
 
+	/**
+	 * @return True if this object represents a defined number, false otherwise.
+	 */
 	public boolean isDefined() {
 		return type != Type.UNDEFINED;
 	}
 
+	/**
+	 * Return a new precise float object that represents the addition of [this] and
+	 * [snd]. If either [this] or [snd] is undefined, the result will be undefined.
+	 * 
+	 * @param snd
+	 *            The number to add to this number.
+	 * @return A new precise float representing the sum of [this] and [snd].
+	 */
 	public Pfloat add(Pfloat snd) {
 		return operation(value::add, snd);
 	}
 
+	/**
+	 * Return a new precise float object that represents the subtraction of [this]
+	 * and [snd]. If either [this] or [snd] is undefined, the result will be
+	 * undefined.
+	 * 
+	 * @param snd
+	 *            The number to subtract from this number.
+	 * @return A new precise float representing the difference of [this] and [snd].
+	 */
 	public Pfloat subtract(Pfloat snd) {
 		return operation(value::subtract, snd);
 	}
 
+	/**
+	 * Return a new precise float object that represents the multiplication of
+	 * [this] and [snd]. If either [this] or [snd] is undefined, the result will be
+	 * undefined.
+	 * 
+	 * @param snd
+	 *            The number to multiply by this number.
+	 * @return A new precise float representing the multiplication of [this] and
+	 *         [snd].
+	 */
 	public Pfloat multiply(Pfloat snd) {
 		Pfloat result = operation(value::multiply, snd);
 
@@ -59,7 +123,21 @@ public class Pfloat {
 		return result;
 	}
 
+	/**
+	 * Return a new precise float object that represents the division of [this] and
+	 * [snd], [this]/[snd]. If either [this] or [snd] is undefined, or [snd] is
+	 * equal to [ZERO] the result will be undefined.
+	 * 
+	 * @param snd
+	 *            The number to multiply by this number.
+	 * @return A new precise float representing the multiplication of [this] and
+	 *         [snd].
+	 */
 	public Pfloat divide(Pfloat snd) {
+		if (snd.equals(ZERO)) {
+			return UNDEFINED;
+		}
+
 		return operation(value::divide, snd);
 	}
 
