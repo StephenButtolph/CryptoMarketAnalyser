@@ -40,15 +40,17 @@ public class Poloniex extends BestEffortExchange {
 		HttpResponse response = WebUtils.getRequest(Constants.PUBLIC_URL, parameters);
 		String json = WebUtils.getJson(response);
 
-		Type topType = new TypeToken<Map<String, Object>>() {}.getType();
-		Type subType = new TypeToken<Map<String, String>>() {}.getType();
+		Type topType = new TypeToken<Map<String, Object>>() {
+		}.getType();
+		Type subType = new TypeToken<Map<String, String>>() {
+		}.getType();
 		Map<String, Object> map = Json.GSON.fromJson(json, topType);
 
 		BiFunction<Pfloat, Entry<String, Object>, Pfloat> f = (acc, entry) -> {
 			CurrencyMarket market = Utils.parseMarket(entry.getKey());
 			if (market != null && market.contains(currency)) {
 				Map<String, String> subMap = Json.GSON.fromJson(entry.getValue().toString(), subType);
-				
+
 				String strAmount = subMap.get(currency.getSymbol());
 				Pfloat amount = new Pfloat(strAmount);
 				return acc.add(amount);
@@ -69,7 +71,7 @@ public class Poloniex extends BestEffortExchange {
 	protected Offers adjustOffers(Offers rawOffers) {
 		// TODO
 		// command = returnCurrencies
-		//    ^ has txFee
+		// ^ has txFee
 		return null;
 	}
 
@@ -89,12 +91,13 @@ public class Poloniex extends BestEffortExchange {
 	public Pfloat getBalance(Currency currency) {
 		Map<String, String> parameters = Utils.getDefaultPostParameters();
 		parameters.put(Constants.COMMAND, Constants.RETURN_BALANCES);
-		
+
 		Map<?, ?> headers = Utils.makeRequestHeaders(auth, parameters);
 		HttpResponse response = WebUtils.postRequest(Constants.TRADING_URL, headers, parameters);
 		String json = WebUtils.getJson(response);
-		
-		Type type = new TypeToken<Map<String, String>>() {}.getType();
+
+		Type type = new TypeToken<Map<String, String>>() {
+		}.getType();
 		Map<String, String> map = Json.GSON.fromJson(json, type);
 
 		String amount = map.get(currency.getSymbol());
@@ -114,12 +117,13 @@ public class Poloniex extends BestEffortExchange {
 	public String getWalletAddress(Currency currency) {
 		Map<String, String> returnParameters = Utils.getDefaultPostParameters();
 		returnParameters.put(Constants.COMMAND, Constants.RETURN_DEPOSIT_ADDRESSES);
-		
+
 		Map<?, ?> returnHeaders = Utils.makeRequestHeaders(auth, returnParameters);
 		HttpResponse returnResponse = WebUtils.postRequest(Constants.TRADING_URL, returnHeaders, returnParameters);
 		String returnJson = WebUtils.getJson(returnResponse);
-		
-		Type returnType = new TypeToken<Map<String, String>>() {}.getType();
+
+		Type returnType = new TypeToken<Map<String, String>>() {
+		}.getType();
 		Map<String, String> returnMap = Json.GSON.fromJson(returnJson, returnType);
 
 		String address = returnMap.get(currency.getSymbol());
@@ -127,14 +131,16 @@ public class Poloniex extends BestEffortExchange {
 			Map<String, String> generateParameters = Utils.getDefaultPostParameters();
 			generateParameters.put(Constants.COMMAND, Constants.GENERATE_NEW_ADDRESS);
 			generateParameters.put(Constants.CURRENCY, currency.getSymbol());
-			
+
 			Map<?, ?> generateHeaders = Utils.makeRequestHeaders(auth, generateParameters);
-			HttpResponse generateResponse = WebUtils.postRequest(Constants.TRADING_URL, generateHeaders, generateParameters);
+			HttpResponse generateResponse = WebUtils.postRequest(Constants.TRADING_URL, generateHeaders,
+					generateParameters);
 			String generateJson = WebUtils.getJson(generateResponse);
-			
-			Type generateType = new TypeToken<Map<String, String>>() {}.getType();
+
+			Type generateType = new TypeToken<Map<String, String>>() {
+			}.getType();
 			Map<String, String> generateMap = Json.GSON.fromJson(generateJson, generateType);
-			
+
 			address = generateMap.get(Constants.RESPONSE);
 		}
 		return address;
@@ -148,7 +154,8 @@ public class Poloniex extends BestEffortExchange {
 		HttpResponse response = WebUtils.getRequest(Constants.PUBLIC_URL, parameters);
 		String json = WebUtils.getJson(response);
 
-		Type type = new TypeToken<Map<String, ?>>() {}.getType();
+		Type type = new TypeToken<Map<String, ?>>() {
+		}.getType();
 		Map<String, ?> map = Json.GSON.fromJson(json, type);
 
 		Iterable<CurrencyMarket> marketIter = IterableUtils.map(map.keySet(), Utils::parseMarket);

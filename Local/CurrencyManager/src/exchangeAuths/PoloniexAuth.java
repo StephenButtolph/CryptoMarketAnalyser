@@ -31,6 +31,7 @@ public class PoloniexAuth implements TypeProducer {
 
 	@Override
 	public Type getType() {
-		return new TypeToken<PoloniexAuth>() {}.getType();
+		return new TypeToken<PoloniexAuth>() {
+		}.getType();
 	}
 }

@@ -8,7 +8,7 @@ public abstract class StandardExchange implements Exchange {
 	protected abstract Offers getRawOffers(CurrencyMarket exchangePair);
 
 	protected abstract Offers adjustOffers(Offers rawOffers);
-	
+
 	@Override
 	public Offers getOffers(CurrencyMarket market) {
 		Offers rawOffers = getRawOffers(market);

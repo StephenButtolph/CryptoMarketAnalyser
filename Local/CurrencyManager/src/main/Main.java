@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String[] args) {
 		poloniexTest();
 	}
-	
+
 	public static void poloniexTest() {
 		System.out.println(Auths.POLONIEX_AUTH);
 		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
@@ -42,7 +42,7 @@ public class Main {
 
 		System.out.println("Bitcoin price = " + ticker.getPrice(tetherToBitcoin) + " usdt");
 		System.out.println("Bitcoin price = " + ticker.getPrice(ethereumToBitcoin) + " eth");
-		
+
 		System.out.println("Ethereum 24h Volume = $" + ticker.get24HVolume(ethereum));
 	}
 }

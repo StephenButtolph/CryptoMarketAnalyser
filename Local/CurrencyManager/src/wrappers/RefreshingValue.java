@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.function.Supplier;
 
-public class RefreshingValue<V> implements Wrapper<V>{
+public class RefreshingValue<V> implements Wrapper<V> {
 	private Instant prevRefresh;
 	private TemporalAmount refreshPeriod;
 

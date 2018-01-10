@@ -11,14 +11,14 @@ import utils.SecurityUtils;
 import utils.WebUtils;
 
 class Utils {
-	static Map<String, String> getDefaultGetParameters(){
+	static Map<String, String> getDefaultGetParameters() {
 		return new HashMap<>();
 	}
-	
-	static Map<String, String> getDefaultPostParameters(){
+
+	static Map<String, String> getDefaultPostParameters() {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("nonce", SecurityUtils.getNonce());
-		
+
 		return parameters;
 	}
 
@@ -52,10 +52,10 @@ class Utils {
 		if (market == null) {
 			return null;
 		}
-		
+
 		String currency = market.getCurrency().getSymbol();
 		String commodity = market.getCommodity().getSymbol();
-		
+
 		return currency + Constants.MARKET_DELIMITER + commodity;
 	}
 }
