@@ -1,12 +1,16 @@
-package exchanges;
+package exchanges.multiExchange;
 
 import java.util.Collection;
 
-import accounts.Holding;
 import arithmetic.Pfloat;
 import currencies.Currency;
 import currencies.CurrencyMarket;
-import offers.Offers;
+import exchanges.BestEffortExchange;
+import exchanges.Exchange;
+import holdings.Holding;
+import offerGroups.Offers;
+import orders.Order;
+import transactions.Transaction;
 
 public class MultiExchange extends BestEffortExchange {
 	@Override
@@ -28,15 +32,15 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public void getOpenTransactions() {
+	public Collection<Order> getOpenOrders(CurrencyMarket market) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void getTradeHistory(CurrencyMarket market) {
+	public Collection<Transaction> getTradeHistory(CurrencyMarket market) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
@@ -46,9 +50,9 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public void sendFundsTo(Exchange exchange, Holding holding) {
+	public boolean sendFundsTo(Exchange exchange, Holding holding) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override
@@ -64,8 +68,8 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public void buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
+	public Order buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 }

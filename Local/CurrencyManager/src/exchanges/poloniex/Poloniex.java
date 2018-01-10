@@ -1,4 +1,4 @@
-package exchanges;
+package exchanges.poloniex;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -13,14 +13,18 @@ import org.apache.http.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import accounts.Holding;
 import arithmetic.Pfloat;
 import constants.Web;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
 import exchangeAuths.PoloniexAuth;
-import offers.Offers;
+import exchanges.BestEffortExchange;
+import exchanges.Exchange;
+import holdings.Holding;
+import offerGroups.Offers;
+import orders.Order;
+import transactions.Transaction;
 import utils.IterableUtils;
 import utils.SecurityUtils;
 import utils.WebUtils;
@@ -36,6 +40,8 @@ public class Poloniex extends BestEffortExchange {
 	private static final String GENERATE_NEW_ADDRESS;
 
 	private static final String RESPONSE;
+	
+	private static final String MARKET_DELIMITER;
 
 	private static final Gson GSON;
 
@@ -50,6 +56,8 @@ public class Poloniex extends BestEffortExchange {
 		GENERATE_NEW_ADDRESS = "generateNewAddress";
 
 		RESPONSE = "response";
+		
+		MARKET_DELIMITER = "_";
 
 		GSON = new Gson();
 	}
@@ -102,15 +110,15 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void getOpenTransactions() {
+	public Collection<Order> getOpenOrders(CurrencyMarket market) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public void getTradeHistory(CurrencyMarket market) {
+	public Collection<Transaction> getTradeHistory(CurrencyMarket market) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
@@ -133,9 +141,9 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void sendFundsTo(Exchange exchange, Holding holding) {
+	public boolean sendFundsTo(Exchange exchange, Holding holding) {
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
@@ -188,9 +196,9 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public void buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
+	public Order buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 	
 	private Map<String, String> getDefaultGetParameters(){
@@ -216,7 +224,7 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	private static CurrencyMarket parseMarket(String market) {
-		String[] currencies = market.split("_");
+		String[] currencies = market.split(MARKET_DELIMITER);
 
 		if (currencies.length != 2) {
 			return null;
@@ -228,5 +236,16 @@ public class Poloniex extends BestEffortExchange {
 			return null;
 		}
 		return new CurrencyMarket(currency, commodity);
+	}
+
+	private static String toMarket(CurrencyMarket market) {
+		if (market == null) {
+			return null;
+		}
+		
+		String currency = market.getCurrency().getSymbol();
+		String commodity = market.getCommodity().getSymbol();
+		
+		return currency + MARKET_DELIMITER + commodity;
 	}
 }

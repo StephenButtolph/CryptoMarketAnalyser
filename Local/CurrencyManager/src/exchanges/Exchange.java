@@ -2,12 +2,14 @@ package exchanges;
 
 import java.util.Collection;
 
-import accounts.Holding;
 import arithmetic.Pfloat;
 import currencies.Currency;
 import currencies.CurrencyMarket;
-import offers.Offers;
+import holdings.Holding;
+import offerGroups.Offers;
+import orders.Order;
 import tickers.Ticker;
+import transactions.Transaction;
 
 public interface Exchange extends Ticker {
 	/**
@@ -16,22 +18,29 @@ public interface Exchange extends Ticker {
 	 * internal currency exchange and will be different than the inverted markets
 	 * values in normal use cases.
 	 * 
-	 * @param exchangePair
+	 * @param market
 	 *            The exchange pair to process.
 	 * @return the current order book of the [market] exchange. Will take into
 	 *         account all applicable taxes.
 	 */
 	Offers getOffers(CurrencyMarket market);
 
-	void getOpenTransactions();
+	/**
+	 * Get all the trade requests that you have placed on this exchange, that
+	 * haven't been filled yet.
+	 * 
+	 * @param market
+	 *            The exchange pair to analyze.
+	 * @return The trade requests that you have placed on this exchange, that
+	 *         haven't been filled yet.
+	 */
+	Collection<Order> getOpenOrders(CurrencyMarket market);
 
-	void getOpenTransactions(CurrencyMarket market);
-
-	void getTradeHistory(CurrencyMarket market);
+	Collection<Transaction> getTradeHistory(CurrencyMarket market);
 
 	Pfloat getBalance(Currency currency);
 
-	void sendFundsTo(Exchange exchange, Holding holding);
+	boolean sendFundsTo(Exchange exchange, Holding holding);
 
 	String getWalletAddress(Currency currency);
 
@@ -79,7 +88,7 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @return TODO
 	 */
-	void buy(Pfloat toSpend, CurrencyMarket market);
+	Order buy(Pfloat toSpend, CurrencyMarket market);
 
 	/**
 	 * Buy [amount] units of [commodity] currency with the [currency] currency.
@@ -92,7 +101,7 @@ public interface Exchange extends Ticker {
 	 *            The amount of the currency to buy.
 	 * @return TODO
 	 */
-	void buy(CurrencyMarket market, Pfloat toBuy);
+	Order buy(CurrencyMarket market, Pfloat toBuy);
 
 	/**
 	 * Place an order for the [commodity] currency at a rate of [price] with the
@@ -107,5 +116,5 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @return TODO
 	 */
-	void buy(Pfloat toSpend, CurrencyMarket market, Pfloat price);
+	Order buy(Pfloat toSpend, CurrencyMarket market, Pfloat price);
 }

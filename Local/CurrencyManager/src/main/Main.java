@@ -6,7 +6,7 @@ import constants.Timing;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencies.CurrencyMarket;
-import exchanges.Poloniex;
+import exchanges.poloniex.Poloniex;
 import tickers.CoinMarketCap;
 import tickers.Ticker;
 

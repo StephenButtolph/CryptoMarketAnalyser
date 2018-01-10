@@ -2,7 +2,7 @@ package exchanges;
 
 import arithmetic.Pfloat;
 import currencies.CurrencyMarket;
-import offers.Offers;
+import offerGroups.Offers;
 
 public abstract class StandardExchange implements Exchange {
 	protected abstract Offers getRawOffers(CurrencyMarket exchangePair);
@@ -11,14 +11,8 @@ public abstract class StandardExchange implements Exchange {
 	
 	@Override
 	public Offers getOffers(CurrencyMarket market) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void getOpenTransactions(CurrencyMarket market) {
-		// TODO Auto-generated method stub
-
+		Offers rawOffers = getRawOffers(market);
+		return adjustOffers(rawOffers);
 	}
 
 	@Override

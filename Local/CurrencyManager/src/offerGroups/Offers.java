@@ -1,10 +1,11 @@
-package offers;
+package offerGroups;
 
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import arithmetic.Pfloat;
+import offers.Offer;
 import utils.IterableUtils;
 
 public class Offers implements Iterable<OfferPoint> {

@@ -2,17 +2,18 @@ package exchanges;
 
 import arithmetic.Pfloat;
 import currencies.CurrencyMarket;
+import orders.Order;
 
 public abstract class BestEffortExchange extends StandardExchange {
 	@Override
-	public void buy(Pfloat toSpend, CurrencyMarket market) {
+	public Order buy(Pfloat toSpend, CurrencyMarket market) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public void buy(CurrencyMarket market, Pfloat toBuy) {
+	public Order buy(CurrencyMarket market, Pfloat toBuy) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 }
