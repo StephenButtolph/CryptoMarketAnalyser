@@ -20,7 +20,7 @@ class StandardCurrency implements Currency {
 	 * @param symbol
 	 *            The symbol of the currency to represent.
 	 */
-	StandardCurrency(String name, String symbol) {
+	public StandardCurrency(String name, String symbol) {
 		this.name = name;
 		this.symbol = symbol;
 	}
