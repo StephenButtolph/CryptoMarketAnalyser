@@ -12,7 +12,7 @@ public class CurrencyFactory {
 	private static final Wrapper<BiMap<String, String>> NAME_TO_SYMBOL;
 
 	static {
-		NAME_TO_SYMBOL = CoinMarketCap.getNameToSymbolMappings(Timing.CurrencyNameMappingHoldDuration);
+		NAME_TO_SYMBOL = CoinMarketCap.getNameToSymbolMappings(Timing.DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY);
 	}
 
 	public static Currency parseName(String name) {

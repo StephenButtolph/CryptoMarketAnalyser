@@ -6,9 +6,15 @@ import java.nio.file.Paths;
 
 import exceptions.StaticLoadException;
 
+/**
+ * @author Stephen Buttolph
+ *
+ *         This is a resource manager for gaining access to resource files.
+ */
 public class Resources {
-	private static final String POLONIEX_AUTH_LOCAL_PATH;
 	public static final String POLONIEX_AUTH_PATH;
+	
+	private static final String POLONIEX_AUTH_LOCAL_PATH;
 
 	static {
 		POLONIEX_AUTH_LOCAL_PATH = "/Poloniex/Auth.auth";

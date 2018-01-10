@@ -3,22 +3,50 @@ package constants;
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 
+/**
+ * @author Stephen Buttolph
+ *
+ *         This is a time manager to control constant time periods, such as
+ *         seconds or hours, and to control default time periods.
+ */
 public class Timing {
+	/**
+	 * No time amount.
+	 */
+	public static final TemporalAmount ZERO;
+
+	/**
+	 * A one second time amount.
+	 */
 	public static final TemporalAmount SECOND;
+
+	/**
+	 * A one minute time amount.
+	 */
 	public static final TemporalAmount MINUTE;
+
+	/**
+	 * A one hour time amount.
+	 */
 	public static final TemporalAmount HOUR;
+
+	/**
+	 * A one day time amount.
+	 */
 	public static final TemporalAmount DAY;
 
-	public static final TemporalAmount TransactionHoldDuration;
-	public static final TemporalAmount CurrencyNameMappingHoldDuration;
+	/**
+	 * The default amount of time to refresh the currency factory.
+	 */
+	public static final TemporalAmount DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY;
 
 	static {
+		ZERO = Duration.ZERO;
 		SECOND = Duration.ofSeconds(1);
 		MINUTE = Duration.ofMinutes(1);
 		HOUR = Duration.ofHours(1);
 		DAY = Duration.ofDays(1);
 
-		TransactionHoldDuration = Duration.ofSeconds(5); // should be made parsed
-		CurrencyNameMappingHoldDuration = DAY; // should be made parsed
+		DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY = DAY;
 	}
 }
