@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
-import exchangeAuths.PoloniexAuth;
+import exchanges.poloniex.PoloniexAuth;
 import utils.FileUtils;
 import utils.IterableUtils;
 import utils.SecurityUtils;

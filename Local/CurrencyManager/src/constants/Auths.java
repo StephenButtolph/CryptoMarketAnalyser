@@ -1,7 +1,7 @@
 package constants;
 
 import exceptions.StaticLoadException;
-import exchangeAuths.PoloniexAuth;
+import exchanges.poloniex.PoloniexAuth;
 import utils.FileUtils;
 
 /**

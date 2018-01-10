@@ -2,7 +2,7 @@ package exceptions;
 
 /**
  * This exception should be thrown when a critical assumption has failed. This
- * should ideally only be thrown on rare system dependent errors.
+ * should ideally only be thrown on 'rare' system dependent errors.
  * 
  * @author Stephen Buttolph
  */

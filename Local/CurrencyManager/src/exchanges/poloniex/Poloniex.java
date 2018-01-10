@@ -16,7 +16,6 @@ import arithmetic.Pfloat;
 import constants.Json;
 import currencies.Currency;
 import currencyExchanges.CurrencyMarket;
-import exchangeAuths.PoloniexAuth;
 import exchanges.BestEffortExchange;
 import exchanges.Exchange;
 import holdings.Holding;

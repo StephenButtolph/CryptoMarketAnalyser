@@ -1,4 +1,4 @@
-package exchangeAuths;
+package exchanges.poloniex;
 
 import java.lang.reflect.Type;
 

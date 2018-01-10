@@ -4,7 +4,7 @@ import arithmetic.Pfloat;
 import currencyExchanges.CurrencyMarket;
 import orders.Order;
 
-public class PoloniexOrder implements Order {
+class PoloniexOrder implements Order {
 
 	@Override
 	public boolean isOpen() {
