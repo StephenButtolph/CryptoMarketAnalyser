@@ -1,6 +1,7 @@
 package exchanges.poloniex;
 
 import java.lang.reflect.Type;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
