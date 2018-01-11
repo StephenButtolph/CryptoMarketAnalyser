@@ -12,6 +12,14 @@ import offerGroups.Offers;
 import orders.Order;
 import transactions.Transaction;
 
+/**
+ * This exchange will perform over a group of other exchanges. This means that
+ * by using this class with multiple exchanges, you should be able to get a
+ * full, integrated viewpoint of the entire market, seamlessly bundled like any
+ * other exchange.
+ * 
+ * @author Stephen Buttolph
+ */
 public class MultiExchange extends BestEffortExchange {
 	@Override
 	public Pfloat get24HVolume(Currency currency) {

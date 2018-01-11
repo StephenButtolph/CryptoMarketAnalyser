@@ -25,9 +25,20 @@ import transactions.Transaction;
 import utils.IterableUtils;
 import utils.WebUtils;
 
+/**
+ * This is an exchange that is backed by the Poloniex API.
+ * 
+ * @author Stephen Buttolph
+ */
 public class Poloniex extends BestEffortExchange {
 	private PoloniexAuth auth;
 
+	/**
+	 * Create a new Poloniex exchange with the given authorizations [auth].
+	 * 
+	 * @param auth
+	 *            The authorizations to access the Poloniex API.
+	 */
 	public Poloniex(PoloniexAuth auth) {
 		this.auth = auth;
 	}
@@ -128,22 +139,26 @@ public class Poloniex extends BestEffortExchange {
 
 		String address = returnMap.get(currency.getSymbol());
 		if (address == null) {
-			Map<String, String> generateParameters = Utils.getDefaultPostParameters();
-			generateParameters.put(Constants.COMMAND, Constants.GENERATE_NEW_ADDRESS);
-			generateParameters.put(Constants.CURRENCY, currency.getSymbol());
-
-			Map<?, ?> generateHeaders = Utils.makeRequestHeaders(auth, generateParameters);
-			HttpResponse generateResponse = WebUtils.postRequest(Constants.TRADING_URL, generateHeaders,
-					generateParameters);
-			String generateJson = WebUtils.getJson(generateResponse);
-
-			Type generateType = new TypeToken<Map<String, String>>() {
-			}.getType();
-			Map<String, String> generateMap = Json.GSON.fromJson(generateJson, generateType);
-
-			address = generateMap.get(Constants.RESPONSE);
+			return makeWalletAddress(currency);
 		}
 		return address;
+	}
+
+	private String makeWalletAddress(Currency currency) {
+		Map<String, String> generateParameters = Utils.getDefaultPostParameters();
+		generateParameters.put(Constants.COMMAND, Constants.GENERATE_NEW_ADDRESS);
+		generateParameters.put(Constants.CURRENCY, currency.getSymbol());
+
+		Map<?, ?> generateHeaders = Utils.makeRequestHeaders(auth, generateParameters);
+		HttpResponse generateResponse = WebUtils.postRequest(Constants.TRADING_URL, generateHeaders,
+				generateParameters);
+		String generateJson = WebUtils.getJson(generateResponse);
+
+		Type generateType = new TypeToken<Map<String, String>>() {
+		}.getType();
+		Map<String, String> generateMap = Json.GSON.fromJson(generateJson, generateType);
+
+		return generateMap.get(Constants.RESPONSE);
 	}
 
 	@Override
