@@ -9,6 +9,11 @@ import exchanges.poloniex.Poloniex;
 import tickers.Ticker;
 import tickers.coinMarketCap.CoinMarketCap;
 
+/**
+ * Test entry point for functions not clearly suited for JUnit testing.
+ * 
+ * @author Stephen Buttolph
+ */
 public class Main {
 	public static void main(String[] args) {
 		poloniexTest();

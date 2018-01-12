@@ -11,6 +11,12 @@ import orders.Order;
 import tickers.Ticker;
 import transactions.Transaction;
 
+/**
+ * This represents an exchange that allows the analysis and exchange of
+ * currencies.
+ * 
+ * @author Stephen Buttolph
+ */
 public interface Exchange extends Ticker {
 	/**
 	 * Get the current order book of the [market] exchange. Will take into account
