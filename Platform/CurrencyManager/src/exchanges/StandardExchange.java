@@ -4,6 +4,11 @@ import arithmetic.Pfloat;
 import currencyExchanges.CurrencyMarket;
 import offerGroups.Offers;
 
+/**
+ * The implementation of standard functions for exchanges.
+ * 
+ * @author Stephen Buttolph
+ */
 public abstract class StandardExchange implements Exchange {
 	protected abstract Offers getRawOffers(CurrencyMarket exchangePair);
 

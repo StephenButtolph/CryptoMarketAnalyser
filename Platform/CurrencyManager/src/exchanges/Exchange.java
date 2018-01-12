@@ -32,18 +32,54 @@ public interface Exchange extends Ticker {
 	 * @param market
 	 *            The exchange pair to analyze.
 	 * @return The trade requests that you have placed on this exchange, that
-	 *         haven't been filled yet.
+	 *         haven't been fully filled yet.
 	 */
 	Collection<Order> getOpenOrders(CurrencyMarket market);
 
+	/**
+	 * Get all the trade requests that you have placed on this exchange, that have
+	 * been filled.
+	 * 
+	 * @param market
+	 *            The exchange pair to analyze.
+	 * @return The trade requests that you have placed on this exchange, that have
+	 *         been fully filled.
+	 */
 	Collection<Transaction> getTradeHistory(CurrencyMarket market);
 
+	/**
+	 * Get the current available amount of [currency].
+	 * 
+	 * @param currency
+	 *            The currency you wish to know the balance of.
+	 * @return The current available amount of [currency].
+	 */
 	Pfloat getBalance(Currency currency);
 
+	/**
+	 * Send the [holding] in this exchange to the requested [exchange].
+	 * 
+	 * @param exchange
+	 *            The exchange to send the [holding] to.
+	 * @param holding
+	 *            The holding to send to the [exchange].
+	 * @return True if the request was transfered successfully, false otherwise.
+	 */
 	boolean sendFundsTo(Exchange exchange, Holding holding);
 
+	/**
+	 * Get the address to be used to deposit [currency] into this exchange.
+	 * 
+	 * @param currency
+	 *            The currency that can be deposited into this address.
+	 * @return The address to be used to deposit [currency] into this exchange, null
+	 *         if this exchange doesn't support that currency.
+	 */
 	String getWalletAddress(Currency currency);
 
+	/**
+	 * @return The markets that this currency supports.
+	 */
 	Collection<CurrencyMarket> getCurrencyMarkets();
 
 	/**
@@ -86,7 +122,7 @@ public interface Exchange extends Ticker {
 	 *            The currency and amount to spend.
 	 * @param commodity
 	 *            The currency to buy.
-	 * @return TODO
+	 * @return The order placed by this call.
 	 */
 	Order buy(Pfloat toSpend, CurrencyMarket market);
 
@@ -99,7 +135,7 @@ public interface Exchange extends Ticker {
 	 *            The currency to buy.
 	 * @param amount
 	 *            The amount of the currency to buy.
-	 * @return TODO
+	 * @return The order placed by this call.
 	 */
 	Order buy(CurrencyMarket market, Pfloat toBuy);
 
@@ -114,7 +150,7 @@ public interface Exchange extends Ticker {
 	 *            place the order for the [commodity] currency at.
 	 * @param commodity
 	 *            The currency to buy.
-	 * @return TODO
+	 * @return The order placed by this call.
 	 */
 	Order buy(Pfloat toSpend, CurrencyMarket market, Pfloat price);
 }

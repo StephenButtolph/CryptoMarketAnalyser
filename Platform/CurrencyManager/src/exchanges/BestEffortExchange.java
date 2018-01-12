@@ -4,6 +4,13 @@ import arithmetic.Pfloat;
 import currencyExchanges.CurrencyMarket;
 import orders.Order;
 
+/**
+ * This represents an exchange that will simply place an order with a remote
+ * exchange at the expected price, with no guarantee that the order will be
+ * filled as requested.
+ * 
+ * @author Stephen Buttolph
+ */
 public abstract class BestEffortExchange extends StandardExchange {
 	@Override
 	public Order buy(Pfloat toSpend, CurrencyMarket market) {

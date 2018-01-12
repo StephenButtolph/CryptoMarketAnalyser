@@ -176,8 +176,12 @@ public class Poloniex extends BestEffortExchange {
 		Iterable<CurrencyMarket> marketIter = IterableUtils.map(map.keySet(), Utils::parseMarket);
 
 		Collection<CurrencyMarket> markets = new HashSet<>();
-		marketIter.forEach(markets::add);
-		markets.remove(null);
+		marketIter.forEach(market -> {
+			if (market != null) {
+				markets.add(market);
+				markets.add(market.invert());
+			}
+		});
 		return markets;
 	}
 

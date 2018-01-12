@@ -74,8 +74,7 @@ public class CurrencyMarket {
 		}
 
 		CurrencyMarket other = (CurrencyMarket) o;
-		return (Objects.equals(currency, other.currency) && Objects.equals(commodity, other.commodity))
-				|| (Objects.equals(currency, other.commodity) && Objects.equals(commodity, other.currency));
+		return (Objects.equals(currency, other.currency) && Objects.equals(commodity, other.commodity));
 	}
 
 	@Override
