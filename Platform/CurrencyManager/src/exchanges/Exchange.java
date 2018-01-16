@@ -8,6 +8,7 @@ import currencyExchanges.CurrencyMarket;
 import holdings.Holding;
 import offerGroups.Offers;
 import orders.ClosedOrder;
+import orders.OpenOrder;
 import orders.Order;
 import tickers.Ticker;
 
@@ -40,7 +41,7 @@ public interface Exchange extends Ticker {
 	 * @return The trade requests that you have placed on this exchange, that
 	 *         haven't been fully filled yet.
 	 */
-	Collection<? extends Order> getOpenOrders(CurrencyMarket market);
+	Collection<? extends OpenOrder> getOpenOrders(CurrencyMarket market);
 
 	/**
 	 * Get all the trade requests that you have placed on this exchange, that have

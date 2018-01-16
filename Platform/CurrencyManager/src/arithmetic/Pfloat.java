@@ -17,7 +17,7 @@ import org.apfloat.Apfloat;
  */
 public class Pfloat {
 	/**
-	 * F A precise float representing the value 0.
+	 * A precise float representing the value 0.
 	 */
 	public static final Pfloat ZERO;
 
