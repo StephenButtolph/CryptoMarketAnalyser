@@ -10,6 +10,7 @@ import exchanges.Exchange;
 import holdings.Holding;
 import offerGroups.Offers;
 import orders.ClosedOrder;
+import orders.OpenOrder;
 import orders.Order;
 
 /**
@@ -40,7 +41,7 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public Collection<Order> getOpenOrders(CurrencyMarket market) {
+	public Collection<? extends OpenOrder> getOpenOrders(CurrencyMarket market) {
 		// TODO Auto-generated method stub
 		return null;
 	}
