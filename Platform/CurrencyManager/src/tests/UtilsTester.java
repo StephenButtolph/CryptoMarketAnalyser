@@ -9,9 +9,9 @@ import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 
 import exchanges.poloniex.PoloniexAuth;
-import utils.FileUtils;
-import utils.IterableUtils;
-import utils.SecurityUtils;
+import utils.file.FileUtils;
+import utils.iterable.IterableUtils;
+import utils.security.SecurityUtils;
 
 class UtilsTester {
 	private Integer[] makeArray(int length) {
@@ -108,6 +108,25 @@ class UtilsTester {
 
 			assertEquals(sum, checkSum);
 		}
+	}
+
+	@Test
+	void testFilter() {
+		Integer[] unfilteredArr = { 0, 5, 2, 1, 10, -1 };
+		Integer[] filteredArr = { 0, 2, 1, -1 };
+
+		Iterable<Integer> unfiltered = IterableUtils.toIterable(unfilteredArr);
+		Iterable<Integer> filteredCheck = IterableUtils.toIterable(filteredArr);
+
+		Iterable<Integer> filtered = IterableUtils.filter(unfiltered, num -> num < 4);
+
+		Iterator<Integer> filteredCheckIter = filteredCheck.iterator();
+		Iterator<Integer> filteredIter = filtered.iterator();
+		while (filteredCheckIter.hasNext() && filteredIter.hasNext()) {
+			assertEquals(filteredCheckIter.next(), filteredIter.next());
+		}
+		assertFalse(filteredCheckIter.hasNext());
+		assertFalse(filteredIter.hasNext());
 	}
 
 	@Test

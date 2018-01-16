@@ -6,8 +6,9 @@ import java.util.Map;
 import currencies.Currency;
 import currencies.CurrencyFactory;
 import currencyExchanges.CurrencyMarket;
-import utils.SecurityUtils;
-import utils.WebUtils;
+import currencyExchanges.StandardCurrencyMarket;
+import utils.security.SecurityUtils;
+import utils.web.WebUtils;
 
 class Utils {
 	static Map<String, String> getDefaultGetParameters() {
@@ -44,7 +45,7 @@ class Utils {
 		if (currency == null || commodity == null) {
 			return null;
 		}
-		return new CurrencyMarket(currency, commodity);
+		return new StandardCurrencyMarket(currency, commodity);
 	}
 
 	static String toMarket(CurrencyMarket market) {

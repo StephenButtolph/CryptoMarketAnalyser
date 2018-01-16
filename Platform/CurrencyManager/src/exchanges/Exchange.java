@@ -7,9 +7,9 @@ import currencies.Currency;
 import currencyExchanges.CurrencyMarket;
 import holdings.Holding;
 import offerGroups.Offers;
+import orders.ClosedOrder;
 import orders.Order;
 import tickers.Ticker;
-import transactions.Transaction;
 
 /**
  * This represents an exchange that allows the analysis and exchange of
@@ -33,14 +33,14 @@ public interface Exchange extends Ticker {
 
 	/**
 	 * Get all the trade requests that you have placed on this exchange, that
-	 * haven't been filled yet.
+	 * haven't been fully filled yet.
 	 * 
 	 * @param market
 	 *            The exchange pair to analyze.
 	 * @return The trade requests that you have placed on this exchange, that
 	 *         haven't been fully filled yet.
 	 */
-	Collection<Order> getOpenOrders(CurrencyMarket market);
+	Collection<? extends Order> getOpenOrders(CurrencyMarket market);
 
 	/**
 	 * Get all the trade requests that you have placed on this exchange, that have
@@ -51,7 +51,7 @@ public interface Exchange extends Ticker {
 	 * @return The trade requests that you have placed on this exchange, that have
 	 *         been fully filled.
 	 */
-	Collection<Transaction> getTradeHistory(CurrencyMarket market);
+	Collection<? extends ClosedOrder> getTradeHistory(CurrencyMarket market);
 
 	/**
 	 * Get the current available amount of [currency].
@@ -86,7 +86,7 @@ public interface Exchange extends Ticker {
 	/**
 	 * @return The markets that this currency supports.
 	 */
-	Collection<CurrencyMarket> getCurrencyMarkets();
+	Collection<? extends CurrencyMarket> getCurrencyMarkets();
 
 	/**
 	 * Get the cost of purchasing [amount] units of [commodity] currency in

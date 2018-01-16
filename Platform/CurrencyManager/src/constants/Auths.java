@@ -2,7 +2,7 @@ package constants;
 
 import exceptions.StaticLoadException;
 import exchanges.poloniex.PoloniexAuth;
-import utils.FileUtils;
+import utils.file.FileUtils;
 
 /**
  * Location for default authorization tokens.

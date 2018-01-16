@@ -36,7 +36,7 @@ class StandardCurrency implements Currency {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(name) + Objects.hashCode(symbol);
+		return Objects.hash(name, symbol);
 	}
 
 	@Override

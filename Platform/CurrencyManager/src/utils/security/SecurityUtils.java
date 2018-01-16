@@ -1,4 +1,4 @@
-package utils;
+package utils.security;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -43,21 +43,6 @@ public class SecurityUtils {
 			return mac;
 		} catch (NoSuchAlgorithmException | InvalidKeyException e) {
 			throw new AssertionException();
-		}
-	}
-
-	public static enum Algorithm {
-		SHA512("HmacSHA512");
-
-		private final String type;
-
-		private Algorithm(String type) {
-			this.type = type;
-		}
-
-		@Override
-		public String toString() {
-			return type;
 		}
 	}
 }

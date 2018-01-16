@@ -1,16 +1,16 @@
 package exchanges.poloniex;
 
 import java.lang.reflect.Type;
-
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.apache.http.HttpResponse;
-
-import com.google.gson.reflect.TypeToken;
 
 import arithmetic.Pfloat;
 import constants.Json;
@@ -20,10 +20,11 @@ import exchanges.BestEffortExchange;
 import exchanges.Exchange;
 import holdings.Holding;
 import offerGroups.Offers;
-import orders.Order;
-import transactions.Transaction;
-import utils.IterableUtils;
-import utils.WebUtils;
+import types.TypeProducer;
+import types.TypeToken;
+import utils.arithmetic.ArithmeticUtils;
+import utils.iterable.IterableUtils;
+import utils.web.WebUtils;
 
 /**
  * This is an exchange that is backed by the Poloniex API.
@@ -48,15 +49,10 @@ public class Poloniex extends BestEffortExchange {
 		Map<String, String> parameters = Utils.getDefaultGetParameters();
 		parameters.put(Constants.COMMAND, Constants.RETURN_24H_VOLUME);
 
-		HttpResponse response = WebUtils.getRequest(Constants.PUBLIC_URL, parameters);
-		String json = WebUtils.getJson(response);
+		TypeProducer typeProducer = new TypeToken<Map<String, Object>>();
 
-		Type topType = new TypeToken<Map<String, Object>>() {
-		}.getType();
-		Type subType = new TypeToken<Map<String, String>>() {
-		}.getType();
-		Map<String, Object> map = Json.GSON.fromJson(json, topType);
-
+		Map<String, Object> response = sendGet(parameters, typeProducer);
+		Type subType = new TypeToken<Map<String, String>>().getType();
 		BiFunction<Pfloat, Entry<String, Object>, Pfloat> f = (acc, entry) -> {
 			CurrencyMarket market = Utils.parseMarket(entry.getKey());
 			if (market != null && market.contains(currency)) {
@@ -69,7 +65,7 @@ public class Poloniex extends BestEffortExchange {
 			return acc;
 		};
 
-		return IterableUtils.fold(map.entrySet(), f, Pfloat.ZERO);
+		return IterableUtils.fold(response.entrySet(), f, Pfloat.ZERO);
 	}
 
 	@Override
@@ -87,57 +83,150 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	@Override
-	public Collection<Order> getOpenOrders(CurrencyMarket market) {
-		// TODO Auto-generated method stub
+	public Collection<PoloniexOpenOrderTemplate> getOpenOrders(CurrencyMarket market) {
+		return getOpenOrdersMap(market).values();
+	}
+
+	private Map<String, PoloniexOpenOrderTemplate> getOpenOrdersMap(CurrencyMarket market) {
+		boolean shouldInvert = shouldInvert(market);
+
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, Constants.RETURN_OPEN_ORDERS);
+		parameters.put(Constants.CURRENCY_PAIR, Utils.toMarket(market));
+
+		TypeProducer typeProducer = new TypeToken<Map<String, String>[]>();
+
+		Map<String, String>[] response = sendPost(parameters, typeProducer);
+		Iterable<Map<String, String>> responseIter = IterableUtils.toIterable(response);
+		Iterable<PoloniexOpenOrder> ordersIter = IterableUtils.map(responseIter, order -> {
+			CurrencyMarket curMarket;
+			String orderNumber = order.get(Constants.ORDER_NUMBER);
+			String price = order.get(Constants.RATE);
+			String amountCurrency = order.get(Constants.TOTAL);
+			String amountCommodity = order.get(Constants.AMOUNT);
+
+			if (shouldInvert) {
+				curMarket = market.invert();
+				orderNumber = order.get(Constants.ORDER_NUMBER);
+				price = order.get(Constants.RATE);
+
+				Pfloat priceFloat = new Pfloat(order.get(Constants.RATE));
+				price = Pfloat.ONE.divide(priceFloat).toString();
+				amountCurrency = order.get(Constants.AMOUNT);
+				amountCommodity = order.get(Constants.TOTAL);
+			} else {
+				curMarket = market;
+				orderNumber = order.get(Constants.ORDER_NUMBER);
+				price = order.get(Constants.RATE);
+				amountCurrency = order.get(Constants.TOTAL);
+				amountCommodity = order.get(Constants.AMOUNT);
+			}
+
+			return new PoloniexOpenOrder(curMarket, orderNumber, price, amountCurrency, amountCommodity);
+		});
+
+		Map<String, PoloniexOpenOrderTemplate> orders = new HashMap<>();
+		ordersIter.forEach(order -> {
+			orders.put(order.getOrderID(), order);
+		});
 		return null;
 	}
 
 	@Override
-	public Collection<Transaction> getTradeHistory(CurrencyMarket market) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<PoloniexClosedOrder> getTradeHistory(CurrencyMarket market) {
+		Function<Map<String, String>, PoloniexClosedOrder> getBuys = order -> {
+			if (Constants.BUY.equals(order.get(Constants.TYPE))) {
+				String price = order.get(Constants.RATE);
+				String amountCurrency = order.get(Constants.TOTAL);
+				String amountCommodity = order.get(Constants.AMOUNT);
+
+				// TODO ensure that tax isn't relevent and is already incorporated.
+
+				return new PoloniexClosedOrder(market, price, amountCurrency, amountCommodity);
+			}
+			return null;
+		};
+		Function<Map<String, String>, PoloniexClosedOrder> getSells = order -> {
+			if (Constants.SELL.equals(order.get(Constants.TYPE))) {
+				// TODO change if needed
+				String amountCommodity = order.get(Constants.TOTAL);
+				String amountCurrency = order.get(Constants.AMOUNT);
+
+				// TODO ensure that tax isn't relevent and is already incorporated.
+
+				return new PoloniexClosedOrder(market, amountCurrency, amountCommodity);
+			}
+			return null;
+		};
+
+		if (shouldInvert(market)) {
+			return getTradeHistory(market.invert(), getSells);
+		} else {
+			return getTradeHistory(market, getBuys);
+		}
+	}
+
+	private Collection<PoloniexClosedOrder> getTradeHistory(CurrencyMarket market,
+			Function<Map<String, String>, PoloniexClosedOrder> f) {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, Constants.RETURN_TRADE_HISTORY);
+		parameters.put(Constants.CURRENCY_PAIR, Utils.toMarket(market));
+		parameters.put(Constants.START, Constants.MIN_START_TIME);
+		parameters.put(Constants.LIMIT, Constants.MAX_RETURN_TRADE_HISTORY_LIMIT);
+
+		TypeProducer typeProducer = new TypeToken<Map<String, String>[]>();
+
+		Map<String, String>[] response = sendPost(parameters, typeProducer);
+
+		Iterable<Map<String, String>> responseIter = IterableUtils.toIterable(response);
+		Iterable<PoloniexClosedOrder> orderIter = IterableUtils.map(responseIter, f);
+		orderIter = IterableUtils.filter(orderIter, order -> order != null);
+
+		Collection<PoloniexClosedOrder> orders = new ArrayList<>();
+		orderIter.forEach(orders::add);
+		return orders;
 	}
 
 	@Override
 	public Pfloat getBalance(Currency currency) {
-		Map<String, String> parameters = Utils.getDefaultPostParameters();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put(Constants.COMMAND, Constants.RETURN_BALANCES);
 
-		Map<?, ?> headers = Utils.makeRequestHeaders(auth, parameters);
-		HttpResponse response = WebUtils.postRequest(Constants.TRADING_URL, headers, parameters);
-		String json = WebUtils.getJson(response);
+		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 
-		Type type = new TypeToken<Map<String, String>>() {
-		}.getType();
-		Map<String, String> map = Json.GSON.fromJson(json, type);
-
-		String amount = map.get(currency.getSymbol());
+		Map<String, String> response = sendPost(parameters, typeProducer);
+		String amount = response.get(currency.getSymbol());
 		if (amount == null) {
-			return null;
+			return Pfloat.UNDEFINED;
 		}
 		return new Pfloat(amount);
 	}
 
 	@Override
 	public boolean sendFundsTo(Exchange exchange, Holding holding) {
-		// TODO Auto-generated method stub
-		return false;
+		Currency currency = holding.getCurrency();
+
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, Constants.WITHDRAW);
+		parameters.put(Constants.CURRENCY, currency.getSymbol());
+		parameters.put(Constants.AMOUNT, holding.getAmount().toString());
+		parameters.put(Constants.ADDRESS, exchange.getWalletAddress(currency));
+
+		TypeProducer typeProducer = new TypeToken<Map<String, ?>>();
+
+		Map<String, ?> response = sendPost(parameters, typeProducer);
+		return response.containsKey(Constants.RESPONSE);
 	}
 
 	@Override
 	public String getWalletAddress(Currency currency) {
-		Map<String, String> returnParameters = Utils.getDefaultPostParameters();
-		returnParameters.put(Constants.COMMAND, Constants.RETURN_DEPOSIT_ADDRESSES);
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, Constants.RETURN_DEPOSIT_ADDRESSES);
 
-		Map<?, ?> returnHeaders = Utils.makeRequestHeaders(auth, returnParameters);
-		HttpResponse returnResponse = WebUtils.postRequest(Constants.TRADING_URL, returnHeaders, returnParameters);
-		String returnJson = WebUtils.getJson(returnResponse);
+		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 
-		Type returnType = new TypeToken<Map<String, String>>() {
-		}.getType();
-		Map<String, String> returnMap = Json.GSON.fromJson(returnJson, returnType);
-
-		String address = returnMap.get(currency.getSymbol());
+		Map<String, String> response = sendPost(parameters, typeProducer);
+		String address = response.get(currency.getSymbol());
 		if (address == null) {
 			return makeWalletAddress(currency);
 		}
@@ -145,49 +234,160 @@ public class Poloniex extends BestEffortExchange {
 	}
 
 	private String makeWalletAddress(Currency currency) {
-		Map<String, String> generateParameters = Utils.getDefaultPostParameters();
-		generateParameters.put(Constants.COMMAND, Constants.GENERATE_NEW_ADDRESS);
-		generateParameters.put(Constants.CURRENCY, currency.getSymbol());
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, Constants.GENERATE_NEW_ADDRESS);
+		parameters.put(Constants.CURRENCY, currency.getSymbol());
 
-		Map<?, ?> generateHeaders = Utils.makeRequestHeaders(auth, generateParameters);
-		HttpResponse generateResponse = WebUtils.postRequest(Constants.TRADING_URL, generateHeaders,
-				generateParameters);
-		String generateJson = WebUtils.getJson(generateResponse);
+		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 
-		Type generateType = new TypeToken<Map<String, String>>() {
-		}.getType();
-		Map<String, String> generateMap = Json.GSON.fromJson(generateJson, generateType);
-
-		return generateMap.get(Constants.RESPONSE);
+		Map<String, String> response = sendPost(parameters, typeProducer);
+		return response.get(Constants.RESPONSE);
 	}
 
 	@Override
-	public Collection<CurrencyMarket> getCurrencyMarkets() {
-		Map<String, String> parameters = Utils.getDefaultGetParameters();
+	protected Collection<CurrencyMarket> getOriginalCurrencyMarkets() {
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put(Constants.COMMAND, Constants.RETURN_TICKER);
 
-		HttpResponse response = WebUtils.getRequest(Constants.PUBLIC_URL, parameters);
-		String json = WebUtils.getJson(response);
+		TypeProducer typeProducer = new TypeToken<Map<String, ?>>();
 
-		Type type = new TypeToken<Map<String, ?>>() {
-		}.getType();
-		Map<String, ?> map = Json.GSON.fromJson(json, type);
-
-		Iterable<CurrencyMarket> marketIter = IterableUtils.map(map.keySet(), Utils::parseMarket);
+		Map<String, ?> response = sendGet(parameters, typeProducer);
+		Iterable<CurrencyMarket> marketIter = IterableUtils.map(response.keySet(), Utils::parseMarket);
+		marketIter = IterableUtils.filter(marketIter, market -> market != null);
 
 		Collection<CurrencyMarket> markets = new HashSet<>();
-		marketIter.forEach(market -> {
-			if (market != null) {
-				markets.add(market);
-				markets.add(market.invert());
-			}
-		});
+		marketIter.forEach(markets::add);
 		return markets;
 	}
 
 	@Override
-	public Order buy(Pfloat toSpend, CurrencyMarket market, Pfloat price) {
-		// TODO Auto-generated method stub
-		return null;
+	public PoloniexOpenOrderTemplate buy(Pfloat toSpend, CurrencyMarket market, Pfloat rate) {
+		String command;
+
+		if (shouldInvert(market)) {
+			command = Constants.SELL;
+			rate = Pfloat.ONE.divide(rate);
+			market = market.invert();
+		} else {
+			command = Constants.BUY;
+			toSpend = ArithmeticUtils.getReturn(toSpend, rate);
+		}
+
+		return placeOrder(command, market, rate, toSpend);
+	}
+
+	private PoloniexOpenOrderTemplate placeOrder(String command, CurrencyMarket market, Pfloat rate, Pfloat amount) {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(Constants.COMMAND, command);
+		parameters.put(Constants.CURRENCY, Utils.toMarket(market));
+		parameters.put(Constants.RATE, rate.toString());
+		parameters.put(Constants.AMOUNT, amount.toString());
+
+		TypeProducer typeProducer = new TypeToken<Map<String, ?>>();
+
+		Map<String, ?> response = sendPost(parameters, typeProducer);
+		String orderNumber = response.get(Constants.ORDER_NUMBER).toString();
+
+		return getOpenOrdersMap(market).get(orderNumber);
+	}
+
+	private class PoloniexOpenOrder extends PoloniexOpenOrderTemplate {
+		private PoloniexOpenOrder(CurrencyMarket market, String price, String amountCurrency, String amountCommodity,
+				String orderID) throws NumberFormatException {
+			super(market, price, amountCurrency, amountCommodity, orderID);
+		}
+
+		private PoloniexOpenOrder(CurrencyMarket market, Pfloat price, Pfloat amountCurrency, Pfloat amountCommodity,
+				String orderID) {
+			super(market, price, amountCurrency, amountCommodity, orderID);
+		}
+
+		@Override
+		public boolean isOpen() {
+			return getOpenOrders(getMarket()).contains(this);
+		}
+
+		@Override
+		public boolean cancel() {
+			Map<String, String> parameters = new HashMap<>();
+			parameters.put(Constants.COMMAND, Constants.CANCEL_ORDER);
+			parameters.put(Constants.ORDER_NUMBER, this.getOrderID());
+
+			TypeProducer typeProducer = new TypeToken<Map<String, Object>>();
+
+			Map<String, Object> response = sendPost(parameters, typeProducer);
+			return response.get(Constants.SUCCESS).equals(Constants.SUCCEEDED);
+		}
+
+		@Override
+		public Collection<PoloniexClosedOrder> getCompleted() {
+			Map<String, String> parameters = new HashMap<>();
+			parameters.put(Constants.COMMAND, Constants.RETURN_ORDER_TRADES);
+			parameters.put(Constants.ORDER_NUMBER, this.getOrderID());
+
+			TypeProducer typeProducer = new TypeToken<Map<String, String>[]>();
+			Map<String, String>[] response = sendPost(parameters, typeProducer);
+
+			Collection<PoloniexClosedOrder> orders = new ArrayList<>();
+			for (Map<String, String> order : IterableUtils.toIterable(response)) {
+				String price;
+				String amountCurrency;
+				String amountCommodity;
+
+				if (Constants.BUY.equals(order.get(Constants.TYPE))) {
+					price = order.get(Constants.RATE);
+					amountCurrency = order.get(Constants.AMOUNT);
+					amountCommodity = order.get(Constants.RATE);
+				} else {
+					Pfloat inversePrice = new Pfloat(order.get(Constants.RATE));
+
+					price = Pfloat.ONE.divide(inversePrice).toString();
+					amountCurrency = order.get(Constants.RATE);
+					amountCommodity = order.get(Constants.AMOUNT);
+				}
+
+				// TODO ensure no need to account for taxes
+
+				PoloniexClosedOrder newOrder = new PoloniexClosedOrder(getMarket(), price, amountCurrency,
+						amountCommodity);
+				orders.add(newOrder);
+			}
+
+			return orders;
+		}
+	}
+
+	private <T> T sendGet(Map<String, String> params, TypeProducer typeProducer) {
+		Map<String, String> parameters = Utils.getDefaultGetParameters();
+		parameters.putAll(params);
+
+		HttpResponse response = WebUtils.getRequest(Constants.PUBLIC_URL, parameters);
+		String json = WebUtils.getJson(response);
+
+		T toReturn = null;
+		try {
+			toReturn = Json.GSON.fromJson(json, typeProducer.getType());
+		} catch (com.google.gson.JsonSyntaxException e) {
+		}
+		return toReturn;
+	}
+
+	private <T> T sendPost(Map<String, String> params, TypeProducer typeProducer) {
+		Map<String, String> parameters = Utils.getDefaultPostParameters();
+		parameters.putAll(params);
+
+		Map<?, ?> headers = Utils.makeRequestHeaders(auth, parameters);
+
+		HttpResponse response = WebUtils.postRequest(Constants.TRADING_URL, headers, parameters);
+		String json = WebUtils.getJson(response);
+
+		System.out.println(json);
+
+		T toReturn = null;
+		try {
+			toReturn = Json.GSON.fromJson(json, typeProducer.getType());
+		} catch (com.google.gson.JsonSyntaxException e) {
+		}
+		return toReturn;
 	}
 }

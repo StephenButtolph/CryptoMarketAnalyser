@@ -4,6 +4,11 @@ import java.util.function.Function;
 
 import org.apfloat.Apfloat;
 
+/* 
+ * TODO improve precision management 
+ * should use precision based on number of decimals and round up division.
+ */
+
 /**
  * A Pfloat represents a precise float. This is intended to be used for avoiding
  * floating point approximation errors.
@@ -12,7 +17,7 @@ import org.apfloat.Apfloat;
  */
 public class Pfloat {
 	/**
-	 * A precise float representing the value 0.
+	 * F A precise float representing the value 0.
 	 */
 	public static final Pfloat ZERO;
 

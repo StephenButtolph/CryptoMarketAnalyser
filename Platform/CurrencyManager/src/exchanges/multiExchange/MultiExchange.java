@@ -9,8 +9,8 @@ import exchanges.BestEffortExchange;
 import exchanges.Exchange;
 import holdings.Holding;
 import offerGroups.Offers;
+import orders.ClosedOrder;
 import orders.Order;
-import transactions.Transaction;
 
 /**
  * This exchange will perform over a group of other exchanges. This means that
@@ -46,7 +46,7 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public Collection<Transaction> getTradeHistory(CurrencyMarket market) {
+	public Collection<ClosedOrder> getTradeHistory(CurrencyMarket market) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -70,7 +70,7 @@ public class MultiExchange extends BestEffortExchange {
 	}
 
 	@Override
-	public Collection<CurrencyMarket> getCurrencyMarkets() {
+	protected Collection<? extends CurrencyMarket> getOriginalCurrencyMarkets() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -2,9 +2,8 @@ package exchanges.poloniex;
 
 import java.lang.reflect.Type;
 
-import com.google.gson.reflect.TypeToken;
-
 import types.TypeProducer;
+import types.TypeToken;
 
 /**
  * This encapsulates the authorizations needed to access the Poloniex API.
@@ -53,7 +52,6 @@ public class PoloniexAuth implements TypeProducer {
 
 	@Override
 	public Type getType() {
-		return new TypeToken<PoloniexAuth>() {
-		}.getType();
+		return new TypeToken<PoloniexAuth>().getType();
 	}
 }

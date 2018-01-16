@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import arithmetic.Pfloat;
 import offers.Offer;
-import utils.IterableUtils;
+import utils.iterable.IterableUtils;
 
 /**
  * A group of offers that all have the same price.

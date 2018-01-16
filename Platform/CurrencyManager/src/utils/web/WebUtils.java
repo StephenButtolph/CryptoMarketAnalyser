@@ -1,4 +1,4 @@
-package utils;
+package utils.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 
 import exceptions.AssertionException;
 import exceptions.ConnectionException;
+import utils.iterable.IterableUtils;
 
 public class WebUtils {
 	private static final String CHAR_SET;
