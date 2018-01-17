@@ -15,7 +15,7 @@ import org.apfloat.Apfloat;
  * 
  * @author Stephen Buttolph
  */
-public class Pfloat {
+public class Pfloat implements Comparable<Pfloat> {
 	/**
 	 * A precise float representing the value 0.
 	 */
@@ -63,6 +63,11 @@ public class Pfloat {
 	 */
 	public Pfloat(String val) throws NumberFormatException {
 		this(new Apfloat(val, Constants.DEFAULT_PRECISION));
+	}
+
+	protected Pfloat(Pfloat val) {
+		this.value = val.value;
+		this.type = val.type;
 	}
 
 	private Pfloat(Apfloat val) {
@@ -179,5 +184,17 @@ public class Pfloat {
 
 	private enum Type {
 		NUMBER, UNDEFINED;
+	}
+
+	@Override
+	public int compareTo(Pfloat other) {
+		if (!isDefined() && !other.isDefined()) {
+			return 0;
+		} else if (!isDefined()) {
+			return -1;
+		} else if (!other.isDefined()) {
+			return 1;
+		}
+		return value.compareTo(other.value);
 	}
 }

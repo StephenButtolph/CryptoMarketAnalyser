@@ -1,5 +1,8 @@
 package currencies;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.text.WordUtils;
 
 import com.google.common.collect.BiMap;
@@ -53,5 +56,11 @@ public class CurrencyFactory {
 			return null;
 		}
 		return new StandardCurrency(name, symbol);
+	}
+
+	public static Collection<Currency> getAllCurrencies() {
+		Collection<Currency> currencies = new ArrayList<>();
+		NAME_TO_SYMBOL.getValue().forEach((name, symbol) -> currencies.add(new StandardCurrency(name, symbol)));
+		return currencies;
 	}
 }
