@@ -2,12 +2,12 @@ package currencies;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.WordUtils;
 
 import com.google.common.collect.BiMap;
 
-import constants.Timing;
 import tickers.coinMarketCap.CoinMarketCap;
 import wrappers.Wrapper;
 
@@ -21,7 +21,7 @@ public class CurrencyFactory {
 	private static final Wrapper<BiMap<String, String>> NAME_TO_SYMBOL;
 
 	static {
-		NAME_TO_SYMBOL = CoinMarketCap.getNameToSymbolMappings(Timing.DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY);
+		NAME_TO_SYMBOL = CoinMarketCap.getNameToSymbolMappings(Constants.REFRESH_FREQUENCY);
 	}
 
 	/**
@@ -56,6 +56,30 @@ public class CurrencyFactory {
 			return null;
 		}
 		return new StandardCurrency(name, symbol);
+	}
+
+	/**
+	 * @return the currency represented by this string.
+	 */
+	public static Currency parseCurrency(String currencyString) {
+		if (currencyString == null
+				|| currencyString.length() <= Constants.FORMAT_HEADER.length() + Constants.FORMAT_FOOTER.length()
+						+ Constants.FORMAT_DELIMITER.length()
+				|| !currencyString.contains(Constants.FORMAT_HEADER)
+				|| !currencyString.contains(Constants.FORMAT_FOOTER)
+				|| !currencyString.contains(Constants.FORMAT_DELIMITER)) {
+			return null;
+		}
+
+		currencyString = currencyString.substring(Constants.FORMAT_HEADER.length(), currencyString.length() - 1);
+		currencyString = currencyString.substring(0, currencyString.length() - (Constants.FORMAT_FOOTER.length() + 1));
+		String[] parts = currencyString.split(Pattern.quote(Constants.FORMAT_DELIMITER));
+
+		if (parts.length != 2) {
+			return null;
+		}
+
+		return parseName(parts[0]);
 	}
 
 	public static Collection<Currency> getAllCurrencies() {

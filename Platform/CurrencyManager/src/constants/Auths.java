@@ -2,7 +2,8 @@ package constants;
 
 import exceptions.StaticLoadException;
 import exchanges.poloniex.PoloniexAuth;
-import utils.file.FileUtils;
+import utils.files.FileUtils;
+import utils.resources.ResourceUtils;
 
 /**
  * Location for default authorization tokens.
@@ -16,7 +17,9 @@ public class Auths {
 	public static final PoloniexAuth POLONIEX_AUTH;
 
 	static {
-		POLONIEX_AUTH = FileUtils.load(Resources.POLONIEX_AUTH_PATH, PoloniexAuth.class);
+		final String POLONIEX_AUTH_LOCAL_PATH = "/Exchanges/Poloniex/Auth.auth";
+		String poloniexAuthPath = ResourceUtils.getResourcePath(POLONIEX_AUTH_LOCAL_PATH);
+		POLONIEX_AUTH = FileUtils.load(poloniexAuthPath, PoloniexAuth.class);
 		if (POLONIEX_AUTH == null) {
 			throw new StaticLoadException("Poloniex authorization failed to load.");
 		}

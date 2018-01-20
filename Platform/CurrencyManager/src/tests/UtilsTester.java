@@ -1,19 +1,19 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import exchanges.poloniex.PoloniexAuth;
-import utils.file.FileUtils;
-import utils.iterable.IterableUtils;
+import utils.files.FileUtils;
+import utils.iterables.IterableUtils;
 import utils.security.SecurityUtils;
 
-class UtilsTester {
+public class UtilsTester {
 	private Integer[] makeArray(int length) {
 		Integer[] arr = new Integer[length];
 
@@ -25,7 +25,7 @@ class UtilsTester {
 	}
 
 	@Test
-	void testToIterable() {
+	public void testToIterable() {
 		int[] lengths = { 0, 1, 2, 5, 10, 100 };
 
 		for (int length : lengths) {
@@ -43,7 +43,7 @@ class UtilsTester {
 	}
 
 	@Test
-	void testFlatten() {
+	public void testFlatten() {
 		ArrayList<ArrayList<Integer>> list = new ArrayList<>();
 
 		ArrayList<Integer> l1 = new ArrayList<>();
@@ -74,26 +74,26 @@ class UtilsTester {
 	}
 
 	@Test
-	void testMap() {
+	public void testMap() {
 		int[] lengths = { 0, 1, 2, 5, 10, 100 };
 
 		for (int length : lengths) {
 			Integer[] arr = makeArray(length);
 			Iterable<Integer> iter = IterableUtils.toIterable(arr);
-			Iterator<Double> iterMapped = IterableUtils.map(iter, x -> 2.5 * x).iterator();
+			Iterator<String> iterMapped = IterableUtils.map(iter, Object::toString).iterator();
 			for (Integer cur : arr) {
 				if (!iterMapped.hasNext()) {
 					fail("Iterator ended too early");
 				}
 
-				assertEquals(2.5 * cur, (double) iterMapped.next());
+				assertEquals(cur.toString(), iterMapped.next());
 			}
 			assertFalse(iterMapped.hasNext());
 		}
 	}
 
 	@Test
-	void testFold() {
+	public void testFold() {
 		int[] lengths = { 0, 1, 2, 5, 10, 100 };
 
 		for (int length : lengths) {
@@ -111,7 +111,7 @@ class UtilsTester {
 	}
 
 	@Test
-	void testFilter() {
+	public void testFilter() {
 		Integer[] unfilteredArr = { 0, 5, 2, 1, 10, -1 };
 		Integer[] filteredArr = { 0, 2, 1, -1 };
 
@@ -130,7 +130,7 @@ class UtilsTester {
 	}
 
 	@Test
-	void testSaveAndLoad() {
+	public void testSaveAndLoad() {
 		String filePath = "someFile";
 		String key = SecurityUtils.getNonce();
 		String secret = SecurityUtils.getNonce();

@@ -1,6 +1,9 @@
 package currencies;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
+
+import types.TypeToken;
 
 /**
  * This is a standard representation of an internal currency that can be traded.
@@ -19,7 +22,7 @@ class StandardCurrency implements Currency {
 	 * @param symbol
 	 *            The symbol of the currency to represent.
 	 */
-	public StandardCurrency(String name, String symbol) {
+	StandardCurrency(String name, String symbol) {
 		this.name = name;
 		this.symbol = symbol;
 	}
@@ -51,7 +54,11 @@ class StandardCurrency implements Currency {
 
 	@Override
 	public String toString() {
-		String format = "%s(%s)";
-		return String.format(format, getName(), getSymbol());
+		return String.format(Constants.STRING_FORMAT, getName(), getSymbol());
+	}
+
+	@Override
+	public Type getType() {
+		return new TypeToken<StandardCurrency>().getType();
 	}
 }

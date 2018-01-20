@@ -1,15 +1,15 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import currencies.Currency;
 import currencies.CurrencyFactory;
 
-class CurrencyTester {
+public class CurrencyTester {
 	@Test
-	void testParseSymbol() {
+	public void testParseSymbol() {
 		String usdt = "USDT";
 		String btc = "btc";
 		String eth = "eTh";
@@ -29,7 +29,7 @@ class CurrencyTester {
 	}
 
 	@Test
-	void testParseName() {
+	public void testParseName() {
 		String usdt = "Tether";
 		String btc = "bitcoin";
 		String eth = "EtHeReuM";

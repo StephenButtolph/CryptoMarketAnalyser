@@ -1,17 +1,20 @@
 package main;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import arithmetic.Pfloat;
-import constants.Auths;
 import constants.Timing;
 import currencies.Currency;
 import currencies.CurrencyFactory;
-import exchanges.poloniex.Poloniex;
-import holdings.LocalHolding;
-import loggers.FunctionalLogger;
-import loggers.Logger;
+import guis.marketLogger.MarketLogger;
+import tickers.coinMarketCap.CoinMarketCap;
+import types.TypeProducer;
+import types.TypeToken;
+import utils.files.FileUtils;
+import utils.maps.MapUtils;
 
 /**
  * Test entry point for functions not clearly suited for JUnit testing.
@@ -20,26 +23,40 @@ import loggers.Logger;
  */
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
-		//poloniexTest();
-		
-		Logger logger = new FunctionalLogger(() -> System.out.println(Instant.now().toEpochMilli()), Instant.now().truncatedTo(ChronoUnit.SECONDS).plus(Timing.SECOND), Timing.SECOND);
+		Currency btc = CurrencyFactory.parseSymbol("btc");
+		Currency eth = CurrencyFactory.parseSymbol("eth");
+		Currency usdt = CurrencyFactory.parseSymbol("usdt");
+
+		Collection<Currency> currencies = new ArrayList<>();
+		currencies.add(btc);
+		currencies.add(eth);
+		currencies.add(usdt);
+
+		MarketLogger logger = new MarketLogger(new CoinMarketCap(Timing.SECOND));
+		logger.setCurrencies(currencies);
 		logger.start();
-		
-		Thread.sleep(4500);
 
-		logger.stop();
-		logger.start();
-	}
+		Instant now = Instant.now();
+		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 
-	public static void poloniexTest() {
-		System.out.println(Auths.POLONIEX_AUTH);
-		Poloniex p = new Poloniex(Auths.POLONIEX_AUTH);
+		Map<Currency, Instant> lastUpdates = new HashMap<>();
+		lastUpdates.put(eth, now);
 
-		Currency usdt = CurrencyFactory.parseSymbol("USDT");
+		Map<String, String> lastUpdatesFormatted = MapUtils.convertEntries(lastUpdates, Object::toString,
+				Object::toString);
 
-		System.out.println(usdt);
+		FileUtils.save("updates.txt", lastUpdatesFormatted, typeProducer);
+		Map<String, String> lastUpdatesLoaded = FileUtils.load("updates.txt", typeProducer);
 
-		Object ret = p.sendFundsTo(p, new LocalHolding(usdt, Pfloat.ONE));
-		System.out.println(ret);
+		Map<Currency, Instant> lastUpdatesParsed = MapUtils.convertEntries(lastUpdatesLoaded,
+				CurrencyFactory::parseCurrency, Instant::parse);
+
+		System.out.println(lastUpdates.get(eth));
+		System.out.println(lastUpdatesParsed.containsKey(eth));
+		System.out.println(lastUpdatesParsed.get(eth));
+		System.out.println(lastUpdatesParsed);
+		System.out.println(lastUpdates.get(eth).equals(lastUpdatesParsed.get(eth)));
+
+		// System.out.println(new File("updates.txt").delete());
 	}
 }

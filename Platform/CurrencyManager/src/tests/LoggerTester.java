@@ -1,20 +1,20 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import loggers.FunctionalLogger;
-import loggers.Logger;
+import logging.loggers.FunctionalLogger;
+import logging.loggers.Logger;
 
-class LoggerTester {
+public class LoggerTester {
 	private int functionalCount;
 
 	@Test
-	void testFunctionalLogger() throws InterruptedException {
+	public void testFunctionalLogger() throws InterruptedException {
 		functionalCount = 0;
 
 		Instant init = Instant.now();

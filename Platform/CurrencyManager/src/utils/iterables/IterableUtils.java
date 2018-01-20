@@ -1,5 +1,6 @@
-package utils.iterable;
+package utils.iterables;
 
+import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -39,5 +40,19 @@ public class IterableUtils {
 			return iter;
 		}
 		return new EmptyIterable<>();
+	}
+
+	public static String join(Iterable<String> iter, String delimiter) {
+		iter = toSafeIterable(iter);
+		Iterator<String> iterator = iter.iterator();
+
+		StringBuilder sb = new StringBuilder();
+		while (iterator.hasNext()) {
+			sb.append(iterator.next());
+			if (iterator.hasNext()) {
+				sb.append(delimiter);
+			}
+		}
+		return sb.toString();
 	}
 }

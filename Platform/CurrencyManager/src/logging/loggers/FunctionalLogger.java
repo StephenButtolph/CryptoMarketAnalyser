@@ -1,7 +1,7 @@
-package loggers;
+package logging.loggers;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalAmount;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -11,14 +11,14 @@ import wrappers.Ref;
 import wrappers.Wrapper;
 
 /**
- * Records values for analysis using java 8 lambda functions.
+ * Records values for analysis using lambda functions.
  * 
  * @author Stephen Buttolph
  */
 public class FunctionalLogger implements Logger {
 	private Runnable function;
 
-	private TemporalAmount separation;
+	private Duration separation;
 
 	private Instant previousCollection;
 	private Instant nextCollection;
@@ -31,8 +31,8 @@ public class FunctionalLogger implements Logger {
 
 	private ScheduledThreadPoolExecutor scheduler;
 
-	public FunctionalLogger(Runnable function, Instant firstCollection, TemporalAmount separation) {
-		this.function = function;
+	public FunctionalLogger(Runnable function, Instant firstCollection, Duration separation) {
+		setFunction(function);
 
 		this.separation = separation;
 
@@ -47,6 +47,10 @@ public class FunctionalLogger implements Logger {
 
 		scheduler = null;
 
+	}
+
+	protected void setFunction(Runnable function) {
+		this.function = function;
 	}
 
 	@Override
@@ -77,6 +81,11 @@ public class FunctionalLogger implements Logger {
 	}
 
 	@Override
+	public Instant getLastCollectionTime() {
+		return nextCollection;
+	}
+
+	@Override
 	public Instant getNextCollectionTime() {
 		return nextCollection;
 	}
@@ -90,12 +99,12 @@ public class FunctionalLogger implements Logger {
 	}
 
 	@Override
-	public TemporalAmount getCollectionSeparation() {
+	public Duration getCollectionSeparation() {
 		return separation;
 	}
 
 	@Override
-	public void setCollectionSeparation(TemporalAmount separation) {
+	public void setCollectionSeparation(Duration separation) {
 		lock.lock();
 		this.separation = separation;
 		lock.unlock();

@@ -8,7 +8,7 @@ import arithmetic.Pfloat;
 import currencies.Currency;
 import currencyExchanges.CurrencyMarket;
 import tickers.Ticker;
-import utils.iterable.IterableUtils;
+import utils.iterables.IterableUtils;
 
 public class MultiTicker implements Ticker {
 	private Collection<Ticker> tickers;

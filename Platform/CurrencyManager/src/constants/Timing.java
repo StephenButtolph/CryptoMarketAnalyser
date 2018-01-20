@@ -16,6 +16,16 @@ public class Timing {
 	public static final TemporalAmount ZERO;
 
 	/**
+	 * A one nanosecond time amount.
+	 */
+	public static final TemporalAmount NANOSECOND;
+
+	/**
+	 * A one millisecond time amount.
+	 */
+	public static final TemporalAmount MILLISECOND;
+
+	/**
 	 * A one second time amount.
 	 */
 	public static final TemporalAmount SECOND;
@@ -36,17 +46,18 @@ public class Timing {
 	public static final TemporalAmount DAY;
 
 	/**
-	 * The default amount of time to refresh the currency factory.
+	 * A one week time amount.
 	 */
-	public static final TemporalAmount DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY;
+	public static final TemporalAmount WEEK;
 
 	static {
 		ZERO = Duration.ZERO;
+		NANOSECOND = Duration.ofNanos(1);
+		MILLISECOND = Duration.ofMillis(1);
 		SECOND = Duration.ofSeconds(1);
 		MINUTE = Duration.ofMinutes(1);
 		HOUR = Duration.ofHours(1);
 		DAY = Duration.ofDays(1);
-
-		DEFAULT_CURRENCY_MAPPING_REFRESH_FREQUENCY = DAY;
+		WEEK = Duration.ofDays(7);
 	}
 }
