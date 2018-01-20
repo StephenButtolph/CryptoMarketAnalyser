@@ -19,8 +19,7 @@ public class CurrencyData {
 	private final ObjectProperty<Pfloat> marketCap;
 	private final ObjectProperty<Pfloat> volume;
 
-	public CurrencyData(Currency currency, int rank, String name, Pfloat price, Pfloat marketCap,
-			Pfloat volume) {
+	public CurrencyData(Currency currency, int rank, String name, Pfloat price, Pfloat marketCap, Pfloat volume) {
 		this.currency = currency;
 		this.rank = new SimpleIntegerProperty(rank);
 		this.name = new SimpleStringProperty(name);

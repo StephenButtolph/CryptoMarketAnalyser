@@ -32,18 +32,15 @@ public class StandardCurrencyMarket implements CurrencyMarket {
 		return currency;
 	}
 
-
 	@Override
 	public Currency getCommodity() {
 		return commodity;
 	}
 
-
 	@Override
 	public StandardCurrencyMarket invert() {
 		return new StandardCurrencyMarket(getCommodity(), getCurrency());
 	}
-
 
 	@Override
 	public boolean contains(Currency currency) {

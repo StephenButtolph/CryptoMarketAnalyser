@@ -7,7 +7,7 @@ public class PfloatCurrency extends Pfloat {
 	public PfloatCurrency(Pfloat val) {
 		super(val);
 	}
-	
+
 	public String getUnformattedString() {
 		return super.toString();
 	}

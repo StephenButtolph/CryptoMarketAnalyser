@@ -70,7 +70,7 @@ class Constants {
 
 		RESPONSE = "response";
 		SUCCESS = "success";
-		
+
 		SUCCEEDED = 1;
 
 		MARKET_DELIMITER = "_";

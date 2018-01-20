@@ -27,7 +27,7 @@ public class MarketLogger extends CurrencyLogger {
 	private CoinMarketCap coinMarketCap;
 
 	private DateTimeFormatter formatter;
-	
+
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
@@ -44,7 +44,7 @@ public class MarketLogger extends CurrencyLogger {
 		if (logPath != null) {
 			logPath = logPath.trim();
 		}
-		
+
 		super.logCurrencies();
 
 		saveLastUpdates();

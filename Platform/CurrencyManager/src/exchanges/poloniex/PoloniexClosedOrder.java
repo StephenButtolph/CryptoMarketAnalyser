@@ -26,7 +26,7 @@ public class PoloniexClosedOrder extends ClosedOrder {
 
 	public PoloniexClosedOrder(CurrencyMarket market, Pfloat price, Pfloat amountCurrency, Pfloat amountCommodity) {
 		super(market);
-		
+
 		this.price = price;
 		this.amountCurrency = amountCurrency;
 		this.amountCommodity = amountCommodity;

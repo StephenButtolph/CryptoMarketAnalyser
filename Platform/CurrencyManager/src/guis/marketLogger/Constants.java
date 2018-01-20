@@ -11,7 +11,7 @@ class Constants {
 
 	static {
 		GUI_XML_PATH = "MarketLogger.fxml";
-		
+
 		final String TRACKING_LOCAL_PATH = "/Loggers/MarketLogger/Tracking.json";
 		TRACKING_PATH = ResourceUtils.getResourcePath(TRACKING_LOCAL_PATH);
 		if (TRACKING_PATH == null) {
