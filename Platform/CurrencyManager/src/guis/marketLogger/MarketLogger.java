@@ -27,6 +27,8 @@ public class MarketLogger extends CurrencyLogger {
 	private CoinMarketCap coinMarketCap;
 
 	private DateTimeFormatter formatter;
+	
+	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
 		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(12, UNIT)), Duration.of(12, UNIT));
@@ -38,6 +40,11 @@ public class MarketLogger extends CurrencyLogger {
 
 	@Override
 	protected void logCurrencies() {
+		logPath = FileUtils.read(Constants.LOG_PATH_PATH);
+		if (logPath != null) {
+			logPath = logPath.trim();
+		}
+		
 		super.logCurrencies();
 
 		saveLastUpdates();
@@ -64,7 +71,7 @@ public class MarketLogger extends CurrencyLogger {
 		String timeStamp = formatter.format(currentTime);
 
 		String newLog = CSVFileUtils.toLine(toLog, rank, price, marketCap, volume, timeStamp);
-		FileUtils.appendln(Constants.LOG_PATH, newLog);
+		FileUtils.appendln(logPath, newLog);
 		// }
 
 		lastUpdates.put(toLog, currentTime);

@@ -1,12 +1,10 @@
-package guis.marketLogger;
+package arithmetic;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
-import arithmetic.Pfloat;
-
 public class PfloatCurrency extends Pfloat {
-	protected PfloatCurrency(Pfloat val) {
+	public PfloatCurrency(Pfloat val) {
 		super(val);
 	}
 	
