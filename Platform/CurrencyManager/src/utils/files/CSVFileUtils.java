@@ -1,6 +1,6 @@
 package utils.files;
 
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 
 public class CSVFileUtils {
 	private static final String CSV_SEPARATOR = ",";

@@ -26,7 +26,7 @@ import org.apache.http.util.EntityUtils;
 
 import exceptions.AssertionException;
 import exceptions.ConnectionException;
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 
 public class WebUtils {
 	private static final String CHAR_SET;

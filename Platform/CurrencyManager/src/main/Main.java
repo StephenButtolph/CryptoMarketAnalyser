@@ -13,8 +13,8 @@ import guis.marketLogger.MarketLogger;
 import tickers.coinMarketCap.CoinMarketCap;
 import types.TypeProducer;
 import types.TypeToken;
+import utils.collections.maps.MapUtils;
 import utils.files.FileUtils;
-import utils.maps.MapUtils;
 
 /**
  * Test entry point for functions not clearly suited for JUnit testing.

@@ -1,6 +1,7 @@
 package guis.marketLogger;
 
 import arithmetic.Pfloat;
+import currencies.Currency;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -11,6 +12,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class CurrencyData {
+	private final Currency currency;
+
 	private final BooleanProperty isTracking;
 	private final IntegerProperty rank;
 	private final StringProperty name;
@@ -18,13 +21,19 @@ public class CurrencyData {
 	private final ObjectProperty<Pfloat> marketCap;
 	private final ObjectProperty<Pfloat> volume;
 
-	CurrencyData(boolean isTracking, int rank, String name, Pfloat price, Pfloat marketCap, Pfloat volume) {
+	CurrencyData(Currency currency, boolean isTracking, int rank, String name, Pfloat price, Pfloat marketCap,
+			Pfloat volume) {
+		this.currency = currency;
 		this.isTracking = new SimpleBooleanProperty(isTracking);
 		this.rank = new SimpleIntegerProperty(rank);
 		this.name = new SimpleStringProperty(name);
 		this.price = new SimpleObjectProperty<>(new PfloatCurrency(price));
 		this.marketCap = new SimpleObjectProperty<>(new PfloatCurrency(marketCap));
 		this.volume = new SimpleObjectProperty<>(new PfloatCurrency(volume));
+	}
+
+	public Currency getCurrency() {
+		return currency;
 	}
 
 	public BooleanProperty isTrackingProperty() {

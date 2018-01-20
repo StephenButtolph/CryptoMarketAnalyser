@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import arithmetic.Pfloat;
 import currencyExchanges.CurrencyMarket;
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 
 public abstract class OpenOrder extends StandardOrder {
 	protected OpenOrder(CurrencyMarket market) {

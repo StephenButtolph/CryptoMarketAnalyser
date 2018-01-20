@@ -18,7 +18,7 @@ class Constants {
 
 	static {
 		FORMAT_HEADER = "";
-		FORMAT_DELIMITER = "(";
+		FORMAT_DELIMITER = " (";
 		FORMAT_FOOTER = ")";
 		STRING_FORMAT = FORMAT_HEADER + "%s" + FORMAT_DELIMITER + "%s" + FORMAT_FOOTER;
 	

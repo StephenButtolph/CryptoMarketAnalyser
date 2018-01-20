@@ -17,9 +17,9 @@ import logging.currencyLogging.CurrencyLogger;
 import tickers.coinMarketCap.CoinMarketCap;
 import types.TypeProducer;
 import types.TypeToken;
+import utils.collections.maps.MapUtils;
 import utils.files.CSVFileUtils;
 import utils.files.FileUtils;
-import utils.maps.MapUtils;
 
 public class MarketLogger extends CurrencyLogger {
 	private static final TemporalUnit UNIT = ChronoUnit.HOURS;
@@ -45,14 +45,14 @@ public class MarketLogger extends CurrencyLogger {
 
 	@Override
 	protected void logCurrency(Currency toLog) {
-		Instant previousTime = lastUpdates.get(toLog);
+		// Instant previousTime = lastUpdates.get(toLog);
 		Instant currentTime = this.getLastCollectionTime();
 
-		long timesToRecord = 1;
-		if (currentTime != null) {
-			timesToRecord = Duration.between(previousTime, currentTime).get(UNIT) / getCollectionSeparation().get(UNIT);
-		}
-		System.out.println(timesToRecord);
+		// long timesToRecord = 1;
+		// if (currentTime != null) {
+		// timesToRecord = Duration.between(previousTime, currentTime).get(UNIT) /
+		// getCollectionSeparation().get(UNIT);
+		// }
 
 		// TODO put in fake average data for missed times ( hard because we need to load
 		// the previously stored values)

@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import arithmetic.Pfloat;
 import offers.Offer;
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 
 public class Offers implements Iterable<OfferPoint> {
 	private SortedMap<Pfloat, OfferPoint> offers;

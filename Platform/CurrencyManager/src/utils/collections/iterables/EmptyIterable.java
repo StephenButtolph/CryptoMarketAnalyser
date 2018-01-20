@@ -1,4 +1,4 @@
-package utils.iterables;
+package utils.collections.iterables;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

@@ -23,7 +23,7 @@ import offerGroups.Offers;
 import types.TypeProducer;
 import types.TypeToken;
 import utils.arithmetic.ArithmeticUtils;
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 import utils.web.WebUtils;
 
 /**

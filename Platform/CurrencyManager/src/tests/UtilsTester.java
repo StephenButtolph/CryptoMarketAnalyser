@@ -9,8 +9,8 @@ import java.util.Iterator;
 import org.junit.Test;
 
 import exchanges.poloniex.PoloniexAuth;
+import utils.collections.iterables.IterableUtils;
 import utils.files.FileUtils;
-import utils.iterables.IterableUtils;
 import utils.security.SecurityUtils;
 
 public class UtilsTester {

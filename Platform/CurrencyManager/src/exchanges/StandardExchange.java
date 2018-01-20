@@ -6,7 +6,7 @@ import java.util.Collection;
 import arithmetic.Pfloat;
 import currencyExchanges.CurrencyMarket;
 import offerGroups.Offers;
-import utils.iterables.IterableUtils;
+import utils.collections.iterables.IterableUtils;
 
 /**
  * The implementation of standard functions for exchanges.
