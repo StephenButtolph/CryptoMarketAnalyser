@@ -1,5 +1,6 @@
 package guis.components.tables.currencyTables;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +15,15 @@ import utils.guis.ThreadingUtils;
 
 public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R> {
 	public CurrencyTable() {
+		this(null);
+	}
+
+	public CurrencyTable(Duration autoRefreshRate) {
 		initializeColumns();
+
+		if (autoRefreshRate != null) {
+			ThreadingUtils.runForever(this::refresh, autoRefreshRate);
+		}
 	}
 
 	protected void initializeColumns() {

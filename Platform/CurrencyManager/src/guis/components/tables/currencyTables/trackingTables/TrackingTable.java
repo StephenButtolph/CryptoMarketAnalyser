@@ -11,7 +11,6 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import platforms.currencies.Currency;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
-import utils.guis.ThreadingUtils;
 
 public class TrackingTable extends CurrencyTable<TrackingData> {
 	private CoinMarketCap coinMarketCap;
@@ -22,13 +21,11 @@ public class TrackingTable extends CurrencyTable<TrackingData> {
 	}
 
 	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> trackingCurrencies,
-			Duration autoRefreshFrequency) {
+			Duration autoRefreshRate) {
+		super(autoRefreshRate);
+
 		this.coinMarketCap = coinMarketCap;
 		this.trackingCurrencies = trackingCurrencies;
-
-		if (autoRefreshFrequency != null) {
-			ThreadingUtils.runForever(this::refresh, autoRefreshFrequency);
-		}
 	}
 
 	@Override
