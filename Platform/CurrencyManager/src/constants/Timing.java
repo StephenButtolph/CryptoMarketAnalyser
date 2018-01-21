@@ -16,37 +16,37 @@ public class Timing {
 	public static final TemporalAmount ZERO;
 
 	/**
-	 * A one nanosecond time amount.
+	 * A one nanosecond of time.
 	 */
 	public static final TemporalAmount NANOSECOND;
 
 	/**
-	 * A one millisecond time amount.
+	 * A one millisecond of time.
 	 */
 	public static final TemporalAmount MILLISECOND;
 
 	/**
-	 * A one second time amount.
+	 * A one second of time.
 	 */
 	public static final TemporalAmount SECOND;
 
 	/**
-	 * A one minute time amount.
+	 * A one minute of time.
 	 */
 	public static final TemporalAmount MINUTE;
 
 	/**
-	 * A one hour time amount.
+	 * A one hour of time.
 	 */
 	public static final TemporalAmount HOUR;
 
 	/**
-	 * A one day time amount.
+	 * A one day of time.
 	 */
 	public static final TemporalAmount DAY;
 
 	/**
-	 * A one week time amount.
+	 * A one week of time.
 	 */
 	public static final TemporalAmount WEEK;
 

@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import arithmetic.Pfloat;
-import currencies.Currency;
-import currencies.CurrencyFactory;
 import logging.currencyLogging.CurrencyLogger;
-import tickers.coinMarketCap.CoinMarketCap;
-import types.TypeProducer;
-import types.TypeToken;
+import platforms.currencies.Currency;
+import platforms.currencies.CurrencyFactory;
+import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.collections.maps.MapUtils;
 import utils.files.CSVFileUtils;
 import utils.files.FileUtils;
+import utils.types.TypeProducer;
+import utils.types.TypeToken;
 
 public class MarketLogger extends CurrencyLogger {
 	private static final TemporalUnit UNIT = ChronoUnit.HOURS;

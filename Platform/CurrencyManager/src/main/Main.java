@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import constants.Timing;
-import currencies.Currency;
-import currencies.CurrencyFactory;
 import guis.marketLogger.MarketLogger;
-import tickers.coinMarketCap.CoinMarketCap;
-import types.TypeProducer;
-import types.TypeToken;
+import platforms.currencies.Currency;
+import platforms.currencies.CurrencyFactory;
+import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.collections.maps.MapUtils;
 import utils.files.FileUtils;
+import utils.types.TypeProducer;
+import utils.types.TypeToken;
 
 /**
  * Test entry point for functions not clearly suited for JUnit testing.

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import constants.Timing;
-import currencies.Currency;
-import currencies.CurrencyFactory;
 import guis.components.tables.currencyTables.trackingTables.TrackingData;
 import guis.components.tables.currencyTables.trackingTables.TrackingTable;
 import javafx.application.Application;
@@ -21,11 +19,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import tickers.coinMarketCap.CoinMarketCap;
-import types.TypeProducer;
-import types.TypeToken;
+import platforms.currencies.Currency;
+import platforms.currencies.CurrencyFactory;
+import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.collections.collections.CollectionUtils;
 import utils.files.FileUtils;
+import utils.types.TypeProducer;
+import utils.types.TypeToken;
 
 /**
  * Application for tracking selected currencies.

@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import currencies.Currency;
 import logging.loggers.FunctionalLogger;
+import platforms.currencies.Currency;
 
 public abstract class CurrencyLogger extends FunctionalLogger {
 	private Collection<Currency> currencies;

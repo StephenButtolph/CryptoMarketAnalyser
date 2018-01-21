@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import arithmetic.Pfloat;
-import currencies.Currency;
-import currencies.CurrencyFactory;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import platforms.currencies.Currency;
+import platforms.currencies.CurrencyFactory;
 import utils.guis.ThreadingUtils;
 
 public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R> {

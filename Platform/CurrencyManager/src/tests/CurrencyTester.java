@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import currencies.Currency;
-import currencies.CurrencyFactory;
+import platforms.currencies.Currency;
+import platforms.currencies.CurrencyFactory;
 
 public class CurrencyTester {
 	@Test

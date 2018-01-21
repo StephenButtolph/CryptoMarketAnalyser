@@ -3,13 +3,13 @@ package guis.components.tables.currencyTables.trackingTables;
 import java.util.Collection;
 
 import arithmetic.Pfloat;
-import currencies.Currency;
 import guis.components.tables.currencyTables.CurrencyTable;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import tickers.coinMarketCap.CoinMarketCap;
+import platforms.currencies.Currency;
+import platforms.tickers.coinMarketCap.CoinMarketCap;
 
 public class TrackingTable extends CurrencyTable<TrackingData> {
 	private CoinMarketCap coinMarketCap;

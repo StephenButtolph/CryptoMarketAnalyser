@@ -2,13 +2,13 @@ package guis.components.tables.currencyTables;
 
 import arithmetic.Pfloat;
 import arithmetic.PfloatCurrency;
-import currencies.Currency;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import platforms.currencies.Currency;
 
 public class CurrencyData {
 	private final Currency currency;

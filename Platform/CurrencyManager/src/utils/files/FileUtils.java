@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import constants.Json;
-import types.TypeProducer;
+import utils.types.TypeProducer;
 
 public class FileUtils {
 	public static <T> T load(String filePath, Class<T> classOfT) {

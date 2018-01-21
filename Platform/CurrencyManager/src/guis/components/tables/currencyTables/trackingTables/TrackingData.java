@@ -1,10 +1,10 @@
 package guis.components.tables.currencyTables.trackingTables;
 
 import arithmetic.Pfloat;
-import currencies.Currency;
 import guis.components.tables.currencyTables.CurrencyData;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import platforms.currencies.Currency;
 
 public class TrackingData extends CurrencyData {
 	protected final BooleanProperty isTracking;
