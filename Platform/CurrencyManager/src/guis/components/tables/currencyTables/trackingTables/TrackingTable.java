@@ -1,5 +1,6 @@
 package guis.components.tables.currencyTables.trackingTables;
 
+import java.time.Duration;
 import java.util.Collection;
 
 import arithmetic.Pfloat;
@@ -10,14 +11,24 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import platforms.currencies.Currency;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
+import utils.guis.ThreadingUtils;
 
 public class TrackingTable extends CurrencyTable<TrackingData> {
 	private CoinMarketCap coinMarketCap;
 	private Collection<Currency> trackingCurrencies;
 
 	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> trackingCurrencies) {
+		this(coinMarketCap, trackingCurrencies, null);
+	}
+
+	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> trackingCurrencies,
+			Duration autoRefreshFrequency) {
 		this.coinMarketCap = coinMarketCap;
 		this.trackingCurrencies = trackingCurrencies;
+
+		if (autoRefreshFrequency != null) {
+			ThreadingUtils.runForever(this::refresh, autoRefreshFrequency);
+		}
 	}
 
 	@Override

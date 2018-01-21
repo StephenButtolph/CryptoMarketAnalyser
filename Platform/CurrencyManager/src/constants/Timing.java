@@ -1,7 +1,6 @@
 package constants;
 
 import java.time.Duration;
-import java.time.temporal.TemporalAmount;
 
 /**
  * This is a time manager to control constant time periods, such as seconds or
@@ -13,42 +12,42 @@ public class Timing {
 	/**
 	 * No time amount.
 	 */
-	public static final TemporalAmount ZERO;
+	public static final Duration ZERO;
 
 	/**
 	 * A one nanosecond of time.
 	 */
-	public static final TemporalAmount NANOSECOND;
+	public static final Duration NANOSECOND;
 
 	/**
 	 * A one millisecond of time.
 	 */
-	public static final TemporalAmount MILLISECOND;
+	public static final Duration MILLISECOND;
 
 	/**
 	 * A one second of time.
 	 */
-	public static final TemporalAmount SECOND;
+	public static final Duration SECOND;
 
 	/**
 	 * A one minute of time.
 	 */
-	public static final TemporalAmount MINUTE;
+	public static final Duration MINUTE;
 
 	/**
 	 * A one hour of time.
 	 */
-	public static final TemporalAmount HOUR;
+	public static final Duration HOUR;
 
 	/**
 	 * A one day of time.
 	 */
-	public static final TemporalAmount DAY;
+	public static final Duration DAY;
 
 	/**
 	 * A one week of time.
 	 */
-	public static final TemporalAmount WEEK;
+	public static final Duration WEEK;
 
 	static {
 		ZERO = Duration.ZERO;

@@ -54,7 +54,7 @@ public class Gui extends Application {
 
 		marketLogger.setCurrencies(trackingCurrencies);
 
-		table = new TrackingTable(coinMarketCap, trackingCurrencies);
+		table = new TrackingTable(coinMarketCap, trackingCurrencies, Timing.MINUTE);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		table.setEditable(true);
 	}
@@ -69,7 +69,6 @@ public class Gui extends Application {
 		GridPane layoutGrid = (GridPane) root.lookup("#layoutGrid");
 		layoutGrid.add(table, 0, 0, 2, 1);
 
-		handleRefresh(null);
 		marketLogger.start();
 
 		stage.setScene(new Scene(root));
