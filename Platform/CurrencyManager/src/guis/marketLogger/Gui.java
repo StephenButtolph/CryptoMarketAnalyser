@@ -15,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -33,15 +32,15 @@ import utils.types.TypeToken;
  * @author Stephen Buttolph
  */
 public class Gui extends Application {
-	private static CoinMarketCap coinMarketCap;
-	private static MarketLogger marketLogger;
-	private static Set<Currency> trackingCurrencies;
+	private CoinMarketCap coinMarketCap;
+	private MarketLogger marketLogger;
+	private Set<Currency> trackingCurrencies;
 
-	private static Stage stage;
-	private static FileChooser fileChooser;
-	private static TrackingTable table;
+	private Stage stage;
+	private FileChooser fileChooser;
+	private TrackingTable table;
 
-	static {
+	public Gui() {
 		fileChooser = new FileChooser();
 
 		coinMarketCap = new CoinMarketCap(Timing.SECOND);
@@ -56,13 +55,11 @@ public class Gui extends Application {
 		marketLogger.start();
 
 		table = new TrackingTable(coinMarketCap, trackingCurrencies, Timing.MINUTE);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		table.setEditable(true);
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Gui.stage = stage;
+		this.stage = stage;
 
 		Parent root = FXMLLoader.load(getClass().getResource(Constants.GUI_XML_PATH));
 		stage.setTitle("Currency Logger");

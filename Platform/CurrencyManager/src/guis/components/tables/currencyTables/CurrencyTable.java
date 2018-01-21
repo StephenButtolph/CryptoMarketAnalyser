@@ -24,6 +24,8 @@ public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R>
 		if (autoRefreshRate != null) {
 			ThreadingUtils.runForever(this::refresh, autoRefreshRate);
 		}
+		
+		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 
 	protected void initializeColumns() {

@@ -26,6 +26,8 @@ public class TrackingTable extends CurrencyTable<TrackingData> {
 
 		this.coinMarketCap = coinMarketCap;
 		this.trackingCurrencies = trackingCurrencies;
+		
+		this.setEditable(true);
 	}
 
 	@Override
