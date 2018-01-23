@@ -36,12 +36,11 @@ public class Gui extends Application {
 	private static Stage stage;
 	private static FileChooser fileChooser;
 	private static TrackingTable table;
-	
+
 	private static MarketLogger marketLogger;
 
 	@Override
-	public void start(Stage stage) throws IOException {
-		Gui.stage = stage;
+	public void init() {
 		fileChooser = new FileChooser();
 
 		CoinMarketCap coinMarketCap = new CoinMarketCap(Timing.SECOND);
@@ -55,6 +54,11 @@ public class Gui extends Application {
 		marketLogger = new MarketLogger(coinMarketCap);
 		marketLogger.setCurrencies(table.getTrackingCurrencies());
 		marketLogger.start();
+	}
+
+	@Override
+	public void start(Stage stage) throws IOException {
+		Gui.stage = stage;
 
 		Parent root = FXMLLoader.load(getClass().getResource(Constants.GUI_XML_PATH));
 		stage.setTitle("Currency Logger");

@@ -12,7 +12,7 @@ import platforms.currencies.Currency;
 
 public class CurrencyData {
 	protected final Currency currency;
-	
+
 	protected final IntegerProperty rank;
 	protected final StringProperty name;
 	protected final ObjectProperty<Pfloat> price;
@@ -21,7 +21,7 @@ public class CurrencyData {
 
 	public CurrencyData(Currency currency, int rank, String name, Pfloat price, Pfloat marketCap, Pfloat volume) {
 		this.currency = currency;
-		
+
 		this.rank = new SimpleIntegerProperty(rank);
 		this.name = new SimpleStringProperty(name);
 		this.price = new SimpleObjectProperty<>(new PfloatCurrency(price));

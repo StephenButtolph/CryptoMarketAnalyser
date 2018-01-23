@@ -40,6 +40,26 @@ public class MarketLogRow {
 		this.formatter = formatter;
 	}
 
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public Pfloat getRank() {
+		return rank;
+	}
+
+	public Pfloat getPrice() {
+		return price;
+	}
+
+	public Pfloat getMarketCap() {
+		return marketCap;
+	}
+
+	public Pfloat getVolume() {
+		return volume;
+	}
+
 	public Instant getTimeStamp() {
 		return timeStamp;
 	}

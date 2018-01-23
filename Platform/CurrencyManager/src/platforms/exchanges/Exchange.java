@@ -21,13 +21,13 @@ import platforms.tickers.Ticker;
  */
 public interface Exchange extends Ticker {
 	CurrencyExchange getCurrencyExchange(CurrencyMarket market);
-	
+
 	/**
 	 * Get the current order book of the [market] exchange. Will take into account
 	 * all applicable taxes. These orders will only include offers that apply to the
 	 * internal currency exchange and will be different than the inverted markets
-	 * values in normal use cases.
-	 * F
+	 * values in normal use cases. F
+	 * 
 	 * @param market
 	 *            The exchange pair to process.
 	 * @return the current order book of the [market] exchange. Will take into

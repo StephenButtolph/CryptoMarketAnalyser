@@ -9,7 +9,7 @@ import platforms.currencies.Currency;
 public class IsTrackingListener implements ChangeListener<Boolean> {
 	private final Collection<Currency> currencies;
 	private final Currency currency;
-	
+
 	public IsTrackingListener(Collection<Currency> currencies, Currency currency) {
 		this.currencies = currencies;
 		this.currency = currency;

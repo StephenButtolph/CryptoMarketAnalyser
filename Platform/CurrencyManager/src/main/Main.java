@@ -23,7 +23,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		Currency eth = CurrencyFactory.parseSymbol("eth");
 		Instant now = Instant.now();
-		
+
 		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 
 		MarketLogRow ethRow = new MarketLogRow(eth, Pfloat.ONE, Pfloat.ZERO, Pfloat.ONE, Pfloat.ZERO, now);
@@ -34,13 +34,14 @@ public class Main {
 
 		Map<String, String> serializedMap = MapUtils.convertEntries(map, Object::toString, Object::toString);
 		FileUtils.save("myFile", serializedMap, typeProducer);
-		
+
 		Map<String, String> loadedMap = FileUtils.load("myFile", typeProducer);
-		
-		Map<Currency, MarketLogRow> deserializedMap = MapUtils.convertEntries(loadedMap, CurrencyFactory::parseCurrency, MarketLogRow::parse);
+
+		Map<Currency, MarketLogRow> deserializedMap = MapUtils.convertEntries(loadedMap, CurrencyFactory::parseCurrency,
+				MarketLogRow::parse);
 
 		System.out.println(ethRow.getTimeStamp().equals(deserializedMap.get(eth).getTimeStamp()));
-		
+
 		new File("myFile").delete();
 	}
 }

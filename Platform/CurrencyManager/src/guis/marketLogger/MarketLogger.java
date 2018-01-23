@@ -35,8 +35,6 @@ public class MarketLogger extends CurrencyLogger {
 		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
 				Duration.of(AMOUNT, UNIT));
 
-//		super(Instant.now(), Duration.ofSeconds(10));
-
 		this.coinMarketCap = coinMarketCap;
 		formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault());
 		lastUpdates = loadLastUpdates();
@@ -56,23 +54,40 @@ public class MarketLogger extends CurrencyLogger {
 
 	@Override
 	protected void logCurrency(Currency toLog) {
-		// Instant previousTime = lastUpdates.get(toLog);
-		// Instant currentTime = this.getLastCollectionTime();
-
-		// long timesToRecord = 1;
-		// if (currentTime != null) {
-		// timesToRecord = Duration.between(previousTime, currentTime).get(UNIT) /
-		// getCollectionSeparation().get(UNIT);
-		// }
-
-		// TODO put in fake average data for missed times ( hard because we need to load
-		// the previously stored values)
-		// for (long missedTime = 1; missedTime <= timesToRecord; missedTime++) {
-
-		// filler value = (missedTime / timesToRecord) * (new - old)
-
+		Instant currentTime = this.getLastCollectionTime();
 		MarketLogRow newLog = getCurrentLogRow(toLog);
-		FileUtils.appendln(logPath, newLog.toCSVRow());
+		MarketLogRow previousLog = lastUpdates.get(toLog);
+
+		Instant time;
+		long timesToRecord;
+		if (previousLog != null) {
+			time = previousLog.getTimeStamp();
+			timesToRecord = Duration.between(time, currentTime).get(UNIT) / getCollectionSeparation().get(UNIT);
+		} else {
+			time = currentTime.minus(AMOUNT, UNIT);
+			timesToRecord = 1;
+			previousLog = newLog;
+		}
+
+		Pfloat timeAmount = new Pfloat(timesToRecord);
+
+		Pfloat rankRatio = newLog.getRank().subtract(previousLog.getRank()).divide(timeAmount);
+		Pfloat priceRatio = newLog.getPrice().subtract(previousLog.getPrice()).divide(timeAmount);
+		Pfloat marketCapRatio = newLog.getMarketCap().subtract(previousLog.getMarketCap()).divide(timeAmount);
+		Pfloat volumeRatio = newLog.getVolume().subtract(previousLog.getVolume()).divide(timeAmount);
+
+		for (long missedTime = 1; missedTime <= timesToRecord; missedTime++) {
+			Pfloat thisTime = new Pfloat(missedTime);
+
+			Pfloat rank = rankRatio.multiply(thisTime).add(previousLog.getRank());
+			Pfloat price = priceRatio.multiply(thisTime).add(previousLog.getPrice());
+			Pfloat marketCap = marketCapRatio.multiply(thisTime).add(previousLog.getMarketCap());
+			Pfloat volume = volumeRatio.multiply(thisTime).add(previousLog.getVolume());
+			time = time.plus(AMOUNT, UNIT);
+
+			MarketLogRow fakeLog = new MarketLogRow(toLog, rank, price, marketCap, volume, time, formatter);
+			FileUtils.appendln(logPath, fakeLog.toCSVRow());
+		}
 
 		lastUpdates.put(toLog, newLog);
 	}
