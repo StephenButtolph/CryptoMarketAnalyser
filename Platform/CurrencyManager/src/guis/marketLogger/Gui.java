@@ -1,13 +1,11 @@
 package guis.marketLogger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import constants.Timing;
-import guis.components.tables.currencyTables.trackingTables.TrackingData;
 import guis.components.tables.currencyTables.trackingTables.TrackingTable;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -32,34 +30,31 @@ import utils.types.TypeToken;
  * @author Stephen Buttolph
  */
 public class Gui extends Application {
-	private CoinMarketCap coinMarketCap;
-	private MarketLogger marketLogger;
-	private Set<Currency> trackingCurrencies;
+	// When left as instance variables, the values seem to be overwritten with null
+	// values. This seems to be related to the Gui constructor being called twice,
+	// however it is unclear why that is happening.
+	private static Stage stage;
+	private static FileChooser fileChooser;
+	private static TrackingTable table;
+	
+	private static MarketLogger marketLogger;
 
-	private Stage stage;
-	private FileChooser fileChooser;
-	private TrackingTable table;
-
-	public Gui() {
+	@Override
+	public void start(Stage stage) throws IOException {
+		Gui.stage = stage;
 		fileChooser = new FileChooser();
 
-		coinMarketCap = new CoinMarketCap(Timing.SECOND);
-		marketLogger = new MarketLogger(coinMarketCap);
+		CoinMarketCap coinMarketCap = new CoinMarketCap(Timing.SECOND);
 
 		TypeProducer typeProducer = new TypeToken<List<String>>();
 		List<String> tracking = FileUtils.load(Constants.TRACKING_PATH, typeProducer);
 		Collection<Currency> currencies = CollectionUtils.convert(tracking, CurrencyFactory::parseCurrency);
-		trackingCurrencies = new HashSet<>(currencies);
 
-		marketLogger.setCurrencies(trackingCurrencies);
+		table = new TrackingTable(coinMarketCap, currencies, Timing.MINUTE);
+
+		marketLogger = new MarketLogger(coinMarketCap);
+		marketLogger.setCurrencies(table.getTrackingCurrencies());
 		marketLogger.start();
-
-		table = new TrackingTable(coinMarketCap, trackingCurrencies, Timing.MINUTE);
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		this.stage = stage;
 
 		Parent root = FXMLLoader.load(getClass().getResource(Constants.GUI_XML_PATH));
 		stage.setTitle("Currency Logger");
@@ -92,18 +87,12 @@ public class Gui extends Application {
 
 	@FXML
 	private void handleSave(ActionEvent event) {
-		trackingCurrencies.clear();
-		for (TrackingData row : table.getItems()) {
-			if (row.isTrackingProperty().get()) {
-				trackingCurrencies.add(row.getCurrency());
-			}
-		}
-
 		TypeProducer typeProducer = new TypeToken<List<String>>();
-		Collection<String> toSave = CollectionUtils.convert(trackingCurrencies, Object::toString);
+		Collection<String> toSave = CollectionUtils.convert(table.getTrackingCurrencies(), Object::toString);
 		FileUtils.save(Constants.TRACKING_PATH, toSave, typeProducer);
 
-		marketLogger.setCurrencies(trackingCurrencies);
+		Collection<Currency> currencies = table.getTrackingCurrencies();
+		marketLogger.setCurrencies(currencies);
 	}
 
 	public static void main(String[] args) {

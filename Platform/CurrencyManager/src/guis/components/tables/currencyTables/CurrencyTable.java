@@ -3,6 +3,7 @@ package guis.components.tables.currencyTables;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import arithmetic.Pfloat;
 import javafx.collections.ObservableList;
@@ -11,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import platforms.currencies.Currency;
 import platforms.currencies.CurrencyFactory;
+import utils.collections.iterables.IterableUtils;
 import utils.guis.ThreadingUtils;
 
 public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R> {
@@ -24,12 +26,12 @@ public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R>
 		if (autoRefreshRate != null) {
 			ThreadingUtils.runForever(this::refresh, autoRefreshRate);
 		}
-		
+
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 
 	protected void initializeColumns() {
-		ObservableList<TableColumn<R, ?>> columns = this.getColumns();
+		List<TableColumn<R, ?>> columns = this.getColumns();
 
 		final TableColumn<R, Integer> rankColumn = new TableColumn<>("Rank");
 		rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
@@ -63,25 +65,27 @@ public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R>
 		columns.add(volumeColumn);
 	}
 
+	@Override
 	public void refresh() {
+		super.refresh();
 		ThreadingUtils.run(this::loadRowsAsync, this::loadRowsSync);
 	}
 
 	private Collection<R> loadRowsAsync() {
 		Collection<R> newRows = new ArrayList<>();
-		for (Currency currency : CurrencyFactory.getAllCurrencies()) {
-			R newRow = loadRow(currency);
-			if (newRow != null) {
-				newRows.add(newRow);
-			}
-		}
+
+		Iterable<R> iter = IterableUtils.map(CurrencyFactory.getAllCurrencies(), this::loadRow);
+		iter = IterableUtils.filter(iter, row -> row != null);
+		iter.forEach(newRows::add);
+
 		return newRows;
 	}
 
-	protected void loadRowsSync(Collection<R> newRows) {
+	private void loadRowsSync(Collection<R> newRows) {
 		ObservableList<R> rows = this.getItems();
 		rows.clear();
 		rows.addAll(newRows);
+		super.refresh();
 	}
 
 	protected abstract R loadRow(Currency currency);

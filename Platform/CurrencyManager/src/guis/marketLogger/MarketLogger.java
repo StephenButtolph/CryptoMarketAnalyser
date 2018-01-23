@@ -16,14 +16,15 @@ import platforms.currencies.Currency;
 import platforms.currencies.CurrencyFactory;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.collections.maps.MapUtils;
-import utils.files.CSVFileUtils;
 import utils.files.FileUtils;
 import utils.types.TypeProducer;
 import utils.types.TypeToken;
 
 public class MarketLogger extends CurrencyLogger {
 	private static final TemporalUnit UNIT = ChronoUnit.HOURS;
-	private Map<Currency, Instant> lastUpdates;
+	private static final long AMOUNT = 12;
+
+	private Map<Currency, MarketLogRow> lastUpdates;
 	private CoinMarketCap coinMarketCap;
 
 	private DateTimeFormatter formatter;
@@ -31,7 +32,10 @@ public class MarketLogger extends CurrencyLogger {
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
-		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(12, UNIT)), Duration.of(12, UNIT));
+		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
+				Duration.of(AMOUNT, UNIT));
+
+//		super(Instant.now(), Duration.ofSeconds(10));
 
 		this.coinMarketCap = coinMarketCap;
 		formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault());
@@ -53,7 +57,7 @@ public class MarketLogger extends CurrencyLogger {
 	@Override
 	protected void logCurrency(Currency toLog) {
 		// Instant previousTime = lastUpdates.get(toLog);
-		Instant currentTime = this.getLastCollectionTime();
+		// Instant currentTime = this.getLastCollectionTime();
 
 		// long timesToRecord = 1;
 		// if (currentTime != null) {
@@ -64,25 +68,31 @@ public class MarketLogger extends CurrencyLogger {
 		// TODO put in fake average data for missed times ( hard because we need to load
 		// the previously stored values)
 		// for (long missedTime = 1; missedTime <= timesToRecord; missedTime++) {
+
+		// filler value = (missedTime / timesToRecord) * (new - old)
+
+		MarketLogRow newLog = getCurrentLogRow(toLog);
+		FileUtils.appendln(logPath, newLog.toCSVRow());
+
+		lastUpdates.put(toLog, newLog);
+	}
+
+	private MarketLogRow getCurrentLogRow(Currency toLog) {
 		Pfloat rank = coinMarketCap.getRank(toLog);
 		Pfloat price = coinMarketCap.getUsdPrice(toLog);
 		Pfloat marketCap = coinMarketCap.getMarketCap(toLog);
 		Pfloat volume = coinMarketCap.get24HVolume(toLog);
-		String timeStamp = formatter.format(currentTime);
+		Instant currentTime = this.getLastCollectionTime();
 
-		String newLog = CSVFileUtils.toLine(toLog, rank, price, marketCap, volume, timeStamp);
-		FileUtils.appendln(logPath, newLog);
-		// }
-
-		lastUpdates.put(toLog, currentTime);
+		return new MarketLogRow(toLog, rank, price, marketCap, volume, currentTime, formatter);
 	}
 
-	private Map<Currency, Instant> loadLastUpdates() {
+	private Map<Currency, MarketLogRow> loadLastUpdates() {
 		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 		Map<String, String> lastUpdatesLoaded = FileUtils.load(Constants.LOG_UPDATES_PATH, typeProducer);
 
-		Map<Currency, Instant> lastUpdatesParsed = MapUtils.convertEntries(lastUpdatesLoaded,
-				CurrencyFactory::parseCurrency, Instant::parse);
+		Map<Currency, MarketLogRow> lastUpdatesParsed = MapUtils.convertEntries(lastUpdatesLoaded,
+				CurrencyFactory::parseCurrency, MarketLogRow::parse);
 		if (lastUpdatesParsed == null) {
 			lastUpdatesParsed = new HashMap<>();
 		}

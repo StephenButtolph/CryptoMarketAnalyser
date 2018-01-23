@@ -2,6 +2,8 @@ package guis.components.tables.currencyTables.trackingTables;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import arithmetic.Pfloat;
 import guis.components.tables.currencyTables.CurrencyTable;
@@ -13,21 +15,24 @@ import platforms.currencies.Currency;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
 
 public class TrackingTable extends CurrencyTable<TrackingData> {
-	private CoinMarketCap coinMarketCap;
-	private Collection<Currency> trackingCurrencies;
+	private final CoinMarketCap coinMarketCap;
+	private final Set<Currency> trackingCurrencies;
 
-	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> trackingCurrencies) {
-		this(coinMarketCap, trackingCurrencies, null);
+	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> currencies) {
+		this(coinMarketCap, currencies, null);
 	}
 
-	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> trackingCurrencies,
-			Duration autoRefreshRate) {
+	public TrackingTable(CoinMarketCap coinMarketCap, Collection<Currency> currencies, Duration autoRefreshRate) {
 		super(autoRefreshRate);
 
 		this.coinMarketCap = coinMarketCap;
-		this.trackingCurrencies = trackingCurrencies;
-		
+		this.trackingCurrencies = new HashSet<>(currencies);
+
 		this.setEditable(true);
+	}
+
+	public Set<Currency> getTrackingCurrencies() {
+		return trackingCurrencies;
 	}
 
 	@Override
@@ -61,7 +66,10 @@ public class TrackingTable extends CurrencyTable<TrackingData> {
 		Pfloat marketCap = coinMarketCap.getMarketCap(currency);
 		Pfloat volume = coinMarketCap.get24HVolume(currency);
 
-		return new TrackingData(currency, isTracking, rank, currency.toString(), price, marketCap, volume);
+		TrackingData newData = new TrackingData(currency, isTracking, rank, currency.toString(), price, marketCap,
+				volume);
+		newData.isTracking.addListener(new IsTrackingListener(trackingCurrencies, currency));
+		return newData;
 	}
 
 }

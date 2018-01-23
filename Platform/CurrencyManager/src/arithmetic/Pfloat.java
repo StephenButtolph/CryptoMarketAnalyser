@@ -62,7 +62,13 @@ public class Pfloat implements Comparable<Pfloat> {
 	 *             number.
 	 */
 	public Pfloat(String val) throws NumberFormatException {
-		this(new Apfloat(val, Constants.DEFAULT_PRECISION));
+		if (val.equals(Type.UNDEFINED.name())) {
+			type = Type.UNDEFINED;
+			value = null;
+		} else {
+			type = Type.NUMBER;
+			value = new Apfloat(val, Constants.DEFAULT_PRECISION);
+		}
 	}
 
 	protected Pfloat(Pfloat val) {
