@@ -58,15 +58,15 @@ public class Gui extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		Gui.stage = stage;
-
 		Parent root = FXMLLoader.load(getClass().getResource(Constants.GUI_XML_PATH));
 		stage.setTitle("Currency Logger");
 
 		GridPane layoutGrid = (GridPane) root.lookup("#layoutGrid");
 		layoutGrid.add(table, 0, 0, 2, 1);
-
+		
+		Gui.stage = stage;
 		stage.setScene(new Scene(root));
+		stage.getIcons().add(Constants.icon);
 		stage.show();
 	}
 

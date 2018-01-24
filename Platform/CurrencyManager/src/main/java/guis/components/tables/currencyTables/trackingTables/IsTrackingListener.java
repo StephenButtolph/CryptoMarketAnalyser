@@ -22,6 +22,5 @@ public class IsTrackingListener implements ChangeListener<Boolean> {
 		} else {
 			currencies.remove(currency);
 		}
-		System.out.println(currencies);
 	}
 }

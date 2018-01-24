@@ -1,6 +1,7 @@
 package guis.marketLogger;
 
 import exceptions.StaticLoadException;
+import javafx.scene.image.Image;
 import utils.resources.ResourceUtils;
 
 class Constants {
@@ -8,6 +9,8 @@ class Constants {
 	static final String TRACKING_PATH;
 	static final String LOG_UPDATES_PATH;
 	static final String LOG_PATH_PATH;
+	
+	static final Image icon;
 
 	static {
 		GUI_XML_PATH = "MarketLogger.fxml";
@@ -29,5 +32,7 @@ class Constants {
 		if (LOG_PATH_PATH == null) {
 			throw new StaticLoadException("Market Logger log path failed to load.");
 		}
+		
+		icon = new Image(Constants.class.getResourceAsStream("/Loggers/Icons/blockchain.png"));
 	}
 }
