@@ -139,12 +139,7 @@ public class CoinMarketCap implements Ticker {
 		return f.apply(data);
 	}
 
-	public static RefreshingValue<BiMap<String, String>> getNameToSymbolMappings(TemporalAmount refreshRate) {
-		return new RefreshingValue<>(CoinMarketCap::refreshMappings, refreshRate);
-
-	}
-
-	private static BiMap<String, String> refreshMappings() {
+	public static BiMap<String, String> getNameToSymbolMappings() {
 		BiMap<String, String> nameToSymbol = HashBiMap.create();
 
 		Document doc;

@@ -18,6 +18,12 @@ public class ThreadingUtils {
 		thread.setDaemon(true);
 		thread.start();
 	}
+	
+	public static void run(Runnable toRun) {
+		Thread thread = new Thread(toRun);
+		thread.setDaemon(true);
+		thread.start();
+	}
 
 	public static void runForever(Runnable toRun, Duration waitTime) {
 		Thread thread = new Thread(() -> {

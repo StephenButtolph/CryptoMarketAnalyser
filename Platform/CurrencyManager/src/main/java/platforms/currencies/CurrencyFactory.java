@@ -9,6 +9,7 @@ import org.apache.commons.text.WordUtils;
 import com.google.common.collect.BiMap;
 
 import platforms.tickers.coinMarketCap.CoinMarketCap;
+import utils.wrappers.RefreshingValue;
 import utils.wrappers.Wrapper;
 
 /**
@@ -21,7 +22,7 @@ public class CurrencyFactory {
 	private static final Wrapper<BiMap<String, String>> NAME_TO_SYMBOL;
 
 	static {
-		NAME_TO_SYMBOL = CoinMarketCap.getNameToSymbolMappings(Constants.REFRESH_FREQUENCY);
+		NAME_TO_SYMBOL = new RefreshingValue<>(CoinMarketCap::getNameToSymbolMappings, Constants.REFRESH_FREQUENCY);
 	}
 
 	/**
