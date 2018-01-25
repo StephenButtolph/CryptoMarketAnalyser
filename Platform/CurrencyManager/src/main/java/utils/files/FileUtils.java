@@ -87,7 +87,7 @@ public class FileUtils {
 	}
 
 	public static boolean appendln(String filePath, String line) {
-		return append(filePath, line + "\n");
+		return append(filePath, line + Constants.NEW_LINE);
 	}
 
 	public static boolean append(String filePath, String str) {
