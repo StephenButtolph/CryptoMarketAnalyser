@@ -13,7 +13,13 @@ public class Json {
 	 */
 	public static final Gson GSON;
 
+	public static final String EMPTY_DICTIONARY;
+
+	public static final String EMPTY_ARRAY;
+
 	static {
 		GSON = new Gson();
+		EMPTY_DICTIONARY = "{}";
+		EMPTY_ARRAY = "[]";
 	}
 }

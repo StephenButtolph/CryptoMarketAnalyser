@@ -7,42 +7,76 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import arithmetic.Pfloat;
+import constants.Json;
 import logging.currencyLogging.CurrencyLogger;
 import platforms.currencies.Currency;
 import platforms.currencies.CurrencyFactory;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
+import utils.collections.collections.CollectionUtils;
 import utils.collections.maps.MapUtils;
 import utils.files.FileUtils;
 import utils.types.TypeProducer;
 import utils.types.TypeToken;
 
 public class MarketLogger extends CurrencyLogger {
-	private static final TemporalUnit UNIT = ChronoUnit.HOURS;
-	private static final long AMOUNT = 12;
+	private static final TemporalUnit UNIT;
+	private static final long AMOUNT;
+
+	private static final DateTimeFormatter formatter;
+
+	static {
+		UNIT = ChronoUnit.HOURS;
+		AMOUNT = 12;
+
+		formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault());
+	}
+
+	private final Preferences prefs;
+	private final CoinMarketCap coinMarketCap;
 
 	private Map<Currency, MarketLogRow> lastUpdates;
-	private CoinMarketCap coinMarketCap;
-
-	private DateTimeFormatter formatter;
-
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
 		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
 				Duration.of(AMOUNT, UNIT));
 
+		prefs = Preferences.userNodeForPackage(MarketLogger.class);
 		this.coinMarketCap = coinMarketCap;
-		formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault());
+
 		lastUpdates = loadLastUpdates();
+
+		TypeProducer typeProducer = new TypeToken<List<String>>();
+		String json = prefs.get(Constants.TRACKING_PATH, Json.EMPTY_ARRAY);
+		List<String> tracking = Json.GSON.fromJson(json, typeProducer.getType());
+		Collection<Currency> currencies = CollectionUtils.convert(tracking, CurrencyFactory::parseCurrency);
+		super.setCurrencies(currencies);
+	}
+
+	@Override
+	public void setCurrencies(Collection<Currency> newCurrencies) {
+		super.setCurrencies(newCurrencies);
+
+		TypeProducer typeProducer = new TypeToken<List<String>>();
+		Collection<String> toSave = CollectionUtils.convert(newCurrencies, Object::toString);
+		String json = Json.GSON.toJson(toSave, typeProducer.getType());
+		prefs.put(Constants.TRACKING_PATH, json);
+	}
+
+	public void setLogFile(String path) {
+		prefs.put(Constants.LOG_PATH_PATH, path);
 	}
 
 	@Override
 	protected void logCurrencies() {
-		logPath = FileUtils.read(Constants.LOG_PATH_PATH);
+		logPath = prefs.get(Constants.LOG_PATH_PATH, null);
 		if (logPath != null) {
 			logPath = logPath.trim();
 		}
@@ -104,8 +138,8 @@ public class MarketLogger extends CurrencyLogger {
 
 	private Map<Currency, MarketLogRow> loadLastUpdates() {
 		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
-		Map<String, String> lastUpdatesLoaded = FileUtils.load(Constants.LOG_UPDATES_PATH, typeProducer);
-
+		String json = prefs.get(Constants.LOG_UPDATES_PATH, Json.EMPTY_DICTIONARY);
+		Map<String, String> lastUpdatesLoaded = Json.GSON.fromJson(json, typeProducer.getType());
 		Map<Currency, MarketLogRow> lastUpdatesParsed = MapUtils.convertEntries(lastUpdatesLoaded,
 				CurrencyFactory::parseCurrency, MarketLogRow::parse);
 		if (lastUpdatesParsed == null) {
@@ -115,10 +149,10 @@ public class MarketLogger extends CurrencyLogger {
 	}
 
 	private void saveLastUpdates() {
+		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
 		Map<String, String> lastUpdatesFormatted = MapUtils.convertEntries(lastUpdates, Object::toString,
 				Object::toString);
-
-		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
-		FileUtils.save(Constants.LOG_UPDATES_PATH, lastUpdatesFormatted, typeProducer);
+		String json = Json.GSON.toJson(lastUpdatesFormatted, typeProducer.getType());
+		prefs.put(Constants.LOG_UPDATES_PATH, json);
 	}
 }

@@ -2,8 +2,8 @@ package logging.currencyLogging;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -23,26 +23,37 @@ public abstract class CurrencyLogger extends FunctionalLogger {
 		super.setFunction(this::logCurrencies);
 
 		lock = new ReentrantLock();
-		setCurrencies(currencies);
+		this.currencies = copy(currencies);
+	}
+
+	public Collection<Currency> getCurrencies() {
+		lock.lock();
+		Collection<Currency> toReturn = copy(currencies);
+		lock.unlock();
+		return toReturn;
 	}
 
 	public void setCurrencies(Collection<Currency> newCurrencies) {
 		lock.lock();
-		if (newCurrencies == null) {
-			currencies = new ArrayList<>();
-		} else {
-			currencies = new ArrayList<>(newCurrencies);
-		}
+		currencies = copy(newCurrencies);
 		lock.unlock();
 	}
 
 	protected void logCurrencies() {
 		lock.lock();
-		Collection<Currency> localCurrencies = new ArrayList<>(currencies);
+		Collection<Currency> localCurrencies = new HashSet<>(currencies);
 		lock.unlock();
 
 		localCurrencies.forEach(this::logCurrency);
 	}
 
 	protected abstract void logCurrency(Currency toLog);
+
+	private <T> Collection<T> copy(Collection<T> collection) {
+		if (collection == null) {
+			return new HashSet<>();
+		} else {
+			return new HashSet<>(collection);
+		}
+	}
 }
