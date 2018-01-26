@@ -95,17 +95,7 @@ public class FileUtils {
 			Files.write(Paths.get(filePath), str.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE,
 					StandardOpenOption.APPEND);
 			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-
-	public static boolean appendResource(String filePath, String str) {
-		try {
-			Files.write(getResourcePath(filePath), str.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-					StandardOpenOption.APPEND);
-			return true;
-		} catch (IOException e) {
+		} catch (InvalidPathException | IOException e) {
 			return false;
 		}
 	}
