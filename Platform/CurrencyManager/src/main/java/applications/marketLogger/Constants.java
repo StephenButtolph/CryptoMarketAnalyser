@@ -9,6 +9,6 @@ class Constants {
 
 	static {
 		GUI_XML_PATH = "MarketLogger.fxml";
-		icon = new Image(Constants.class.getResourceAsStream("/Loggers/Icons/blockchain.png"));
+		icon = new Image(Constants.class.getResourceAsStream("/Loggers/MarketLogger/icon.png"));
 	}
 }
