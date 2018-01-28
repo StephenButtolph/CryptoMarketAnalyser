@@ -37,5 +37,4 @@ public class StandardCurrencyTable extends CurrencyTable<CurrencyData> {
 		CurrencyData newData = new CurrencyData(currency, rank, currency.toString(), price, marketCap, volume);
 		return newData;
 	}
-
 }
