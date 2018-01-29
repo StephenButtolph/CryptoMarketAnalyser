@@ -32,8 +32,8 @@ public class MarketLogger extends CurrencyLogger {
 	private static final DateTimeFormatter formatter;
 
 	static {
-		UNIT = ChronoUnit.HOURS;
-		AMOUNT = 12;
+		UNIT = ChronoUnit.SECONDS;
+		AMOUNT = 12 * 60 * 60;
 
 		formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault());
 	}
@@ -45,8 +45,9 @@ public class MarketLogger extends CurrencyLogger {
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
-		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
-				Duration.of(AMOUNT, UNIT));
+//		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
+//				Duration.of(AMOUNT, UNIT));
+		super(Instant.now(), Duration.of(5, ChronoUnit.SECONDS));
 
 		prefs = Preferences.userNodeForPackage(MarketLogger.class);
 		this.coinMarketCap = coinMarketCap;
@@ -92,11 +93,16 @@ public class MarketLogger extends CurrencyLogger {
 		MarketLogRow newLog = getCurrentLogRow(toLog);
 		MarketLogRow previousLog = lastUpdates.get(toLog);
 
+		
 		Instant time;
 		long timesToRecord;
 		if (previousLog != null) {
 			time = previousLog.getTimeStamp();
-			timesToRecord = Duration.between(time, currentTime).get(UNIT) / getCollectionSeparation().get(UNIT);
+
+			Duration sinceLast = Duration.between(time, currentTime);			
+			long sinceLastUnit = sinceLast.get(UNIT);
+			long unit = getCollectionSeparation().get(UNIT);
+			timesToRecord = sinceLastUnit / unit;
 		} else {
 			time = currentTime.minus(AMOUNT, UNIT);
 			timesToRecord = 1;
