@@ -9,5 +9,4 @@ public abstract class Application extends javafx.application.Application {
 	public void start(Stage primaryStage) throws Exception {
 		start();
 	}
-
 }
