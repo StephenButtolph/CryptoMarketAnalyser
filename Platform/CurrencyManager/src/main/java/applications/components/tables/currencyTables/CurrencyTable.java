@@ -8,6 +8,7 @@ import java.util.List;
 import arithmetic.Pfloat;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
@@ -20,6 +21,9 @@ import utils.collections.iterables.IterableUtils;
 import utils.guis.ThreadingUtils;
 
 public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R> {
+	private Node normalPlaceholder;
+	private Node errorPlaceholder;
+
 	public CurrencyTable() {
 		this(null);
 	}
@@ -33,12 +37,19 @@ public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R>
 
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-		Label label = new Label("Loading Currencies");
+		normalPlaceholder = makePlaceHolder("Loading Currencies");
+		errorPlaceholder = makePlaceHolder("Error Loading Currencies... Retrying");
+
+		this.setPlaceholder(normalPlaceholder);
+	}
+
+	private Node makePlaceHolder(String msg) {
+		Label label = new Label(msg);
 		ProgressIndicator pi = new ProgressIndicator();
 		HBox hb = new HBox(label, pi);
 		hb.setAlignment(Pos.CENTER);
 		hb.spacingProperty().set(20);
-		this.setPlaceholder(hb);
+		return hb;
 	}
 
 	protected void initializeColumns() {
@@ -93,7 +104,13 @@ public abstract class CurrencyTable<R extends CurrencyData> extends TableView<R>
 	private void loadRowsSync(Collection<R> newRows) {
 		ObservableList<R> rows = this.getItems();
 		rows.clear();
-		rows.addAll(newRows);
+
+		if (newRows != null && !newRows.isEmpty()) {
+			rows.addAll(newRows);
+			this.setPlaceholder(normalPlaceholder);
+		} else {
+			this.setPlaceholder(errorPlaceholder);
+		}
 		super.refresh();
 	}
 

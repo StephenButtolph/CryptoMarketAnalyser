@@ -24,8 +24,4 @@ public class MarketLoggerApp extends Application {
 	public void stop() {
 		stage.stop();
 	}
-
-	public static void main(String[] args) {
-		launch(args);
-	}
 }

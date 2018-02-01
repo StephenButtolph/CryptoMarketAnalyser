@@ -14,6 +14,7 @@ import org.apache.http.HttpResponse;
 
 import arithmetic.Pfloat;
 import constants.Json;
+import logging.debug.DebugLogger;
 import platforms.currencies.Currency;
 import platforms.currencies.markets.CurrencyMarket;
 import platforms.exchanges.BestEffortExchange;
@@ -368,6 +369,7 @@ public class Poloniex extends BestEffortExchange {
 		try {
 			toReturn = Json.GSON.fromJson(json, typeProducer.getType());
 		} catch (com.google.gson.JsonSyntaxException e) {
+			DebugLogger.addError(e);
 		}
 		return toReturn;
 	}
@@ -387,6 +389,7 @@ public class Poloniex extends BestEffortExchange {
 		try {
 			toReturn = Json.GSON.fromJson(json, typeProducer.getType());
 		} catch (com.google.gson.JsonSyntaxException e) {
+			DebugLogger.addError(e);
 		}
 		return toReturn;
 	}

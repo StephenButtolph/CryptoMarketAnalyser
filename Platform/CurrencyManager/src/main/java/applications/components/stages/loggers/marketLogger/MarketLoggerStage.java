@@ -10,24 +10,34 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import logging.debug.DebugLevel;
+import logging.debug.DebugLogger;
 import logging.loggers.currencyLoggers.marketLogger.MarketLogger;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.guis.ThreadingUtils;
 
 public class MarketLoggerStage extends DebuggableStage {
-	private FileChooser fileChooser;
+	@FXML
+	private static GridPane layoutGrid;
 
-	private MarketLogger marketLogger;
-	private TrackingTable table;
+	@FXML
+	private static Button saveButton;
+
+	private static FileChooser fileChooser;
+
+	private static MarketLogger marketLogger;
+	private static TrackingTable table;
 
 	@Override
 	public void init() throws Exception {
 		super.init();
 
-		Parent root = FXMLLoader.load(getClass().getResource(Constants.GUI_XML_PATH));
-		GridPane layoutGrid = (GridPane) root.lookup("#layoutGrid");
+		Parent root = FXMLLoader.load(getClass().getResource(Constants.XML_PATH));
+		layoutGrid = (GridPane) root.lookup("#layoutGrid");
+		saveButton = (Button) root.lookup("#saveButton");
 
 		fileChooser = new FileChooser();
 
@@ -72,8 +82,10 @@ public class MarketLoggerStage extends DebuggableStage {
 	}
 
 	private void setMarketLogger(MarketLogger marketLogger) {
-		this.marketLogger = marketLogger;
+		MarketLoggerStage.marketLogger = marketLogger;
 		table.setTrackingCurrencies(marketLogger.getCurrencies());
 		marketLogger.start();
+
+		DebugLogger.addLog("MarketLogger started.", DebugLevel.INFO);
 	}
 }

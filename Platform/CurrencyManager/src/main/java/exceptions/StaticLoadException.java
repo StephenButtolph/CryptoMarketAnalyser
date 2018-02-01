@@ -6,7 +6,7 @@ package exceptions;
  * 
  * @author Stephen Buttolph
  */
-public class StaticLoadException extends RuntimeException {
+public class StaticLoadException extends LoggedException {
 	/**
 	 * Generated version ID for serialization.
 	 */

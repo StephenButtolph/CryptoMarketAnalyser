@@ -5,7 +5,7 @@ package exceptions;
  * 
  * @author Stephen Buttolph
  */
-public class ConnectionException extends RuntimeException {
+public class ConnectionException extends LoggedException {
 	/**
 	 * Generated version ID for serialization.
 	 */

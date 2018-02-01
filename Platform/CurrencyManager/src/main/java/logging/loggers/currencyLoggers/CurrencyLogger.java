@@ -28,15 +28,22 @@ public abstract class CurrencyLogger extends FunctionalLogger {
 
 	public Collection<Currency> getCurrencies() {
 		lock.lock();
-		Collection<Currency> toReturn = copy(currencies);
-		lock.unlock();
-		return toReturn;
+
+		try {
+			return copy(currencies);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public void setCurrencies(Collection<Currency> newCurrencies) {
 		lock.lock();
-		currencies = copy(newCurrencies);
-		lock.unlock();
+
+		try {
+			currencies = copy(newCurrencies);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	protected void logCurrencies() {

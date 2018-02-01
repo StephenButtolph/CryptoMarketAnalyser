@@ -3,6 +3,8 @@ package utils.collections.iterables;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import logging.debug.DebugLogger;
+
 class EmptyIterable<T> implements Iterable<T> {
 	private final Iterator<T> iter;
 
@@ -23,7 +25,9 @@ class EmptyIterable<T> implements Iterable<T> {
 
 		@Override
 		public S next() {
-			throw new NoSuchElementException("An empty iterator can't have a next element.");
+			RuntimeException e = new NoSuchElementException("An empty iterator can't have a next element.");
+			DebugLogger.addError(e);
+			throw e;
 		}
 	}
 }

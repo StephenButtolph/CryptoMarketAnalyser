@@ -6,7 +6,7 @@ package exceptions;
  * 
  * @author Stephen Buttolph
  */
-public class AssertionException extends RuntimeException {
+public class AssertionException extends LoggedException {
 	/**
 	 * Generated version ID for serialization.
 	 */

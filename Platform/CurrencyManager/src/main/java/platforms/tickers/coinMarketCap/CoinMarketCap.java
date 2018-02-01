@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.UncheckedIOException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -17,6 +18,7 @@ import com.google.common.collect.HashBiMap;
 
 import arithmetic.Pfloat;
 import javafx.util.Pair;
+import logging.debug.DebugLogger;
 import platforms.currencies.Currency;
 import platforms.currencies.markets.CurrencyMarket;
 import platforms.tickers.Ticker;
@@ -36,6 +38,7 @@ public class CoinMarketCap implements Ticker {
 		try {
 			doc = Jsoup.connect(Constants.ALL_COINS_URL).maxBodySize(0).get();
 		} catch (IOException e) {
+			DebugLogger.addError(e);
 			return mapping;
 		}
 
@@ -70,7 +73,10 @@ public class CoinMarketCap implements Ticker {
 			}
 
 			return new CurrencyData(args);
-		} catch (IndexOutOfBoundsException | NumberFormatException e) {
+		} catch (IndexOutOfBoundsException e) {
+			DebugLogger.addError(e);
+			return null;
+		} catch (NumberFormatException e) {
 			return null;
 		}
 	}
@@ -145,7 +151,8 @@ public class CoinMarketCap implements Ticker {
 		Document doc;
 		try {
 			doc = Jsoup.connect(Constants.ALL_COINS_URL).maxBodySize(0).get();
-		} catch (IOException e) {
+		} catch (UncheckedIOException | IOException e) {
+			DebugLogger.addError(e);
 			return nameToSymbol;
 		}
 
@@ -164,7 +171,8 @@ public class CoinMarketCap implements Ticker {
 				if (!nameToSymbol.containsValue(entry.getValue())) {
 					nameToSymbol.putIfAbsent(entry.getKey(), entry.getValue());
 				}
-			} catch (IOException e) {
+			} catch (UncheckedIOException | IOException e) {
+				DebugLogger.addError(e);
 			}
 		}
 		return nameToSymbol;

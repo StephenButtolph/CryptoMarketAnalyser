@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import constants.Json;
+import logging.debug.DebugLogger;
 import utils.types.TypeProducer;
 
 public class FileUtils {
@@ -73,6 +74,7 @@ public class FileUtils {
 			System.out.println(toReturn);
 			return toReturn;
 		} catch (InvalidPathException | IOException e) {
+			DebugLogger.addError(e);
 			return null;
 		}
 	}
@@ -82,6 +84,7 @@ public class FileUtils {
 			Files.write(Paths.get(filePath), file.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 			return true;
 		} catch (InvalidPathException | IOException e) {
+			DebugLogger.addError(e);
 			return false;
 		}
 	}
@@ -96,6 +99,7 @@ public class FileUtils {
 					StandardOpenOption.APPEND);
 			return true;
 		} catch (InvalidPathException | IOException e) {
+			DebugLogger.addError(e);
 			return false;
 		}
 	}
@@ -110,15 +114,15 @@ public class FileUtils {
 			Path path = fs.getPath(array[1]);
 			return path;
 		} catch (IOException | IllegalArgumentException e) {
-			e.printStackTrace();
+			DebugLogger.addError(e);
 			try {
 				return Paths.get(url.toURI());
 			} catch (URISyntaxException e1) {
-				e1.printStackTrace();
+				DebugLogger.addError(e1);
 				return Paths.get(url.getPath());
 			}
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			DebugLogger.addError(e);
 			return Paths.get(url.getPath());
 		}
 	}

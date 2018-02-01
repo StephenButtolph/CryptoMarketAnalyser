@@ -3,6 +3,7 @@ package logging.loggers;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,6 +31,7 @@ public class FunctionalLogger implements Logger {
 	private Lock lock;
 
 	private ScheduledThreadPoolExecutor scheduler;
+	private ThreadFactory threadFactory;
 
 	public FunctionalLogger(Runnable function, Instant firstCollection, Duration separation) {
 		setFunction(function);
@@ -46,7 +48,7 @@ public class FunctionalLogger implements Logger {
 		lock = new ReentrantLock();
 
 		scheduler = null;
-
+		threadFactory = new LogThreadFactory();
 	}
 
 	protected void setFunction(Runnable function) {
@@ -56,28 +58,38 @@ public class FunctionalLogger implements Logger {
 	@Override
 	public boolean start() {
 		lock.lock();
-		boolean scheduled = shouldExecute.getValue();
-		if (!scheduled) {
-			scheduler = new ScheduledThreadPoolExecutor(5);
-			registerFunction();
+
+		try {
+			boolean scheduled = shouldExecute.getValue();
+			if (!scheduled) {
+				scheduler = new ScheduledThreadPoolExecutor(5, threadFactory);
+				registerFunction();
+			}
+			return !scheduled;
+		} finally {
+			lock.unlock();
 		}
-		lock.unlock();
-		return !scheduled;
+
 	}
 
 	@Override
 	public boolean stop() {
 		lock.lock();
-		boolean scheduled = shouldExecute.getValue();
-		if (scheduled) {
-			shouldExecute.assign(false);
+
+		try {
+			boolean scheduled = shouldExecute.getValue();
+			if (scheduled) {
+				shouldExecute.assign(false);
+			}
+
+			Iterable<Runnable> runnables = scheduler.getQueue();
+			runnables.forEach(scheduler::remove);
+			scheduler.shutdown();
+			return scheduled;
+		} finally {
+			lock.unlock();
 		}
 
-		Iterable<Runnable> runnables = scheduler.getQueue();
-		runnables.forEach(scheduler::remove);
-		scheduler.shutdown();
-		lock.unlock();
-		return scheduled;
 	}
 
 	@Override
@@ -93,9 +105,13 @@ public class FunctionalLogger implements Logger {
 	@Override
 	public void setNextCollectionTime(Instant nextCollectionTime) {
 		lock.lock();
-		nextCollection = nextCollectionTime;
-		shouldUseGivenTime = true;
-		lock.unlock();
+
+		try {
+			nextCollection = nextCollectionTime;
+			shouldUseGivenTime = true;
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	@Override
@@ -106,54 +122,66 @@ public class FunctionalLogger implements Logger {
 	@Override
 	public void setCollectionSeparation(Duration separation) {
 		lock.lock();
-		this.separation = separation;
-		lock.unlock();
+
+		try {
+			this.separation = separation;
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	private void registerFunction() {
 		lock.lock();
-		if (shouldUseGivenTime) {
-			registerFunction(nextCollection);
-		} else {
-			registerFunction(previousCollection.plus(separation));
+
+		try {
+			if (shouldUseGivenTime) {
+				registerFunction(nextCollection);
+			} else {
+				registerFunction(previousCollection.plus(separation));
+			}
+		} finally {
+			lock.unlock();
 		}
-		lock.unlock();
 	}
 
 	private void registerFunction(Instant nextCollectionTime) {
 		lock.lock();
-		nextCollection = nextCollectionTime;
 
-		if (!startedExecution) {
-			shouldExecute.assign(false);
-			shouldExecute = new Ref<>(true);
-		}
-		shouldExecute.assign(true);
+		try {
+			nextCollection = nextCollectionTime;
 
-		final Wrapper<Boolean> ref = shouldExecute;
-		Runnable internalFunction = () -> {
-			lock.lock();
-			boolean willExecute = ref.getValue();
-			if (willExecute) {
-				startedExecution = true;
-				previousCollection = nextCollection;
-				shouldUseGivenTime = false;
+			if (!startedExecution) {
+				shouldExecute.assign(false);
+				shouldExecute = new Ref<>(true);
 			}
+			shouldExecute.assign(true);
+
+			final Wrapper<Boolean> ref = shouldExecute;
+			Runnable internalFunction = () -> {
+				lock.lock();
+				boolean willExecute = ref.getValue();
+				if (willExecute) {
+					startedExecution = true;
+					previousCollection = nextCollection;
+					shouldUseGivenTime = false;
+				}
+				lock.unlock();
+
+				if (willExecute) {
+					function.run();
+					registerFunction();
+					startedExecution = false;
+				}
+			};
+
+			long waitTime = nextCollection.toEpochMilli() - Instant.now().toEpochMilli();
+			if (waitTime < 0) {
+				waitTime = 0;
+			}
+
+			scheduler.schedule(internalFunction, waitTime, TimeUnit.MILLISECONDS);
+		} finally {
 			lock.unlock();
-
-			if (willExecute) {
-				function.run();
-				registerFunction();
-				startedExecution = false;
-			}
-		};
-
-		long waitTime = nextCollection.toEpochMilli() - Instant.now().toEpochMilli();
-		if (waitTime < 0) {
-			waitTime = 0;
 		}
-
-		scheduler.schedule(internalFunction, waitTime, TimeUnit.MILLISECONDS);
-		lock.unlock();
 	}
 }
