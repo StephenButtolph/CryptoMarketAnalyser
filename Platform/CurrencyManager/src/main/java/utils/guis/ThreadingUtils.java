@@ -1,6 +1,7 @@
 package utils.guis;
 
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -9,14 +10,13 @@ import logging.debug.DebugLogger;
 
 public class ThreadingUtils {
 	private static final String NAME_FORMAT;
-	private static int nonce;
+	private static final AtomicInteger counter = new AtomicInteger();
 
 	static {
 		NAME_FORMAT = "F=%s V=%s";
-		nonce = 0;
 	}
 
-	public synchronized static <T> void run(Supplier<T> producer, Consumer<T> consumer) {
+	public static <T> void run(Supplier<T> producer, Consumer<T> consumer) {
 		Thread thread = new Thread(() -> {
 			T val = producer.get();
 
@@ -24,17 +24,17 @@ public class ThreadingUtils {
 				consumer.accept(val);
 			});
 		});
-		String name = String.format(NAME_FORMAT, "Run(PC)", nonce++);
+		String name = String.format(NAME_FORMAT, "Run(PC)", counter.getAndIncrement());
 		startThread(thread, name);
 	}
 
-	public synchronized static void run(Runnable toRun) {
+	public static void run(Runnable toRun) {
 		Thread thread = new Thread(toRun);
-		String name = String.format(NAME_FORMAT, "Run(R)", nonce++);
+		String name = String.format(NAME_FORMAT, "Run(R)", counter.getAndIncrement());
 		startThread(thread, name);
 	}
 
-	public synchronized static void runForever(Runnable toRun, Duration waitTime) {
+	public static void runForever(Runnable toRun, Duration waitTime) {
 		Thread thread = new Thread(() -> {
 			while (true) {
 				toRun.run();
@@ -46,11 +46,11 @@ public class ThreadingUtils {
 				}
 			}
 		});
-		String name = String.format(NAME_FORMAT, "RunForever(R)", nonce++);
+		String name = String.format(NAME_FORMAT, "RunForever(R)", counter.getAndIncrement());
 		startThread(thread, name);
 	}
 
-	public synchronized static <T> void runForever(Supplier<T> producer, Consumer<T> consumer, Duration waitTime) {
+	public static <T> void runForever(Supplier<T> producer, Consumer<T> consumer, Duration waitTime) {
 		Thread thread = new Thread(() -> {
 			while (true) {
 				T val = producer.get();
@@ -66,7 +66,7 @@ public class ThreadingUtils {
 				}
 			}
 		});
-		String name = String.format(NAME_FORMAT, "RunForever(PC)", nonce++);
+		String name = String.format(NAME_FORMAT, "RunForever(PC)", counter.getAndIncrement());
 		startThread(thread, name);
 	}
 

@@ -8,7 +8,7 @@ class LogThreadFactory implements ThreadFactory {
 
 	@Override
 	public Thread newThread(Runnable r) {
-		String name = "Logging Thread-" + counter.incrementAndGet();
+		String name = "Logging Thread-" + counter.getAndIncrement();
 		return new Thread(r, name);
 	}
 }
