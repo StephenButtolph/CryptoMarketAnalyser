@@ -12,7 +12,7 @@ public class ThreadingUtils {
 	private static int nonce;
 
 	static {
-		NAME_FORMAT = "P=%s V=%s";
+		NAME_FORMAT = "F=%s V=%s";
 		nonce = 0;
 	}
 
