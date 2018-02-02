@@ -78,10 +78,14 @@ public class MarketLogger extends CurrencyLogger {
 		Collection<String> toSave = CollectionUtils.convert(newCurrencies, Object::toString);
 		String json = Json.GSON.toJson(toSave, typeProducer.getType());
 		prefs.put(Constants.TRACKING_PATH, json);
+		
+		DebugLogger.addLog("MarketLogger set tracking currencies to: " + json, DebugLevel.INFO);
 	}
 
 	public void setLogFile(String path) {
 		prefs.put(Constants.LOG_PATH_PATH, path);
+		
+		DebugLogger.addLog("MarketLogger set logging path to: " + path, DebugLevel.INFO);
 	}
 
 	@Override
@@ -95,6 +99,13 @@ public class MarketLogger extends CurrencyLogger {
 		super.logCurrencies();
 
 		saveLastUpdates();
+
+		String timeFormat = "MarketLogger:\n\tNext Collection = %s\n\tCollection Separation = %s (%s)";
+		String sepFormat = "HH:mm:ss.S";
+
+		String nextTime = TimingUtils.MEDIUM.format(getLastCollectionTime().plus(getCollectionSeparation()));
+		String separation = DurationFormatUtils.formatDuration(getCollectionSeparation().toMillis(), sepFormat);
+		DebugLogger.addLog(String.format(timeFormat, nextTime, separation, sepFormat), DebugLevel.INFO);
 	}
 
 	@Override

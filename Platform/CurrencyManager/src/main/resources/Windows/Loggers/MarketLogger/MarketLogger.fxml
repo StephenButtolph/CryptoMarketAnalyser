@@ -17,12 +17,12 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Button mnemonicParsing="false" onAction="#setNewLogFile" text="Set Log File" GridPane.rowIndex="1">
+      <Button fx:id="setLogButton" disable="true" mnemonicParsing="false" onAction="#setNewLogFile" text="Set Log File" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleSave" text="Save" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+      <Button fx:id="saveButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#handleSave" text="Save" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />
          </GridPane.margin>

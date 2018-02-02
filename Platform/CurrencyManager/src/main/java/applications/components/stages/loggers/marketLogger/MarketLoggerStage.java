@@ -26,6 +26,9 @@ public class MarketLoggerStage extends DebuggableStage {
 	@FXML
 	private static Button saveButton;
 
+	@FXML
+	private static Button setLogButton;
+
 	private static FileChooser fileChooser;
 
 	private static MarketLogger marketLogger;
@@ -38,6 +41,7 @@ public class MarketLoggerStage extends DebuggableStage {
 		Parent root = FXMLLoader.load(getClass().getResource(Constants.XML_PATH));
 		layoutGrid = (GridPane) root.lookup("#layoutGrid");
 		saveButton = (Button) root.lookup("#saveButton");
+		setLogButton = (Button) root.lookup("#setLogButton");
 
 		fileChooser = new FileChooser();
 
@@ -85,6 +89,9 @@ public class MarketLoggerStage extends DebuggableStage {
 		MarketLoggerStage.marketLogger = marketLogger;
 		table.setTrackingCurrencies(marketLogger.getCurrencies());
 		marketLogger.start();
+
+		saveButton.setDisable(false);
+		setLogButton.setDisable(false);
 
 		DebugLogger.addLog("MarketLogger started.", DebugLevel.INFO);
 	}

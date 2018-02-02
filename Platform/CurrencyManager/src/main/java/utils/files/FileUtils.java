@@ -95,8 +95,7 @@ public class FileUtils {
 
 	public static boolean append(String filePath, String str) {
 		try {
-			Files.write(Paths.get(filePath), str.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-					StandardOpenOption.APPEND);
+			Files.write(Paths.get(filePath), str.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 			return true;
 		} catch (InvalidPathException | IOException e) {
 			DebugLogger.addError(e);
