@@ -48,10 +48,8 @@ public class MarketLogger extends CurrencyLogger {
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
-		// super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT,
-		// UNIT)),
-		// Duration.of(AMOUNT, UNIT));
-		super(Instant.now(), Duration.of(10, UNIT));
+		super(Instant.now().truncatedTo(ChronoUnit.HALF_DAYS).plus(Duration.of(AMOUNT, UNIT)),
+				Duration.of(AMOUNT, UNIT));
 
 		prefs = Preferences.userNodeForPackage(MarketLogger.class);
 		this.coinMarketCap = coinMarketCap;
