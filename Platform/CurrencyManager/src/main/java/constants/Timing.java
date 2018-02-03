@@ -40,6 +40,11 @@ public class Timing {
 	public static final Duration HOUR;
 
 	/**
+	 * A half of one day of time.
+	 */
+	public static final Duration HALF_DAY;
+
+	/**
 	 * A one day of time.
 	 */
 	public static final Duration DAY;
@@ -56,6 +61,7 @@ public class Timing {
 		SECOND = Duration.ofSeconds(1);
 		MINUTE = Duration.ofMinutes(1);
 		HOUR = Duration.ofHours(1);
+		HALF_DAY = Duration.ofHours(12);
 		DAY = Duration.ofDays(1);
 		WEEK = Duration.ofDays(7);
 	}

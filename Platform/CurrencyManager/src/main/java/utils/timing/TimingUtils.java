@@ -1,5 +1,6 @@
 package utils.timing;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -41,5 +42,16 @@ public class TimingUtils {
 
 	public static String getCurrentTimestampShort() {
 		return SHORT.format(Instant.now());
+	}
+
+	public static Instant getNextMultiple(Duration duration) {
+		long multiplicand = getNumPeriods(Instant.EPOCH, duration);
+		Duration untilNextMultiple = duration.multipliedBy(multiplicand + 1);
+		return Instant.EPOCH.plus(untilNextMultiple);
+	}
+
+	public static long getNumPeriods(Instant base, Duration duration) {
+		Duration difference = Duration.between(base, Instant.now());
+		return difference.toMillis() / duration.toMillis();
 	}
 }
