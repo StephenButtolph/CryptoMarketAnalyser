@@ -80,7 +80,7 @@ public class UtilsTester {
 		for (int length : lengths) {
 			Integer[] arr = makeArray(length);
 			Iterable<Integer> iter = IterableUtils.toIterable(arr);
-			Iterator<String> iterMapped = IterableUtils.map(iter, Object::toString).iterator();
+			Iterator<String> iterMapped = IterableUtils.map(iter, String::valueOf).iterator();
 			for (Integer cur : arr) {
 				if (!iterMapped.hasNext()) {
 					fail("Iterator ended too early");

@@ -64,6 +64,15 @@ class MarketLogRow {
 		return timeStamp;
 	}
 
+	public boolean isValid() {
+		return currency != null && rank != null && price != null && marketCap != null && volume != null
+				&& timeStamp != null;
+	}
+
+	public boolean isValidCSV() {
+		return isValid() && formatter != null;
+	}
+
 	public String toCSVRow() {
 		String timeStamp;
 		if (formatter != null) {
@@ -79,12 +88,12 @@ class MarketLogRow {
 	public String toString() {
 		Map<String, String> jsonRow = new HashMap<>();
 
-		jsonRow.put("currency", currency.toString());
-		jsonRow.put("rank", rank.toString());
-		jsonRow.put("price", price.toString());
-		jsonRow.put("marketCap", marketCap.toString());
-		jsonRow.put("volume", volume.toString());
-		jsonRow.put("timeStamp", timeStamp.toString());
+		jsonRow.put("currency", String.valueOf(currency));
+		jsonRow.put("rank", String.valueOf(rank));
+		jsonRow.put("price", String.valueOf(price));
+		jsonRow.put("marketCap", String.valueOf(marketCap));
+		jsonRow.put("volume", String.valueOf(volume));
+		jsonRow.put("timeStamp", String.valueOf(timeStamp));
 
 		return Json.GSON.toJson(jsonRow);
 	}
