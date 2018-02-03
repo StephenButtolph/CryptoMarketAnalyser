@@ -4,7 +4,6 @@ import java.io.File;
 
 import applications.components.stages.DebuggableStage;
 import applications.components.tables.currencyTables.trackingTables.TrackingTable;
-import constants.Timing;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +17,7 @@ import logging.debug.DebugLogger;
 import logging.loggers.currencyLoggers.marketLogger.MarketLogger;
 import platforms.tickers.coinMarketCap.CoinMarketCap;
 import utils.guis.ThreadingUtils;
+import utils.timing.TimingUtils;
 
 public class MarketLoggerStage extends DebuggableStage {
 	@FXML
@@ -45,8 +45,8 @@ public class MarketLoggerStage extends DebuggableStage {
 
 		fileChooser = new FileChooser();
 
-		CoinMarketCap coinMarketCap = new CoinMarketCap(Timing.SECOND);
-		table = new TrackingTable(coinMarketCap, Timing.MINUTE);
+		CoinMarketCap coinMarketCap = new CoinMarketCap(TimingUtils.SECOND);
+		table = new TrackingTable(coinMarketCap, TimingUtils.MINUTE);
 		layoutGrid.add(table, 0, 0, 2, 1);
 
 		this.setTitle(Constants.TITLE);

@@ -7,12 +7,67 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class TimingUtils {
+	/**
+	 * No time amount.
+	 */
+	public static final Duration ZERO;
+
+	/**
+	 * A one nanosecond of time.
+	 */
+	public static final Duration NANOSECOND;
+
+	/**
+	 * A one millisecond of time.
+	 */
+	public static final Duration MILLISECOND;
+
+	/**
+	 * A one second of time.
+	 */
+	public static final Duration SECOND;
+
+	/**
+	 * A one minute of time.
+	 */
+	public static final Duration MINUTE;
+
+	/**
+	 * A one hour of time.
+	 */
+	public static final Duration HOUR;
+
+	/**
+	 * A half of one day of time.
+	 */
+	public static final Duration HALF_DAY;
+
+	/**
+	 * A one day of time.
+	 */
+	public static final Duration DAY;
+
+	/**
+	 * A one week of time.
+	 */
+	public static final Duration WEEK;
+
 	public static final DateTimeFormatter FULL;
 	public static final DateTimeFormatter LONG;
 	public static final DateTimeFormatter MEDIUM;
 	public static final DateTimeFormatter SHORT;
 
 	static {
+		ZERO = Duration.ZERO;
+		NANOSECOND = Duration.ofNanos(1);
+		MILLISECOND = Duration.ofMillis(1);
+		SECOND = Duration.ofSeconds(1);
+		MINUTE = Duration.ofMinutes(1);
+		HOUR = Duration.ofHours(1);
+		HALF_DAY = Duration.ofHours(12);
+		DAY = Duration.ofDays(1);
+		WEEK = Duration.ofDays(7);
+
 		FULL = makeFormatter(FormatStyle.FULL);
 		LONG = makeFormatter(FormatStyle.LONG);
 		MEDIUM = makeFormatter(FormatStyle.MEDIUM);

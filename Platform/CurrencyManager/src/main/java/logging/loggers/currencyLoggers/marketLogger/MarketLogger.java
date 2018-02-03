@@ -13,7 +13,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import arithmetic.Pfloat;
 import constants.Json;
-import constants.Timing;
 import logging.debug.DebugLevel;
 import logging.debug.DebugLogger;
 import logging.loggers.currencyLoggers.CurrencyLogger;
@@ -42,7 +41,7 @@ public class MarketLogger extends CurrencyLogger {
 	private String logPath;
 
 	public MarketLogger(CoinMarketCap coinMarketCap) {
-		this(coinMarketCap, Timing.HALF_DAY); // TODO remove
+		this(coinMarketCap, TimingUtils.HALF_DAY); // TODO remove
 	}
 
 	public MarketLogger(CoinMarketCap coinMarketCap, Duration seperation) {

@@ -1,7 +1,6 @@
 package applications.components.stages.debug;
 
 import applications.components.stages.ApplicationStage;
-import constants.Timing;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +27,7 @@ public class Debugger extends ApplicationStage {
 		this.getIcons().add(Constants.icon);
 		this.setScene(new Scene(root));
 
-		ThreadingUtils.runForever(DebugLogger::getUnhandledLog, this::addLog, Timing.ZERO);
+		ThreadingUtils.runForever(DebugLogger::getUnhandledLog, this::addLog, TimingUtils.ZERO);
 	}
 
 	@Override

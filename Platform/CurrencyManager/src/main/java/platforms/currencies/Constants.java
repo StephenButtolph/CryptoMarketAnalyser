@@ -2,7 +2,7 @@ package platforms.currencies;
 
 import java.time.temporal.TemporalAmount;
 
-import constants.Timing;
+import utils.timing.TimingUtils;
 
 class Constants {
 	static final String FORMAT_HEADER;
@@ -21,6 +21,6 @@ class Constants {
 		FORMAT_FOOTER = ")";
 		STRING_FORMAT = FORMAT_HEADER + "%s" + FORMAT_DELIMITER + "%s" + FORMAT_FOOTER;
 
-		REFRESH_FREQUENCY = Timing.WEEK;
+		REFRESH_FREQUENCY = TimingUtils.WEEK;
 	}
 }
