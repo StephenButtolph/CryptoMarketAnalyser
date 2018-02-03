@@ -29,12 +29,13 @@ import utils.types.TypeToken;
 
 public class MarketLogger extends CurrencyLogger {
 	private static final DateTimeFormatter formatter;
+	private static final Preferences PREFS;
 
 	static {
 		formatter = TimingUtils.SHORT;
+		PREFS = Preferences.userNodeForPackage(MarketLogger.class);
 	}
 
-	private final Preferences prefs;
 	private final CoinMarketCap coinMarketCap;
 
 	private Map<Currency, MarketLogRow> lastUpdates;
@@ -47,13 +48,12 @@ public class MarketLogger extends CurrencyLogger {
 	public MarketLogger(CoinMarketCap coinMarketCap, Duration seperation) {
 		super(TimingUtils.getNextMultiple(seperation), seperation);
 
-		prefs = Preferences.userNodeForPackage(MarketLogger.class);
 		this.coinMarketCap = coinMarketCap;
 
 		lastUpdates = loadLastUpdates();
 
 		TypeProducer typeProducer = new TypeToken<List<String>>();
-		String json = prefs.get(Constants.TRACKING_PATH, Json.EMPTY_ARRAY);
+		String json = PREFS.get(Constants.TRACKING_PATH, Json.EMPTY_ARRAY);
 		List<String> tracking = Json.GSON.fromJson(json, typeProducer.getType());
 		Collection<Currency> currencies = CollectionUtils.convert(tracking, CurrencyFactory::parseCurrency);
 		super.setCurrencies(currencies);
@@ -73,20 +73,20 @@ public class MarketLogger extends CurrencyLogger {
 		TypeProducer typeProducer = new TypeToken<List<String>>();
 		Collection<String> toSave = CollectionUtils.convert(newCurrencies, String::valueOf);
 		String json = Json.GSON.toJson(toSave, typeProducer.getType());
-		prefs.put(Constants.TRACKING_PATH, json);
+		PREFS.put(Constants.TRACKING_PATH, json);
 
 		DebugLogger.addLog("MarketLogger set tracking currencies to: " + json, DebugLevel.INFO);
 	}
 
 	public void setLogFile(String path) {
-		prefs.put(Constants.LOG_PATH_PATH, path);
+		PREFS.put(Constants.LOG_PATH_PATH, path);
 
 		DebugLogger.addLog("MarketLogger set logging path to: " + path, DebugLevel.INFO);
 	}
 
 	@Override
 	protected void logCurrencies() {
-		logPath = prefs.get(Constants.LOG_PATH_PATH, null);
+		logPath = PREFS.get(Constants.LOG_PATH_PATH, null);
 		if (logPath != null) {
 			logPath = logPath.trim();
 		}
@@ -167,7 +167,7 @@ public class MarketLogger extends CurrencyLogger {
 
 	private Map<Currency, MarketLogRow> loadLastUpdates() {
 		TypeProducer typeProducer = new TypeToken<Map<String, String>>();
-		String json = prefs.get(Constants.LOG_UPDATES_PATH, Json.EMPTY_DICTIONARY);
+		String json = PREFS.get(Constants.LOG_UPDATES_PATH, Json.EMPTY_DICTIONARY);
 		Map<String, String> lastUpdatesLoaded = Json.GSON.fromJson(json, typeProducer.getType());
 		Map<Currency, MarketLogRow> lastUpdatesParsed = MapUtils.convertEntries(lastUpdatesLoaded,
 				CurrencyFactory::parseCurrency, MarketLogRow::parse);
@@ -182,6 +182,6 @@ public class MarketLogger extends CurrencyLogger {
 		Map<String, String> lastUpdatesFormatted = MapUtils.convertEntries(lastUpdates, String::valueOf,
 				String::valueOf);
 		String json = Json.GSON.toJson(lastUpdatesFormatted, typeProducer.getType());
-		prefs.put(Constants.LOG_UPDATES_PATH, json);
+		PREFS.put(Constants.LOG_UPDATES_PATH, json);
 	}
 }
